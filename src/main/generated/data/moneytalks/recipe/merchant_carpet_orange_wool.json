@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": "minecraft:orange_wool"
+  },
+  "pattern": [
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "moneytalks:orange_merchant_carpet"
+  }
+}

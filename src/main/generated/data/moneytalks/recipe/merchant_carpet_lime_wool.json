@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": "minecraft:lime_wool"
+  },
+  "pattern": [
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "moneytalks:lime_merchant_carpet"
+  }
+}

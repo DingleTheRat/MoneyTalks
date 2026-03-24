@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "moneytalks:block/double_trimmed_hopper"
+    },
+    "facing=north": {
+      "model": "moneytalks:block/double_trimmed_hopper_side"
+    },
+    "facing=south": {
+      "model": "moneytalks:block/double_trimmed_hopper_side",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "moneytalks:block/double_trimmed_hopper_side",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "moneytalks:block/double_trimmed_hopper_side",
+      "y": 90
+    }
+  }
+}

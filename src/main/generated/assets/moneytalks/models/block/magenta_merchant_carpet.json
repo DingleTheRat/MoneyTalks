@@ -1,0 +1,6 @@
+{
+  "parent": "moneytalks:block/merchant_carpet_base",
+  "textures": {
+    "all": "moneytalks:block/magenta_merchant_carpet"
+  }
+}

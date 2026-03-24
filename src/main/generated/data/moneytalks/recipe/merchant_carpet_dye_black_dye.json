@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#moneytalks:merchant_carpets",
+    "minecraft:black_dye"
+  ],
+  "result": {
+    "count": 1,
+    "id": "moneytalks:black_merchant_carpet"
+  }
+}

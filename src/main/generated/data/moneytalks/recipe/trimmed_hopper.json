@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "minecraft:diamond",
+    "H": "minecraft:hopper"
+  },
+  "pattern": [
+    "DHD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "moneytalks:trimmed_hopper"
+  }
+}

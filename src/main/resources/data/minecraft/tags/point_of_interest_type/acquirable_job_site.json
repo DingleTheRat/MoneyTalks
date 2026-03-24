@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "moneytalks:investor_poi",
+      "required": false
+    }
+  ]
+}

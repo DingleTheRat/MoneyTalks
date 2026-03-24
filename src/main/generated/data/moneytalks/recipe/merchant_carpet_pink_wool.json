@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": "minecraft:pink_wool"
+  },
+  "pattern": [
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "moneytalks:pink_merchant_carpet"
+  }
+}

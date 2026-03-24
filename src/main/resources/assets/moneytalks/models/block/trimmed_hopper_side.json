@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/hopper_side",
+  "textures": {
+    "particle": "minecraft:block/hopper_outside",
+    "top": "minecraft:block/hopper_top",
+    "side": "moneytalks:block/trimmed_hopper",
+    "inside": "minecraft:block/hopper_inside"
+  }
+}
