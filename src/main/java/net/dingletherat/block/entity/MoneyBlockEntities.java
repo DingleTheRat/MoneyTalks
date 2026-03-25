@@ -6,14 +6,14 @@ import net.dingletherat.block.entity.custom.MerchantCarpetEntity;
 import net.dingletherat.block.entity.custom.TrimmedHopperEntity;
 import net.dingletherat.block.entity.custom.DoubleTrimmedHopperEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 
 public class MoneyBlockEntities {
     public static final BlockEntityType<MerchantCarpetEntity> MERCHANT_CARPET_ENTITY =
-            Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(MoneyTalks.MOD_ID, "merchant_carpet_entity"),
+            Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.of(MoneyTalks.MOD_ID, "merchant_carpet_entity"),
                     FabricBlockEntityTypeBuilder.<MerchantCarpetEntity>create(MerchantCarpetEntity::new,
                         MoneyBlocks.BLACK_MERCHANT_CARPET,
                         MoneyBlocks.BLUE_MERCHANT_CARPET,
@@ -34,10 +34,10 @@ public class MoneyBlockEntities {
                     .build());
 
     public static final BlockEntityType<TrimmedHopperEntity> TRIMMED_HOPPER_ENTITY =
-            Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(MoneyTalks.MOD_ID, "trimmed_hopper_entity"),
+            Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.of(MoneyTalks.MOD_ID, "trimmed_hopper_entity"),
                     FabricBlockEntityTypeBuilder.<TrimmedHopperEntity>create(TrimmedHopperEntity::new, MoneyBlocks.TRIMMED_HOPPER).build());
     public static final BlockEntityType<DoubleTrimmedHopperEntity> DOUBLE_TRIMMED_HOPPER_ENTITY =
-            Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(MoneyTalks.MOD_ID, "double_trimmed_hopper_entity"),
+            Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.of(MoneyTalks.MOD_ID, "double_trimmed_hopper_entity"),
                     FabricBlockEntityTypeBuilder.<DoubleTrimmedHopperEntity>create(DoubleTrimmedHopperEntity::new, MoneyBlocks.DOUBLE_TRIMMED_HOPPER).build());
 
     public static void registerBlockEntities() {

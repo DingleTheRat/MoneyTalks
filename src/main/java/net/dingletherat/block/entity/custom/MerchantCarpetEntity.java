@@ -10,34 +10,34 @@ import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.state.WalletState;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.Containers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
-public class MerchantCarpetEntity extends BlockEntity{
+public class MerchantCarpetEntity extends BlockEntity {
     private int price = 0;
     private UUID owner = null;
     private int purchaseAmount = 0;
@@ -53,7 +53,7 @@ public class MerchantCarpetEntity extends BlockEntity{
     }
 
     @Override
-    protected void writeData(WriteView view) {
+    protected void writeData(ValueOutput view) {
         super.writeData(view);
         view.putInt("price", price);
         view.putInt("amount", amount);
@@ -62,11 +62,11 @@ public class MerchantCarpetEntity extends BlockEntity{
         view.putInt("collected", collected);
         view.putString("trade", trade.isEmpty() ? "" : ItemStack.CODEC.encodeStart(
             JsonOps.INSTANCE, trade).result().map(Object::toString).orElse(""));
-        view.putString("item", item != null ? Registries.ITEM.getId(item).toString() : "minecraft:air");
+        view.putString("item", item != null ? BuiltInRegistries.ITEM.getId(item).toString() : "minecraft:air");
     }
 
     @Override
-    protected void readData(ReadView view) {
+    protected void readData(ValueInput view) {
         super.readData(view);
         price = view.getInt("price", 0);
         amount = view.getInt("amount", 0);
@@ -80,7 +80,7 @@ public class MerchantCarpetEntity extends BlockEntity{
             JsonOps.INSTANCE, new JsonParser().parse(tradeStr)).result().orElse(ItemStack.EMPTY);
 
         Identifier id = Identifier.tryParse(view.getString("item", "minecraft:air"));
-        item = Registries.ITEM.get(id);
+        item = BuiltInRegistries.ITEM.get(id);
     }
 
     public void setOwner(UUID player) {
@@ -112,12 +112,12 @@ public class MerchantCarpetEntity extends BlockEntity{
     }
 
     @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public Packet<ClientGamePacketListener> toUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
+    public CompoundTag toInitialChunkDataNbt(HolderLookup.Provider registries) {
         return createNbt(registries);
     }
 
@@ -127,11 +127,11 @@ public class MerchantCarpetEntity extends BlockEntity{
             world.updateListeners(pos, getCachedState(), getCachedState(), 3);
     }
 
-    private void payOwner(World world, int amount) {
+    private void payOwner(Level world, int amount) {
         if (owner == null || world.isClient()) return;
         if (MoneyTalks.walletState == null) return;
 
-        PlayerEntity ownerPlayer = world.getPlayerByUuid(owner);
+        Player ownerPlayer = world.getPlayerByUuid(owner);
         String ownerName = ownerPlayer != null ? ownerPlayer.getName().getString() : null;
 
         if (ownerName == null) {
@@ -141,14 +141,14 @@ public class MerchantCarpetEntity extends BlockEntity{
 
         // Check player inventory first
         if (ownerPlayer != null) {
-            PlayerInventory inventory = ownerPlayer.getInventory();
+            Inventory inventory = ownerPlayer.getInventory();
             for (int i = 0; i < inventory.size(); i++) {
                 ItemStack stack = inventory.getStack(i);
-                if (stack.isOf(MoneyItems.WALLET) && stack.contains(DataComponentTypes.CUSTOM_DATA)) {
-                    NbtCompound nbt = stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt();
+                if (stack.isOf(MoneyItems.WALLET) && stack.contains(DataComponents.CUSTOM_DATA)) {
+                    CompoundTag nbt = stack.get(DataComponents.CUSTOM_DATA).copyNbt();
                     int newAmount = nbt.getInt("Dollars", 0) + amount;
                     nbt.putInt("Dollars", newAmount);
-                    stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
                     String walletId = nbt.getString("WalletId", "");
                     if (!walletId.isEmpty()) {
                         MoneyTalks.walletState.update(UUID.fromString(walletId), ownerName, newAmount);
@@ -171,16 +171,16 @@ public class MerchantCarpetEntity extends BlockEntity{
         collected += amount; update();
     }
 
-    public ActionResult click(ItemStack stack, World world, PlayerEntity player) {
+    public InteractionResult click(ItemStack stack, Level world, Player player) {
         if (owner != null && player != null && owner.equals(player.getUuid())) {
             if (price == 0) {
-                if (!stack.isOf(MoneyItems.DOLLAR)) return ActionResult.FAIL;
+                if (!stack.isOf(MoneyItems.DOLLAR)) return InteractionResult.FAIL;
 
                 price = stack.getCount();
                 player.playSound(SoundEvents.BLOCK_VAULT_INSERT_ITEM, 1.0f, 1.0f);
 
                 update();
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if (item == null) {
                 trade = stack.copy();
@@ -192,7 +192,7 @@ public class MerchantCarpetEntity extends BlockEntity{
                 player.playSound(SoundEvents.BLOCK_VAULT_INSERT_ITEM, 1.0f, 1.0f);
 
                 update();
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if (item == stack.getItem() && ItemStack.areItemsAndComponentsEqual(trade, stack)) {
                 amount += stack.getCount();
@@ -201,7 +201,7 @@ public class MerchantCarpetEntity extends BlockEntity{
                 player.playSound(SoundEvents.BLOCK_VAULT_INSERT_ITEM, 1.0f, 1.0f);
 
                 update();
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if (stack.isEmpty()) {
                 player.getInventory().insertStack(new ItemStack(MoneyItems.DOLLAR, collected));
@@ -210,14 +210,14 @@ public class MerchantCarpetEntity extends BlockEntity{
                 player.playSound(SoundEvents.BLOCK_VAULT_EJECT_ITEM, 1.0f, 1.0f);
 
                 update();
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        if (price == 0 || item == null || amount == 0) return ActionResult.FAIL;
-        if (stack.getCount() < price) return ActionResult.FAIL;
-        if (!stack.isOf(MoneyItems.DOLLAR)) return ActionResult.FAIL;
-        if (amount < purchaseAmount) return ActionResult.FAIL;
+        if (price == 0 || item == null || amount == 0) return InteractionResult.FAIL;
+        if (stack.getCount() < price) return InteractionResult.FAIL;
+        if (!stack.isOf(MoneyItems.DOLLAR)) return InteractionResult.FAIL;
+        if (amount < purchaseAmount) return InteractionResult.FAIL;
 
 
         stack.decrement(price);
@@ -225,41 +225,41 @@ public class MerchantCarpetEntity extends BlockEntity{
 
         ItemStack purchase = trade.copy();
         purchase.setCount(purchaseAmount);
-        ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), purchase);
+        Containers.spawn(world, pos.getX(), pos.getY(), pos.getZ(), purchase);
         amount -= purchaseAmount;
 
         if (!world.isClient()) {
             String message = player.getName().getString() + " bought " + purchaseAmount + " " + trade.getName().getString() + " for " + price + " Dollar!";
-            ServerPlayerEntity ownerPlayer = world.getServer().getPlayerManager().getPlayer(owner);
+            ServerPlayer ownerPlayer = world.getServer().getPlayerManager().getPlayer(owner);
             if (ownerPlayer != null)
-                ownerPlayer.sendMessage(Text.literal(message).formatted(Formatting.GOLD), true);
+                ownerPlayer.sendMessage(Component.literal(message).formatted(ChatFormatting.GOLD), true);
         }
 
         player.playSound(SoundEvents.BLOCK_VAULT_OPEN_SHUTTER, 1.0f, 1.0f);
 
         update();
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
-    public ActionResult hopperInsert(ItemStack stack, World world) {
-        if (item == null || item == Items.AIR) return ActionResult.FAIL;
-        if (stack.getItem() != item) return ActionResult.FAIL;
-        if (!ItemStack.areItemsAndComponentsEqual(trade, stack)) return ActionResult.FAIL;
+    public InteractionResult hopperInsert(ItemStack stack, Level world) {
+        if (item == null || item == Items.AIR) return InteractionResult.FAIL;
+        if (stack.getItem() != item) return InteractionResult.FAIL;
+        if (!ItemStack.areItemsAndComponentsEqual(trade, stack)) return InteractionResult.FAIL;
 
         amount += stack.getCount();
         stack.decrement(stack.getCount());
         update();
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     public void onBreak() {
         if (trade != null && trade.getCount() > 0) {
             ItemStack drop = trade.copy();
             drop.setCount(amount);
-            ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), drop);
+            Containers.spawn(world, pos.getX(), pos.getY(), pos.getZ(), drop);
         }
         if (collected > 0) {
-            ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(),
+            Containers.spawn(world, pos.getX(), pos.getY(), pos.getZ(),
                     new ItemStack(MoneyItems.DOLLAR, collected));
         }
     }

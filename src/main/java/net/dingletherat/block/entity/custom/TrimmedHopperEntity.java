@@ -6,35 +6,35 @@ import java.util.UUID;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.custom.TrimmedHopper;
 import net.dingletherat.block.entity.MoneyBlockEntities;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.Hopper;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.vehicle.ChestMinecartEntity;
-import net.minecraft.entity.vehicle.HopperMinecartEntity;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.HopperScreenHandler;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.Hopper;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
+import net.minecraft.world.entity.vehicle.minecart.MinecartHopper;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.HopperMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
-public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScreenHandlerFactory {
+public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProvider {
     protected UUID owner;
-    protected final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(5, ItemStack.EMPTY);
+    protected final NonNullList<ItemStack> inventory = NonNullList.ofSize(5, ItemStack.EMPTY);
     protected int transferCooldown = -1;
 
     public <T extends TrimmedHopperEntity> TrimmedHopperEntity(BlockEntityType<T> blockEntityType, BlockPos pos, BlockState state) {
@@ -44,7 +44,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
         super(MoneyBlockEntities.TRIMMED_HOPPER_ENTITY, pos, state);
     }
     
-    public static void tick(World world, BlockPos pos, BlockState state, TrimmedHopperEntity hopper) {
+    public static void tick(Level world, BlockPos pos, BlockState state, TrimmedHopperEntity hopper) {
         if (world.isClient()) return;
         if (hopper.transferCooldown > 0) {
             hopper.transferCooldown--;
@@ -57,7 +57,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
         hopper.pushItems(world, pos, state);
     }
 
-    protected void pullItems(World world, BlockPos pos, BlockState state) {
+    protected void pullItems(Level world, BlockPos pos, BlockState state) {
         BlockPos above = pos.up();
 
         // Pull from block inventory above
@@ -68,18 +68,18 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
         }
 
         // Pull from minecart entities above
-        Box searchBox = Box.from(Vec3d.ofCenter(above)).expand(0.5);
+        AABB searchBox = AABB.from(Vec3.ofCenter(above)).expand(0.5);
 
-        for (ChestMinecartEntity cart : world.getEntitiesByClass(ChestMinecartEntity.class, searchBox, e -> true)) {
+        for (MinecartChest cart : world.getEntitiesByClass(MinecartChest.class, searchBox, e -> true)) {
             if (transferTo(cart)) return;
         }
 
-        for (HopperMinecartEntity cart : world.getEntitiesByClass(HopperMinecartEntity.class, searchBox, e -> true)) {
+        for (MinecartHopper cart : world.getEntitiesByClass(MinecartHopper.class, searchBox, e -> true)) {
             if (transferTo(cart)) return;
         }
 
         // Pull from dropped items above
-        Box itemBox = new Box(above);
+        AABB itemBox = new Box(above);
         for (ItemEntity itemEntity : world.getEntitiesByClass(ItemEntity.class, itemBox, e -> !e.isRemoved())) {
             ItemStack stack = itemEntity.getStack();
             if (!stack.isEmpty()) {
@@ -108,7 +108,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
         }
     }
 
-    protected void pushItems(World world, BlockPos pos, BlockState state) {
+    protected void pushItems(Level world, BlockPos pos, BlockState state) {
         Direction facing = state.get(TrimmedHopper.FACING);
         BlockPos targetPos = pos.offset(facing);
 
@@ -120,13 +120,13 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
         }
 
         // Push to minecart entities in facing direction
-        Box searchBox = Box.from(Vec3d.ofCenter(targetPos)).expand(0.5);
+        AABB searchBox = AABB.from(Vec3.ofCenter(targetPos)).expand(0.5);
 
-        for (ChestMinecartEntity cart : world.getEntitiesByClass(ChestMinecartEntity.class, searchBox, e -> true)) {
+        for (MinecartChest cart : world.getEntitiesByClass(MinecartChest.class, searchBox, e -> true)) {
             if (transferTo(cart)) return;
         }
 
-        for (HopperMinecartEntity cart : world.getEntitiesByClass(HopperMinecartEntity.class, searchBox, e -> true)) {
+        for (MinecartHopper cart : world.getEntitiesByClass(MinecartHopper.class, searchBox, e -> true)) {
             if (transferTo(cart)) return;
         }
     }
@@ -160,7 +160,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
         return false;
     }
 
-    private void insertIntoCarpets(World world) {
+    private void insertIntoCarpets(Level world) {
         if (owner == null || MoneyTalks.shopState == null) return;
         List<BlockPos> carpets = MoneyTalks.shopState.getShops(owner);
         if (carpets.isEmpty()) return;
@@ -171,8 +171,8 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
                 for (BlockPos carpetPos : carpets) {
                     BlockEntity be = world.getBlockEntity(carpetPos);
                     if (be instanceof MerchantCarpetEntity carpet) {
-                        ActionResult result = carpet.hopperInsert(stack, world);
-                        if (result == ActionResult.SUCCESS) {
+                        InteractionResult result = carpet.hopperInsert(stack, world);
+                        if (result == InteractionResult.SUCCESS) {
                             inventory.set(i, stack);
                             markDirty();
                             transferCooldown = 8;
@@ -192,27 +192,27 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
     }
 
     @Override
-    protected void writeData(WriteView view) {
+    protected void writeData(ValueOutput view) {
         super.writeData(view);
         view.putString("owner", owner == null ? "" : owner.toString());
-        Inventories.writeData(view, inventory);
+        ContainerHelper.writeData(view, inventory);
     }
 
     @Override
-    protected void readData(ReadView view) {
+    protected void readData(ValueInput view) {
         super.readData(view);
         String ownerStr = view.getString("owner", "");
         owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
-        Inventories.readData(view, inventory);
+        ContainerHelper.readData(view, inventory);
     }
 
     @Override
-    public Text getDisplayName() {
-        return Text.translatable("block.moneytalks.trimmed_hopper");
+    public Component getDisplayName() {
+        return Component.translatable("block.moneytalks.trimmed_hopper");
     }
 
     @Override
-    public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+    public HopperMenu createMenu(int syncId, Inventory playerInventory, Player player) {
         return new HopperScreenHandler(syncId, playerInventory, this);
     }
 
@@ -248,12 +248,12 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
 
     @Override
     public ItemStack removeStack(int slot, int amount) {
-        return Inventories.splitStack(inventory, slot, amount);
+        return ContainerHelper.splitStack(inventory, slot, amount);
     }
 
     @Override
     public ItemStack removeStack(int slot) {
-        return Inventories.removeStack(inventory, slot);
+        return ContainerHelper.removeStack(inventory, slot);
     }
 
     @Override
@@ -264,7 +264,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, NamedScr
 
 
     @Override
-    public boolean canPlayerUse(PlayerEntity player) {
+    public boolean canPlayerUse(Player player) {
         return true;
     }
 

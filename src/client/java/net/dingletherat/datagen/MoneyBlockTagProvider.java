@@ -4,18 +4,18 @@ import net.dingletherat.MoneyItemTags;
 import net.dingletherat.block.MoneyBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.BlockTags;
 
 import java.util.concurrent.CompletableFuture;
 
 public class MoneyBlockTagProvider extends FabricTagProvider.BlockTagProvider {
-    public MoneyBlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public MoneyBlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
+    protected void configure(HolderLookup.Provider wrapperLookup) {
         valueLookupBuilder(BlockTags.NEEDS_IRON_TOOL)
             .add(MoneyBlocks.TRIMMED_HOPPER)
             .add(MoneyBlocks.DOUBLE_TRIMMED_HOPPER);

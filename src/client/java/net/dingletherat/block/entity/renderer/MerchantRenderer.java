@@ -3,26 +3,26 @@ package net.dingletherat.block.entity.renderer;
 import org.jetbrains.annotations.Nullable;
 
 import net.dingletherat.block.entity.custom.MerchantCarpetEntity;
-import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.LightType;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.core.BlockPos;
+import com.mojang.math.Axis;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.Level;
 
 public class MerchantRenderer implements BlockEntityRenderer<MerchantCarpetEntity, MerchantRenderState> {
-    private final ItemModelManager itemModelManager;
+    private final ItemModelResolver itemModelManager;
 
-    public MerchantRenderer(BlockEntityRendererFactory.Context context) {
+    public MerchantRenderer(BlockEntityRendererProvider.Context context) {
         itemModelManager = context.itemModelManager();
     }
 
@@ -33,7 +33,7 @@ public class MerchantRenderer implements BlockEntityRenderer<MerchantCarpetEntit
 
     @Override
     public void updateRenderState(MerchantCarpetEntity blockEntity, MerchantRenderState state, float tickProgress,
-                                  Vec3d cameraPos, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
+                                  Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.updateRenderState(blockEntity, state, tickProgress, cameraPos, crumblingOverlay);
 
         state.lightPosition = blockEntity.getPos();
@@ -45,21 +45,21 @@ public class MerchantRenderer implements BlockEntityRenderer<MerchantCarpetEntit
     }
 
     @Override
-    public void render(MerchantRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState) {
+    public void render(MerchantRenderState state, PoseStack matrices, SubmitNodeCollector queue, CameraRenderState cameraState) {
         matrices.push();
 
         matrices.translate(0.5f, 0.5f, 0.5f);
         matrices.scale(0.5f, 0.5f, 0.5f);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(state.rotation));
+        matrices.multiply(Axis.POSITIVE_Y.rotationDegrees(state.rotation));
 
         state.itemRenderState.render(matrices, queue, getLightLevel(state.blockEntityWorld, state.lightPosition), OverlayTexture.DEFAULT_UV, 0);
 
         matrices.pop();
     }
 
-    private int getLightLevel(World world, BlockPos pos) {
-        int bLight = world.getLightLevel(LightType.BLOCK, pos);
-        int sLight = world.getLightLevel(LightType.SKY, pos);
-        return LightmapTextureManager.pack(bLight, sLight);
+    private int getLightLevel(Level world, BlockPos pos) {
+        int bLight = world.getLightLevel(LightLayer.BLOCK, pos);
+        int sLight = world.getLightLevel(LightLayer.SKY, pos);
+        return LightTexture.pack(bLight, sLight);
     }
 }

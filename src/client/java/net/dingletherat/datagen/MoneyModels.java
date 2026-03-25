@@ -7,35 +7,35 @@ import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.item.MoneyItems;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.block.Block;
-import net.minecraft.client.data.BlockStateModelGenerator;
-import net.minecraft.client.data.ItemModelGenerator;
-import net.minecraft.client.data.Models;
-import net.minecraft.client.data.TextureKey;
-import net.minecraft.client.data.TextureMap;
-import net.minecraft.client.data.Model;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.resources.Identifier;
 
 public class MoneyModels extends FabricModelProvider{
     public MoneyModels(FabricDataOutput output) {
         super(output);
     }
 
-    private static final Model MERCHANT_CARPET_TEMPLATE = new Model(
+    private static final ModelTemplate MERCHANT_CARPET_TEMPLATE = new Model(
         Optional.of(Identifier.of(MoneyTalks.MOD_ID, "block/merchant_carpet_base")),
         Optional.empty(),
-        TextureKey.ALL
+        TextureSlot.ALL
     );
 
-    private void registerMerchantCarpet(BlockStateModelGenerator gen, Block block, String textureName) {
-        TextureMap textureMap = TextureMap.all(Identifier.of(MoneyTalks.MOD_ID, "block/" + textureName));
+    private void registerMerchantCarpet(BlockModelGenerators gen, Block block, String textureName) {
+        TextureMapping textureMap = TextureMapping.all(Identifier.of(MoneyTalks.MOD_ID, "block/" + textureName));
         Identifier modelId = MERCHANT_CARPET_TEMPLATE.upload(block, textureMap, gen.modelCollector);
-        gen.blockStateCollector.accept(BlockStateModelGenerator.createSingletonBlockState(block, 
-            BlockStateModelGenerator.createWeightedVariant(modelId)));
+        gen.blockStateCollector.accept(BlockModelGenerators.createSingletonBlockState(block,
+            BlockModelGenerators.createWeightedVariant(modelId)));
     }
 
     @Override
-    public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
+    public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
         registerMerchantCarpet(blockStateModelGenerator, MoneyBlocks.BLACK_MERCHANT_CARPET, "black_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, MoneyBlocks.BLUE_MERCHANT_CARPET, "blue_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, MoneyBlocks.BROWN_MERCHANT_CARPET, "brown_merchant_carpet");
@@ -55,8 +55,8 @@ public class MoneyModels extends FabricModelProvider{
     }
 
     @Override
-    public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        itemModelGenerator.register(MoneyItems.DOLLAR, Models.GENERATED);
-        itemModelGenerator.register(MoneyItems.WALLET, Models.GENERATED);
+    public void generateItemModels(ItemModelGenerators itemModelGenerator) {
+        itemModelGenerator.register(MoneyItems.DOLLAR, ModelTemplates.GENERATED);
+        itemModelGenerator.register(MoneyItems.WALLET, ModelTemplates.GENERATED);
     }
 }

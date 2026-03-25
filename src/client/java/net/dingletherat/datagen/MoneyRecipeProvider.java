@@ -5,31 +5,31 @@ import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.recipe.RecipeExporter;
-import net.minecraft.data.recipe.RecipeGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class MoneyRecipeProvider extends FabricRecipeProvider {
-    public MoneyRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public MoneyRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     record CarpetPair(Block carpet, Item wool, Item dye) {}
 
     @Override
-    protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup wrapperLookup, RecipeExporter recipeExporter) {
+    protected RecipeProvider getRecipeGenerator(HolderLookup.Provider wrapperLookup, RecipeOutput recipeExporter) {
         return new RecipeGenerator(wrapperLookup, recipeExporter) {
             @Override
             public void generate() {
@@ -57,16 +57,16 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                         .pattern("WWW")
                         .input('W', pair.wool())
                         .criterion(hasItem(pair.wool()), conditionsFromItem(pair.wool()))
-                        .offerTo(exporter, RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(MoneyTalks.MOD_ID,
-                            "merchant_carpet_" + Registries.ITEM.getId(pair.wool()).getPath())));
+                        .offerTo(exporter, ResourceKey.of(Registries.RECIPE, Identifier.of(MoneyTalks.MOD_ID,
+                            "merchant_carpet_" + BuiltInRegistries.ITEM.getId(pair.wool()).getPath())));
                 }
                 for (CarpetPair target : pairs) {
                     createShapeless(RecipeCategory.MISC, target.carpet())
                         .input(MoneyItemTags.MERCHANT_CARPETS)
                         .input(target.dye())
                         .criterion(hasItem(target.dye()), conditionsFromItem(target.dye()))
-                        .offerTo(exporter, RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(MoneyTalks.MOD_ID,
-                            "merchant_carpet_dye_" + Registries.ITEM.getId(target.dye()).getPath())));
+                        .offerTo(exporter, ResourceKey.of(Registries.RECIPE, Identifier.of(MoneyTalks.MOD_ID,
+                            "merchant_carpet_dye_" + BuiltInRegistries.ITEM.getId(target.dye()).getPath())));
                 }
 
                 createShaped(RecipeCategory.MISC, MoneyBlocks.DOUBLE_TRIMMED_HOPPER)

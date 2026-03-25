@@ -1,14 +1,14 @@
 package net.dingletherat.block.entity.renderer;
 
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class MerchantRenderState extends BlockEntityRenderState {
     public BlockPos lightPosition;
-    public World blockEntityWorld;
+    public Level blockEntityWorld;
     public float rotation;
 
-    final ItemRenderState itemRenderState = new ItemRenderState();
+    final ItemStackRenderState itemRenderState = new ItemRenderState();
 }

@@ -3,18 +3,18 @@ package net.dingletherat.item;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class MoneyGroups {
-    public static final ItemGroup MONEY_GROUP = Registry.register(Registries.ITEM_GROUP,
+    public static final ItemGroup MONEY_GROUP = Registry.register(BuiltInRegistries.ITEM_GROUP,
             Identifier.of(MoneyTalks.MOD_ID, "money_group"),
             FabricItemGroup.builder().icon(() -> new ItemStack(MoneyItems.WALLET))
-                    .displayName(Text.translatable("itemgroup." + MoneyTalks.MOD_ID + ".money_group"))
+                    .displayName(Component.translatable("itemgroup." + MoneyTalks.MOD_ID + ".money_group"))
                     .entries((displayContext, entries) -> {
                         entries.add(MoneyItems.DOLLAR);
                         entries.add(MoneyItems.WALLET);

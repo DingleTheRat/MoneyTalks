@@ -3,8 +3,8 @@ package net.dingletherat.state;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateType;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class WalletState extends PersistentState {
+public class WalletState extends SavedData {
 private static final String STATE_KEY = "wallet_registry";
 
 private final Map<UUID, WalletEntry> wallets = new HashMap<>();
@@ -50,7 +50,7 @@ private final Map<UUID, WalletEntry> wallets = new HashMap<>();
             }
     );
 
-    public static final PersistentStateType<WalletState> TYPE = new PersistentStateType<>(
+    public static final SavedDataType<WalletState> TYPE = new PersistentStateType<>(
             STATE_KEY,
             WalletState::new,
             CODEC,

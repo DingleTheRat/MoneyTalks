@@ -1,26 +1,26 @@
 package net.dingletherat.mixin;
 
 import net.dingletherat.item.MoneyItems;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.ClickType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ScreenHandler.class)
+@Mixin(InventoryMenu.class)
 public class ScreenHandlerMixin {
 
     @Inject(method = "internalOnSlotClick", at = @At("HEAD"), cancellable = true)
-    private void blockDollarIntoContainers(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        ScreenHandler handler = (ScreenHandler) (Object) this;
+    private void blockDollarIntoContainers(int slotIndex, int button, ClickType actionType, Player player, CallbackInfo ci) {
+        InventoryMenu handler = (InventoryMenu) (Object) this;
 
         // Only restrict when a non-player inventory is open
-        if (handler instanceof PlayerScreenHandler) return;
+        if (handler instanceof InventoryMenu) return;
 
         if (slotIndex < 0 || slotIndex >= handler.slots.size()) return;
 
@@ -35,7 +35,7 @@ public class ScreenHandlerMixin {
         }
 
         // Block shift-clicking dollars out of player inventory into container
-        if (actionType == SlotActionType.QUICK_MOVE && stackInSlot.isOf(MoneyItems.DOLLAR) && isPlayerInventorySlot(targetSlot))
+        if (actionType == ClickType.QUICK_MOVE && stackInSlot.isOf(MoneyItems.DOLLAR) && isPlayerInventorySlot(targetSlot))
             ci.cancel();
     }
 

@@ -4,17 +4,17 @@ import net.dingletherat.MoneyItemTags;
 import net.dingletherat.block.MoneyBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
 
 import java.util.concurrent.CompletableFuture;
 
 public class MoneyItemTagProvider extends FabricTagProvider.ItemTagProvider {
-    public MoneyItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public MoneyItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
+    protected void configure(HolderLookup.Provider wrapperLookup) {
         valueLookupBuilder(MoneyItemTags.MERCHANT_CARPETS)
             .add(
                 MoneyBlocks.BLACK_MERCHANT_CARPET.asItem(),

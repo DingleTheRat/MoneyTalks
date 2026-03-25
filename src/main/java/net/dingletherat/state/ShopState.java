@@ -3,13 +3,13 @@ package net.dingletherat.state;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.*;
 
-public class ShopState extends PersistentState {
+public class ShopState extends SavedData {
     private static final String STATE_KEY = "shop_registry";
 
     private final Map<UUID, List<BlockPos>> shops = new HashMap<>();
@@ -50,7 +50,7 @@ public class ShopState extends PersistentState {
             }
     );
 
-    public static final PersistentStateType<ShopState> TYPE = new PersistentStateType<>(
+    public static final SavedDataType<ShopState> TYPE = new PersistentStateType<>(
             STATE_KEY,
             ShopState::new,
             CODEC,
@@ -61,11 +61,11 @@ public class ShopState extends PersistentState {
 
     public void register(UUID owner, BlockPos pos) {
         shops.computeIfAbsent(owner, k -> new ArrayList<>()).add(pos);
-        markDirty();
     }
 
     public void unregister(UUID owner, BlockPos pos) {
-        List<BlockPos> positions = shops.get(owner);
+        List<Bloc        markDirty();
+        kPos> positions = shops.get(owner);
         if (positions != null) {
             positions.remove(pos);
             if (positions.isEmpty()) shops.remove(owner);

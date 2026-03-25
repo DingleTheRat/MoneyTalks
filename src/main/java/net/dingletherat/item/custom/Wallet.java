@@ -3,27 +3,27 @@ package net.dingletherat.item.custom;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.state.WalletState;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.StackReference;
-import net.minecraft.item.BundleItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipData;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ClickType;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.item.BundleItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.ChatFormatting;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -34,28 +34,28 @@ public class Wallet extends BundleItem {
     private static final String NBT_DOLLARS = "Dollars";
     private static final String NBT_OWNER = "Owner";
     private static final String NBT_WALLET_ID = "WalletId";
-    private static final int ITEM_BAR_COLOR = ColorHelper.fromFloats(1.0F, 1.0F, 0.84F, 0.0F);
+    private static final int ITEM_BAR_COLOR = ARGB.fromFloats(1.0F, 1.0F, 0.84F, 0.0F);
 
     public Wallet(Settings settings) {
         super(settings);
     }
 
     private static int getDollars(ItemStack wallet) {
-        NbtComponent data = wallet.get(DataComponentTypes.CUSTOM_DATA);
+        CustomData data = wallet.get(DataComponents.CUSTOM_DATA);
         if (data == null) return 0;
         return data.copyNbt().getInt(NBT_DOLLARS, 0);
     }
 
     private static void setDollars(ItemStack wallet, int count) {
-        NbtCompound nbt = wallet.contains(DataComponentTypes.CUSTOM_DATA)
-                ? wallet.get(DataComponentTypes.CUSTOM_DATA).copyNbt()
+        CompoundTag nbt = wallet.contains(DataComponents.CUSTOM_DATA)
+                ? wallet.get(DataComponents.CUSTOM_DATA).copyNbt()
                 : new NbtCompound();
         nbt.putInt(NBT_DOLLARS, Math.max(0, count));
-        wallet.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        wallet.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
     }
 
     private static String getOwner(ItemStack wallet) {
-        NbtComponent data = wallet.get(DataComponentTypes.CUSTOM_DATA);
+        CustomData data = wallet.get(DataComponents.CUSTOM_DATA);
         if (data == null) return null;
         String owner = data.copyNbt().getString(NBT_OWNER, "");
         return owner.isEmpty() ? null : owner;
@@ -65,20 +65,20 @@ public class Wallet extends BundleItem {
         return !stack.isEmpty() && stack.isOf(MoneyItems.DOLLAR);
     }
 
-    private static boolean insertDollars(ItemStack wallet, ItemStack incoming, PlayerEntity player) {
+    private static boolean insertDollars(ItemStack wallet, ItemStack incoming, Player player) {
         if (!isDollar(incoming) || incoming.isEmpty()) return false;
-        NbtCompound nbt = wallet.contains(DataComponentTypes.CUSTOM_DATA)
-                ? wallet.get(DataComponentTypes.CUSTOM_DATA).copyNbt()
+        CompoundTag nbt = wallet.contains(DataComponents.CUSTOM_DATA)
+                ? wallet.get(DataComponents.CUSTOM_DATA).copyNbt()
                 : new NbtCompound();
         nbt.putInt(NBT_DOLLARS, Math.max(0, nbt.getInt(NBT_DOLLARS, 0) + incoming.getCount()));
         nbt.putString(NBT_OWNER, player.getName().getString());
-        wallet.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        wallet.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
         incoming.setCount(0);
         notifyScreenHandler(player);
         return true;
     }
 
-    private static ItemStack removeDollars(ItemStack wallet, PlayerEntity player) {
+    private static ItemStack removeDollars(ItemStack wallet, Player player) {
         int current = getDollars(wallet);
         if (current <= 0) return ItemStack.EMPTY;
         ItemStack dollar = MoneyItems.DOLLAR.getDefaultStack();
@@ -89,7 +89,7 @@ public class Wallet extends BundleItem {
         return dollar;
     }
 
-    private static void notifyScreenHandler(PlayerEntity player) {
+    private static void notifyScreenHandler(Player player) {
         if (player.currentScreenHandler != null) {
             player.currentScreenHandler.onContentChanged(player.getInventory());
         }
@@ -97,13 +97,13 @@ public class Wallet extends BundleItem {
 
 
     @Override
-    public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {
-        if (entity instanceof PlayerEntity player) {
+    public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
+        if (entity instanceof Player player) {
             if (MoneyTalks.walletState == null)
                 MoneyTalks.walletState = WalletState.get(world.getServer());
 
-            NbtCompound nbt = stack.contains(DataComponentTypes.CUSTOM_DATA)
-                    ? stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt()
+            CompoundTag nbt = stack.contains(DataComponents.CUSTOM_DATA)
+                    ? stack.get(DataComponents.CUSTOM_DATA).copyNbt()
                     : new NbtCompound();
 
             if (nbt.getString(NBT_WALLET_ID, "").isEmpty())
@@ -120,7 +120,7 @@ public class Wallet extends BundleItem {
             }
 
             nbt.putString(NBT_OWNER, player.getName().getString());
-            stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
 
             // NBT is authoritative — mirror it into WalletState
             MoneyTalks.walletState.update(walletId, player.getName().getString(), nbt.getInt(NBT_DOLLARS, 0));
@@ -128,8 +128,8 @@ public class Wallet extends BundleItem {
     }
 
     @Override
-    public boolean onStackClicked(ItemStack wallet, Slot slot, ClickType clickType, PlayerEntity player) {
-        if (clickType == ClickType.LEFT && !slot.getStack().isEmpty()) {
+    public boolean onStackClicked(ItemStack wallet, EquipmentSlot slot, ClickAction clickType, Player player) {
+        if (clickType == ClickAction.LEFT && !slot.getStack().isEmpty()) {
             if (!isDollar(slot.getStack())) {
                 playInsertFailSound(player);
                 return true;
@@ -142,7 +142,7 @@ public class Wallet extends BundleItem {
             }
             return true;
         }
-        if (clickType == ClickType.RIGHT && slot.getStack().isEmpty()) {
+        if (clickType == ClickAction.RIGHT && slot.getStack().isEmpty()) {
             ItemStack removed = removeDollars(wallet, player);
             if (!removed.isEmpty()) {
                 slot.setStack(removed);
@@ -154,10 +154,10 @@ public class Wallet extends BundleItem {
     }
 
     @Override
-    public boolean onClicked(ItemStack wallet, ItemStack otherStack, Slot slot,
-                             ClickType clickType, PlayerEntity player,
-                             StackReference cursorStackReference) {
-        if (clickType == ClickType.LEFT && !otherStack.isEmpty()) {
+    public boolean onClicked(ItemStack wallet, ItemStack otherStack, EquipmentSlot slot,
+                             ClickAction clickType, Player player,
+                             SlotAccess cursorStackReference) {
+        if (clickType == ClickAction.LEFT && !otherStack.isEmpty()) {
             if (!isDollar(otherStack)) {
                 playInsertFailSound(player);
                 return true;
@@ -169,7 +169,7 @@ public class Wallet extends BundleItem {
             }
             return true;
         }
-        if (clickType == ClickType.RIGHT && otherStack.isEmpty()) {
+        if (clickType == ClickAction.RIGHT && otherStack.isEmpty()) {
             ItemStack removed = removeDollars(wallet, player);
             if (!removed.isEmpty()) {
                 cursorStackReference.set(removed);
@@ -181,12 +181,12 @@ public class Wallet extends BundleItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+    public void appendTooltip(ItemStack stack, BundleItem.TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
         int dollars = getDollars(stack);
         String owner = getOwner(stack);
 
         // Prefer WalletState value if available — it reflects deductions applied on death
-        NbtComponent customData = stack.get(DataComponentTypes.CUSTOM_DATA);
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
         String walletId = customData != null ? customData.copyNbt().getString(NBT_WALLET_ID, "") : "";
         if (!walletId.isEmpty() && MoneyTalks.walletState != null) {
             WalletState.WalletEntry entry = MoneyTalks.walletState.get(UUID.fromString(walletId));
@@ -194,12 +194,12 @@ public class Wallet extends BundleItem {
         }
 
         String phrase = owner != null ? ("Inside " + owner + "'s Wallet is " + dollars + " Dollars") : ("Inside this Wallet is " + dollars + " Dollars");
-        textConsumer.accept(Text.literal(phrase)
-                .formatted(dollars > 0 ? Formatting.GOLD : Formatting.GRAY));
+        textConsumer.accept(Component.literal(phrase)
+                .formatted(dollars > 0 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
     }
 
     @Override
-    public Optional<TooltipData> getTooltipData(ItemStack stack) {
+    public Optional<TooltipComponent> getTooltipData(ItemStack stack) {
         return Optional.empty();
     }
 

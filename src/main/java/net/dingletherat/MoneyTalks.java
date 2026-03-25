@@ -10,14 +10,14 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradedItem;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.ItemCost;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -57,8 +57,8 @@ public class MoneyTalks implements ModInitializer {
 		});
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
-			if (!(entity instanceof ServerPlayerEntity player)) return;
-			if (!(damageSource.getAttacker() instanceof ServerPlayerEntity)) return;
+			if (!(entity instanceof ServerPlayer player)) return;
+			if (!(damageSource.getAttacker() instanceof ServerPlayer)) return;
 			handleDollarLoss(player, player);
 		});
 
@@ -143,7 +143,7 @@ public class MoneyTalks implements ModInitializer {
 						1, 11, 0f));
 		});
 	}
-	private void handleDollarLoss(ServerPlayerEntity oldPlayer, ServerPlayerEntity player) {
+	private void handleDollarLoss(ServerPlayer oldPlayer, ServerPlayer player) {
 		int invSize = player.getInventory().size();
 
 		// Deduct 15% from wallets in player inventory
@@ -151,13 +151,13 @@ public class MoneyTalks implements ModInitializer {
 		Set<String> inventoryWalletIds = new HashSet<>();
 		for (int i = 0; i < invSize; i++) {
 			ItemStack stack = player.getInventory().getStack(i);
-			if (stack.isOf(MoneyItems.WALLET) && stack.contains(DataComponentTypes.CUSTOM_DATA)) {
-				NbtCompound nbt = stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt();
+			if (stack.isOf(MoneyItems.WALLET) && stack.contains(DataComponents.CUSTOM_DATA)) {
+				CompoundTag nbt = stack.get(DataComponents.CUSTOM_DATA).copyNbt();
 				int stored = nbt.getInt("Dollars", 0);
 				int loss = (int) Math.ceil(stored * 0.15);
 				int newAmount = Math.max(0, stored - loss);
 				nbt.putInt("Dollars", newAmount);
-				stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+				stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
 				walletDollarsLost += loss;
 				String walletId = nbt.getString("WalletId", "");
 				if (!walletId.isEmpty()) {
