@@ -2,7 +2,7 @@ package net.dingletherat.item;
 
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -11,33 +11,33 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 public class MoneyGroups {
-    public static final ItemGroup MONEY_GROUP = Registry.register(BuiltInRegistries.ITEM_GROUP,
-            Identifier.of(MoneyTalks.MOD_ID, "money_group"),
-            FabricItemGroup.builder().icon(() -> new ItemStack(MoneyItems.WALLET))
-                    .displayName(Component.translatable("itemgroup." + MoneyTalks.MOD_ID + ".money_group"))
-                    .entries((displayContext, entries) -> {
-                        entries.add(MoneyItems.DOLLAR);
-                        entries.add(MoneyItems.WALLET);
+    public static final CreativeModeTab MONEY_GROUP = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "money_group"),
+            FabricCreativeModeTab.builder().icon(() -> new ItemStack(MoneyItems.WALLET))
+                    .title(Component.translatable("itemgroup." + MoneyTalks.MOD_ID + ".money_group"))
+                    .displayItems((displayContext, entries) -> {
+                        entries.accept(MoneyItems.DOLLAR);
+                        entries.accept(MoneyItems.WALLET);
 
-                        entries.add(MoneyItems.DOUBLE_TRIMMED_HOPPER);
-                        entries.add(MoneyBlocks.TRIMMED_HOPPER);
+                        entries.accept(MoneyItems.DOUBLE_TRIMMED_HOPPER);
+                        entries.accept(MoneyBlocks.TRIMMED_HOPPER);
 
-                        entries.add(MoneyBlocks.BLACK_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.BLUE_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.BROWN_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.CYAN_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.GRAY_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.GREEN_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.LIGHT_BLUE_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.LIGHT_GRAY_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.LIME_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.MAGENTA_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.ORANGE_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.PINK_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.PURPLE_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.RED_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.WHITE_MERCHANT_CARPET);
-                        entries.add(MoneyBlocks.YELLOW_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.BLACK_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.BLUE_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.BROWN_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.CYAN_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.GRAY_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.GREEN_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.LIGHT_BLUE_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.LIGHT_GRAY_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.LIME_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.MAGENTA_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.ORANGE_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.PINK_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.PURPLE_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.RED_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.WHITE_MERCHANT_CARPET);
+                        entries.accept(MoneyBlocks.YELLOW_MERCHANT_CARPET);
                     }).build());
 
     public static void registerItemGroups() {

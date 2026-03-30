@@ -1,5 +1,6 @@
 package net.dingletherat.block.custom;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.MapCodec;
@@ -21,19 +22,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 
 public class MerchantCarpet extends BaseEntityBlock {
-    public static final MapCodec<MerchantCarpet> CODEC = MerchantCarpet.createCodec(MerchantCarpet::new);
-    private static final VoxelShape SHAPE = Shapes.cuboid(0, 0, 0, 1, 0.1875, 1); // 1/16 tall
+    public static final MapCodec<MerchantCarpet> CODEC = MerchantCarpet.simpleCodec(MerchantCarpet::new);
+    private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 0.1875, 1); // 1/16 tall
 
-    public MerchantCarpet(Settings settings) {
-        super(settings);
+    public MerchantCarpet(BlockBehaviour.Properties properties) {
+        super(properties);
     }
 
+
     @Override
-    protected MapCodec<? extends BaseEntityBlock> getCodec() {
+    protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
@@ -44,18 +45,18 @@ public class MerchantCarpet extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new MerchantCarpetEntity(pos, state);
     }
 
     @Override
     public BlockState onBreak(ServerLevel world, BlockPos pos, BlockState state, Player player) {
-        if (!world.isClient()) {
+        if (!world.isClientSide()) {
 
             MerchantCarpetEntity blockEntity = (MerchantCarpetEntity) world.getBlockEntity(pos);
             if (blockEntity != null) {
-                if (!player.getUuid().equals(blockEntity.getOwner())) {
-                    world.setBlockState(pos, state);
+                if (!player.getUUID().equals(blockEntity.getOwner())) {
+                    world.getBlockState(pos);
                     return state;
                 }
                 blockEntity.onBreak();
@@ -64,13 +65,12 @@ public class MerchantCarpet extends BaseEntityBlock {
         return super.onBreak(world, pos, state, player);
     }
 
-
     @Override
     public float calcBlockBreakingDelta(BlockState state, Player player, BlockGetter world, BlockPos pos) {
         if (world instanceof LevelReader) {
             BlockEntity be = ((LevelReader) world).getBlockEntity(pos);
             if (be instanceof MerchantCarpetEntity stall)
-                if (player.getUuid().equals(stall.getOwner()))
+                if (player.getUUID().equals(stall.getOwner()))
                     return 1f;
         }
 
@@ -79,12 +79,12 @@ public class MerchantCarpet extends BaseEntityBlock {
 
     @Override
     public void onPlaced(ServerLevel world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        if (!world.isClient() && placer instanceof Player player) {
+        if (!world.isClientSide() && placer instanceof Player player) {
             MerchantCarpetEntity blockEntity = (MerchantCarpetEntity) world.getBlockEntity(pos);
             if (blockEntity != null) {
-                blockEntity.setOwner(player.getUuid());
-                blockEntity.markDirty();
-                ShopState.get(((ServerLevel) world).getServer()).register(player.getUuid(), pos);
+                blockEntity.setOwner(player.getUUID());
+                blockEntity.setChanged();
+                ShopState.get((world).getServer()).register(player.getUUID(), pos);
             }
         }
     }

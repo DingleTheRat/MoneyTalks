@@ -1,30 +1,19 @@
 package net.dingletherat.state;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.*;
 
 public class ShopState extends SavedData {
-    private static final String STATE_KEY = "shop_registry";
+    private static final Identifier STATE_KEY = Identifier.fromNamespaceAndPath("regulated", "shop_registry");
 
     private final Map<UUID, List<BlockPos>> shops = new HashMap<>();
-
-    public static class ShopEntry {
-        public long position;
-
-        public ShopEntry(long position) {
-            this.position = position;
-        }
-
-        public static final Codec<ShopEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.LONG.fieldOf("pos").forGetter(e -> e.position)
-        ).apply(instance, ShopEntry::new));
-    }
 
     private static final Codec<Map<String, List<Long>>> MAP_CODEC =
             Codec.unboundedMap(Codec.STRING, Codec.LONG.listOf());
@@ -34,7 +23,7 @@ public class ShopState extends SavedData {
                 ShopState state = new ShopState();
                 map.forEach((key, value) -> {
                     List<BlockPos> positions = new ArrayList<>();
-                    value.forEach(l -> positions.add(BlockPos.fromLong(l)));
+                    value.forEach(l -> positions.add(BlockPos.of(l)));
                     state.shops.put(UUID.fromString(key), positions);
                 });
                 return state;
@@ -50,27 +39,28 @@ public class ShopState extends SavedData {
             }
     );
 
-    public static final SavedDataType<ShopState> TYPE = new PersistentStateType<>(
+    public static final SavedDataType<ShopState> TYPE = new SavedDataType<>(
             STATE_KEY,
             ShopState::new,
             CODEC,
-            null
+            DataFixTypes.SAVED_DATA_COMMAND_STORAGE
     );
 
     public ShopState() {}
 
     public void register(UUID owner, BlockPos pos) {
         shops.computeIfAbsent(owner, k -> new ArrayList<>()).add(pos);
+        setDirty();
     }
 
     public void unregister(UUID owner, BlockPos pos) {
-        List<Bloc        markDirty();
-        kPos> positions = shops.get(owner);
-        if (positions != null) {
-            positions.remove(pos);
-            if (positions.isEmpty()) shops.remove(owner);
+        List<BlockPos> positions = shops.get(owner);
+        if (positions != null && positions.remove(pos)) {
+            if (positions.isEmpty()) {
+                shops.remove(owner);
+            }
+            setDirty();
         }
-        markDirty();
     }
 
     public List<BlockPos> getShops(UUID owner) {
@@ -78,6 +68,6 @@ public class ShopState extends SavedData {
     }
 
     public static ShopState get(MinecraftServer server) {
-        return server.getOverworld().getPersistentStateManager().getOrCreate(TYPE);
+        return server.overworld().getDataStorage().computeIfAbsent(TYPE);
     }
 }

@@ -7,13 +7,14 @@ import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.item.custom.DoubleTrimmedHopperItem;
 import net.dingletherat.item.custom.Wallet;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Registry;
@@ -24,24 +25,24 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;
 
 public class MoneyItems {
-    public static final Item DOLLAR = registerItem("dollar", setting -> new Item(setting) {
+    public static final Item DOLLAR = registerItem("dollar", properties -> new Item(properties) {
         @Override
-        public void appendTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
-            textConsumer.accept(Component.translatable("Worth a dollar").formatted(ChatFormatting.GOLD));
+        public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
+            builder.accept(Component.translatable("Worth a dollar").withStyle(ChatFormatting.GOLD));
         }
     });
-    public static final Item WALLET = registerItem("wallet", setting -> new Wallet(setting.maxCount(1).component(DataComponents.BUNDLE_CONTENTS, BundleContents.DEFAULT)));
-    public static final Item DOUBLE_TRIMMED_HOPPER = registerItem("double_trimmed_hopper", setting -> new DoubleTrimmedHopperItem(MoneyBlocks.DOUBLE_TRIMMED_HOPPER, setting));
+    public static final Item WALLET = registerItem("wallet", properties -> new Wallet(properties.stacksTo(0).component(DataComponents.BUNDLE_CONTENTS, BundleContents.DEFAULT)));
+    public static final Item DOUBLE_TRIMMED_HOPPER = registerItem("double_trimmed_hopper", properties -> new DoubleTrimmedHopperItem(MoneyBlocks.DOUBLE_TRIMMED_HOPPER, properties));
 
-    private static Item registerItem(String name, Function<Item.Settings, Item> function) {
-        return Registry.register(BuiltInRegistries.ITEM, Identifier.of(MoneyTalks.MOD_ID, name),
-                function.apply(new Item.Settings().registryKey(ResourceKey.of(Registries.ITEM, Identifier.of(MoneyTalks.MOD_ID, name)))));
+    private static Item registerItem(String name, Function<Item.Properties, Item> function) {
+        return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name),
+                function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name)))));
     }
     public static void registerModItems() {
         MoneyTalks.LOGGER.info("Registering Mod Items for " + MoneyTalks.MOD_ID);
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SEARCH).register(entries -> {
-            entries.add(DOLLAR);
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SEARCH).register(entries -> {
+            entries.accept(DOLLAR);
         });
     }
 	

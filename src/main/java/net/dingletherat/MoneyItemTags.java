@@ -9,6 +9,6 @@ public class MoneyItemTags {
 	public static final TagKey<Item> MERCHANT_CARPETS = createTag("merchant_carpets");
 
 	private static TagKey<Item> createTag(String name) {
-		return TagKey.of(Registries.ITEM, Identifier.of(MoneyTalks.MOD_ID, name));
+		return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name));
 	}
 }

@@ -53,33 +53,34 @@ public class MerchantCarpetEntity extends BlockEntity {
     }
 
     @Override
-    protected void writeData(ValueOutput view) {
-        super.writeData(view);
-        view.putInt("price", price);
-        view.putInt("amount", amount);
-        view.putString("owner", owner != null ? owner.toString() : "");
-        view.putInt("purchaseAmount", purchaseAmount);
-        view.putInt("collected", collected);
-        view.putString("trade", trade.isEmpty() ? "" : ItemStack.CODEC.encodeStart(
-            JsonOps.INSTANCE, trade).result().map(Object::toString).orElse(""));
-        view.putString("item", item != null ? BuiltInRegistries.ITEM.getId(item).toString() : "minecraft:air");
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("price", price);
+        output.putInt("amount", amount);
+        output.putString("owner", owner != null ? owner.toString() : "");
+        output.putInt("purchaseAmount", purchaseAmount);
+        output.putInt("collected", collected);
+        output.putString("trade", trade.isEmpty() ? "" : ItemStack.CODEC.encodeStart(
+                JsonOps.INSTANCE, trade).result().map(Object::toString).orElse(""));
+        output.putString("item", item != null ? BuiltInRegistries.ITEM.getId(item) : "minecraft:air");
     }
 
     @Override
-    protected void readData(ValueInput view) {
-        super.readData(view);
-        price = view.getInt("price", 0);
-        amount = view.getInt("amount", 0);
-        String ownerStr = view.getString("owner", "");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+
+        price = input.getInt("price").orElse(0);
+        amount = input.getInt("amount").orElse(0);
+        String ownerStr = input.getString("owner").orElse("");
         owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
-        purchaseAmount = view.getInt("purchaseAmount", 0);
-        collected = view.getInt("collected", 0);
+        purchaseAmount = input.getInt("purchaseAmount").orElse(0);
+        collected = input.getInt("collected").orElse(0);
 
-        String tradeStr = view.getString("trade", "");
+        String tradeStr = input.getString("trade").orElse("");
         trade = tradeStr.isEmpty() ? ItemStack.EMPTY : ItemStack.CODEC.parse(
-            JsonOps.INSTANCE, new JsonParser().parse(tradeStr)).result().orElse(ItemStack.EMPTY);
+                JsonOps.INSTANCE, new JsonParser().parse(tradeStr)).result().orElse(ItemStack.EMPTY);
 
-        Identifier id = Identifier.tryParse(view.getString("item", "minecraft:air"));
+        Identifier id = Identifier.tryParse(input.getString("item").orElse("minecraft:air"));
         item = BuiltInRegistries.ITEM.get(id);
     }
 
@@ -122,16 +123,16 @@ public class MerchantCarpetEntity extends BlockEntity {
     }
 
     public void update() {
-        markDirty();
+        setChanged();
         if (world != null && !world.isClient())
             world.updateListeners(pos, getCachedState(), getCachedState(), 3);
     }
 
     private void payOwner(Level world, int amount) {
-        if (owner == null || world.isClient()) return;
+        if (owner == null || world.isClientSide()) return;
         if (MoneyTalks.walletState == null) return;
 
-        Player ownerPlayer = world.getPlayerByUuid(owner);
+        Player ownerPlayer = world.getPlayerByUUID(owner);
         String ownerName = ownerPlayer != null ? ownerPlayer.getName().getString() : null;
 
         if (ownerName == null) {
@@ -143,13 +144,13 @@ public class MerchantCarpetEntity extends BlockEntity {
         if (ownerPlayer != null) {
             Inventory inventory = ownerPlayer.getInventory();
             for (int i = 0; i < inventory.size(); i++) {
-                ItemStack stack = inventory.getStack(i);
-                if (stack.isOf(MoneyItems.WALLET) && stack.contains(DataComponents.CUSTOM_DATA)) {
-                    CompoundTag nbt = stack.get(DataComponents.CUSTOM_DATA).copyNbt();
-                    int newAmount = nbt.getInt("Dollars", 0) + amount;
+                ItemStack stack = inventory.getItem(i);
+                if (stack.is(MoneyItems.WALLET) && stack.has(DataComponents.CUSTOM_DATA)) {
+                    CompoundTag nbt = stack.get(DataComponents.CUSTOM_DATA).copyTag();
+                    int newAmount = nbt.getInt("Dollars").orElse(0) + amount;
                     nbt.putInt("Dollars", newAmount);
                     stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
-                    String walletId = nbt.getString("WalletId", "");
+                    String walletId = nbt.getString("WalletId").orElse("");
                     if (!walletId.isEmpty()) {
                         MoneyTalks.walletState.update(UUID.fromString(walletId), ownerName, newAmount);
                     }
@@ -172,12 +173,12 @@ public class MerchantCarpetEntity extends BlockEntity {
     }
 
     public InteractionResult click(ItemStack stack, Level world, Player player) {
-        if (owner != null && player != null && owner.equals(player.getUuid())) {
+        if (owner != null && player != null && owner.equals(player.getUUID())) {
             if (price == 0) {
-                if (!stack.isOf(MoneyItems.DOLLAR)) return InteractionResult.FAIL;
+                if (!stack.is(MoneyItems.DOLLAR)) return InteractionResult.FAIL;
 
                 price = stack.getCount();
-                player.playSound(SoundEvents.BLOCK_VAULT_INSERT_ITEM, 1.0f, 1.0f);
+                player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
 
                 update();
                 return InteractionResult.SUCCESS;
@@ -187,27 +188,27 @@ public class MerchantCarpetEntity extends BlockEntity {
                 item = trade.getItem();
                 amount = stack.getCount();
                 purchaseAmount = stack.getCount();
-                stack.decrement(stack.getCount());
+                stack.shrink(stack.getCount());
 
-                player.playSound(SoundEvents.BLOCK_VAULT_INSERT_ITEM, 1.0f, 1.0f);
+                player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
 
                 update();
                 return InteractionResult.SUCCESS;
             }
-            if (item == stack.getItem() && ItemStack.areItemsAndComponentsEqual(trade, stack)) {
+            if (item == stack.getItem() && ItemStack.isSameItemSameComponents(trade, stack)) {
                 amount += stack.getCount();
-                stack.decrement(stack.getCount());
+                stack.shrink(stack.getCount());
 
-                player.playSound(SoundEvents.BLOCK_VAULT_INSERT_ITEM, 1.0f, 1.0f);
+                player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
 
                 update();
                 return InteractionResult.SUCCESS;
             }
             if (stack.isEmpty()) {
-                player.getInventory().insertStack(new ItemStack(MoneyItems.DOLLAR, collected));
+                player.getInventory().add(new ItemStack(MoneyItems.DOLLAR, collected));
                 collected = 0;
 
-                player.playSound(SoundEvents.BLOCK_VAULT_EJECT_ITEM, 1.0f, 1.0f);
+                player.playSound(SoundEvents.VAULT_EJECT_ITEM, 1.0f, 1.0f);
 
                 update();
                 return InteractionResult.SUCCESS;
@@ -216,11 +217,11 @@ public class MerchantCarpetEntity extends BlockEntity {
 
         if (price == 0 || item == null || amount == 0) return InteractionResult.FAIL;
         if (stack.getCount() < price) return InteractionResult.FAIL;
-        if (!stack.isOf(MoneyItems.DOLLAR)) return InteractionResult.FAIL;
+        if (!stack.is(MoneyItems.DOLLAR)) return InteractionResult.FAIL;
         if (amount < purchaseAmount) return InteractionResult.FAIL;
 
 
-        stack.decrement(price);
+        stack.shrink(price);
         payOwner(world, price);
 
         ItemStack purchase = trade.copy();
@@ -228,14 +229,14 @@ public class MerchantCarpetEntity extends BlockEntity {
         Containers.spawn(world, pos.getX(), pos.getY(), pos.getZ(), purchase);
         amount -= purchaseAmount;
 
-        if (!world.isClient()) {
-            String message = player.getName().getString() + " bought " + purchaseAmount + " " + trade.getName().getString() + " for " + price + " Dollar!";
+        if (!world.isClientSide()) {
+            String message = player.getName().getString() + " bought " + purchaseAmount + " " + trade.getItemName().getString() + " for " + price + " Dollar!";
             ServerPlayer ownerPlayer = world.getServer().getPlayerManager().getPlayer(owner);
             if (ownerPlayer != null)
                 ownerPlayer.sendMessage(Component.literal(message).formatted(ChatFormatting.GOLD), true);
         }
 
-        player.playSound(SoundEvents.BLOCK_VAULT_OPEN_SHUTTER, 1.0f, 1.0f);
+        player.playSound(SoundEvents.VAULT_OPEN_SHUTTER, 1.0f, 1.0f);
 
         update();
         return InteractionResult.SUCCESS;
@@ -244,10 +245,10 @@ public class MerchantCarpetEntity extends BlockEntity {
     public InteractionResult hopperInsert(ItemStack stack, Level world) {
         if (item == null || item == Items.AIR) return InteractionResult.FAIL;
         if (stack.getItem() != item) return InteractionResult.FAIL;
-        if (!ItemStack.areItemsAndComponentsEqual(trade, stack)) return InteractionResult.FAIL;
+        if (!ItemStack.isSameItemSameComponents(trade, stack)) return InteractionResult.FAIL;
 
         amount += stack.getCount();
-        stack.decrement(stack.getCount());
+        stack.shrink(stack.getCount());
         update();
         return InteractionResult.SUCCESS;
     }
@@ -256,11 +257,10 @@ public class MerchantCarpetEntity extends BlockEntity {
         if (trade != null && trade.getCount() > 0) {
             ItemStack drop = trade.copy();
             drop.setCount(amount);
-            Containers.spawn(world, pos.getX(), pos.getY(), pos.getZ(), drop);
+            Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), drop);
         }
         if (collected > 0) {
-            Containers.spawn(world, pos.getX(), pos.getY(), pos.getZ(),
-                    new ItemStack(MoneyItems.DOLLAR, collected));
+            Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(MoneyItems.DOLLAR, collected));
         }
     }
 }

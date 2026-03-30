@@ -41,17 +41,17 @@ public class MoneyVillagers {
     public static final VillagerProfession INVESTOR = registerProfession("investor", INVESTOR_POI_KEY);
 
     private static VillagerProfession registerProfession(String name, ResourceKey<PoiType> type) {
-        return Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, Identifier.of(MoneyTalks.MOD_ID, name),
+        return Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name),
                 new VillagerProfession(Component.literal(name), entry -> entry.matchesKey(type), entry -> entry.matchesKey(type),
-                        ImmutableSet.of(), ImmutableSet.of(), SoundEvents.ENTITY_VILLAGER_WORK_LIBRARIAN));
+                        ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN));
     }
 
     private static PoiType registerPOI(String name, Block... blocks) {
-        return PointOfInterestHelper.register(Identifier.of(MoneyTalks.MOD_ID, name), 1, 1, blocks);
+        return PointOfInterestHelper.register(Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name), 1, 1, blocks);
     }
 
     private static ResourceKey<PoiType> registerPoiKey(String name) {
-        return ResourceKey.of(Registries.POINT_OF_INTEREST_TYPE, Identifier.of(MoneyTalks.MOD_ID, name));
+        return ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name));
     }
 
     public static void registerVillagers() {

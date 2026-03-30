@@ -5,15 +5,12 @@ import java.util.function.Function;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.custom.MerchantCarpet;
 import net.dingletherat.block.custom.DoubleTrimmedHopper;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.dingletherat.block.custom.TrimmedHopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -53,14 +50,14 @@ public class MoneyBlocks {
     }
     private static void registerBlockItem(String name, BlockBehaviour block) {
         Registry.register(BuiltInRegistries.ITEM, Identifier.of(MoneyTalks.MOD_ID, name),
-                new BlockItem(block, new Settings().useBlockPrefixedTranslationKey()
+                new BlockItem(block, new BlockBehaviour.Properties().useBlockPrefixedTranslationKey()
                         .registryKey(ResourceKey.of(Registries.ITEM, Identifier.of(MoneyTalks.MOD_ID, name)))));
     }
 
     public static void registerBlocks() {
         MoneyTalks.LOGGER.info("Registering Mod Blocks for " + MoneyTalks.MOD_ID);
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries -> {
+        Cre.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries -> {
             entries.add(MoneyBlocks.BLACK_MERCHANT_CARPET);
             entries.add(MoneyBlocks.BLUE_MERCHANT_CARPET);
             entries.add(MoneyBlocks.BROWN_MERCHANT_CARPET);

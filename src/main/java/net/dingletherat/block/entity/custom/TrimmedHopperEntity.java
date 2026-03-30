@@ -16,11 +16,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
 import net.minecraft.world.entity.vehicle.minecart.MinecartHopper;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.HopperMenu;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
@@ -45,7 +43,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
     }
     
     public static void tick(Level world, BlockPos pos, BlockState state, TrimmedHopperEntity hopper) {
-        if (world.isClient()) return;
+        if (world.isClientSide()) return;
         if (hopper.transferCooldown > 0) {
             hopper.transferCooldown--;
             return;
@@ -58,7 +56,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
     }
 
     protected void pullItems(Level world, BlockPos pos, BlockState state) {
-        BlockPos above = pos.up();
+        BlockPos above = pos.above();
 
         // Pull from block inventory above
         BlockEntity above_be = world.getBlockEntity(above);
@@ -88,17 +86,17 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
                     if (slot.isEmpty()) {
                         inventory.set(j, stack.copy());
                         itemEntity.discard();
-                        markDirty();
+                        setChanged();
                         transferCooldown = 8;
                         return;
                     } else if (ItemStack.areItemsAndComponentsEqual(slot, stack)) {
-                        int space = slot.getMaxCount() - slot.getCount();
+                        int space = slot.getMaxStackSize() - slot.getCount();
                         int transfer = Math.min(space, stack.getCount());
                         if (transfer > 0) {
-                            slot.increment(transfer);
-                            stack.decrement(transfer);
+                            slot.grow(transfer);
+                            stack.shrink(transfer);
                             if (stack.isEmpty()) itemEntity.discard();
-                            markDirty();
+                            setChanged();
                             transferCooldown = 8;
                             return;
                         }
@@ -140,16 +138,16 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
                     if (slot.isEmpty()) {
                         to.setStack(j, stack.copy());
                         inventory.set(i, ItemStack.EMPTY);
-                        markDirty();
+                        setChanged();
                         transferCooldown = 8;
                         return true;
-                    } else if (ItemStack.areItemsAndComponentsEqual(slot, stack)) {
-                        int space = slot.getMaxCount() - slot.getCount();
+                    } else if (ItemStack.isSameItemSameComponents(slot, stack)) {
+                        int space = slot.getMaxStackSize() - slot.getCount();
                         int transfer = Math.min(space, stack.getCount());
                         if (transfer > 0) {
-                            slot.increment(transfer);
+                            slot.grow(transfer);
                             inventory.set(i, ItemStack.EMPTY);
-                            markDirty();
+                            setChanged();
                             transferCooldown = 8;
                             return true;
                         }
@@ -174,7 +172,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
                         InteractionResult result = carpet.hopperInsert(stack, world);
                         if (result == InteractionResult.SUCCESS) {
                             inventory.set(i, stack);
-                            markDirty();
+                            setChanged();
                             transferCooldown = 8;
                             return;
                         }
@@ -192,18 +190,18 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
     }
 
     @Override
-    protected void writeData(ValueOutput view) {
-        super.writeData(view);
-        view.putString("owner", owner == null ? "" : owner.toString());
-        ContainerHelper.writeData(view, inventory);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putString("owner", owner == null ? "" : owner.toString());
+        ContainerHelper.saveAllItems(output, inventory);
     }
 
     @Override
-    protected void readData(ValueInput view) {
-        super.readData(view);
-        String ownerStr = view.getString("owner", "");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        String ownerStr = input.getString("owner", "");
         owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
-        ContainerHelper.readData(view, inventory);
+        ContainerHelper.loadAllItems(input, inventory);
     }
 
     @Override
@@ -259,7 +257,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
     @Override
     public void setStack(int slot, ItemStack stack) {
         inventory.set(slot, stack);
-        markDirty();
+        setChanged();
     }
 
 

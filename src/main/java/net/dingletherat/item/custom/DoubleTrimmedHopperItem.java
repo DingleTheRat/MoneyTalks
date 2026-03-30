@@ -14,38 +14,37 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 
 public class DoubleTrimmedHopperItem extends BlockItem {
-    public DoubleTrimmedHopperItem(Block block, Settings settings) {
-        super(block, settings);
+    public DoubleTrimmedHopperItem(Block block, Properties properties) {
+        super(block, properties);
     }
 
     @Override
-    public boolean hasGlint(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        if (data != null) {
-            return data.copyNbt().contains("linked");
-        }
+        if (data != null) return data.copyTag().contains("linked");
+
         return false;
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
         if (data != null) {
-            long linkedPos = data.copyNbt().getLong("linked", Long.MIN_VALUE);
+            long linkedPos = data.copyTag().getLong("linked").orElse(Long.MIN_VALUE);
 
             if (linkedPos != Long.MIN_VALUE) {
-                BlockPos pos = BlockPos.fromLong(linkedPos);
-                textConsumer.accept(Component.literal("Linked to a chest at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ()).formatted(ChatFormatting.GOLD));
+                BlockPos pos = BlockPos.of(linkedPos);
+                textConsumer.accept(Component.literal("Linked to a chest at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ()).withStyle(ChatFormatting.GOLD));
             } else
-                textConsumer.accept(Component.literal("Not linked").formatted(ChatFormatting.GRAY));
+                textConsumer.accept(Component.literal("Not linked").withStyle(ChatFormatting.GRAY));
         } else
-            textConsumer.accept(Component.literal("Not linked").formatted(ChatFormatting.GRAY));
+            textConsumer.accept(Component.literal("Not linked").withStyle(ChatFormatting.GRAY));
     }
     public int getMaxCount(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        if (data != null && data.copyNbt().contains("linked")) {
+        if (data != null && data.copyTag().contains("linked"))
             return 1;
-        }
+
         return 64;
     }
 }

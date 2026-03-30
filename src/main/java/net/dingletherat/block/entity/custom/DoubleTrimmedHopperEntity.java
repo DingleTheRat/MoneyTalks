@@ -25,14 +25,14 @@ public class DoubleTrimmedHopperEntity extends TrimmedHopperEntity {
     }
 
     @Override
-    protected void readData(ValueInput view) {
-        super.readData(view);
-        long linkedLong = view.getLong("linked", Long.MIN_VALUE);
-        linked = linkedLong == Long.MIN_VALUE ? null : BlockPos.fromLong(linkedLong);
+    protected void readData(ValueInput input) {
+        super.readData(input);
+        long linkedLong = input.getLong("linked").orElse(Long.MIN_VALUE);
+        linked = linkedLong == Long.MIN_VALUE ? null : BlockPos.of(linkedLong);
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, DoubleTrimmedHopperEntity hopper) {
-        if (world.isClient()) return;
+        if (world.isClientSide()) return;
         if (hopper.transferCooldown > 0) {
             hopper.transferCooldown--;
             return;
@@ -50,7 +50,7 @@ public class DoubleTrimmedHopperEntity extends TrimmedHopperEntity {
         BlockEntity be = world.getBlockEntity(linked);
         if (be == null || !(be instanceof Container)) {
             linked = null;
-            markDirty();
+            setChanged();
             return;
         }
 
@@ -59,7 +59,7 @@ public class DoubleTrimmedHopperEntity extends TrimmedHopperEntity {
 
     public void setLinkedChest(BlockPos pos) {
         linked = pos;
-        markDirty();
+        setChanged();
     }
 
     @Override

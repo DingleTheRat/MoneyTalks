@@ -58,7 +58,7 @@ public class MoneyTalks implements ModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
 			if (!(entity instanceof ServerPlayer player)) return;
-			if (!(damageSource.getAttacker() instanceof ServerPlayer)) return;
+			if (!(damageSource.getDirectEntity() instanceof ServerPlayer)) return;
 			handleDollarLoss(player, player);
 		});
 
@@ -150,20 +150,20 @@ public class MoneyTalks implements ModInitializer {
 		int walletDollarsLost = 0;
 		Set<String> inventoryWalletIds = new HashSet<>();
 		for (int i = 0; i < invSize; i++) {
-			ItemStack stack = player.getInventory().getStack(i);
-			if (stack.isOf(MoneyItems.WALLET) && stack.contains(DataComponents.CUSTOM_DATA)) {
-				CompoundTag nbt = stack.get(DataComponents.CUSTOM_DATA).copyNbt();
-				int stored = nbt.getInt("Dollars", 0);
+			ItemStack stack = player.getInventory().getItem(i);
+			if (stack.is(MoneyItems.WALLET) && stack.has(DataComponents.CUSTOM_DATA)) {
+				CompoundTag nbt = stack.get(DataComponents.CUSTOM_DATA).copyTag();
+				int stored = nbt.getInt("Dollars").orElse(0);
 				int loss = (int) Math.ceil(stored * 0.15);
 				int newAmount = Math.max(0, stored - loss);
 				nbt.putInt("Dollars", newAmount);
 				stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
 				walletDollarsLost += loss;
-				String walletId = nbt.getString("WalletId", "");
+				String walletId = nbt.getString("WalletId").orElse("");
 				if (!walletId.isEmpty()) {
 					inventoryWalletIds.add(walletId);
 					if (walletState != null) {
-						walletState.update(UUID.fromString(walletId), nbt.getString("Owner", ""), newAmount);
+						walletState.update(UUID.fromString(walletId), nbt.getString("Owner").orElse(""), newAmount);
 					}
 				}
 			}
@@ -184,16 +184,16 @@ public class MoneyTalks implements ModInitializer {
 		// Deduct 20% of loose dollars
 		int looseDollars = 0;
 		for (int i = 0; i < invSize; i++) {
-			ItemStack stack = player.getInventory().getStack(i);
-			if (stack.isOf(MoneyItems.DOLLAR)) looseDollars += stack.getCount();
+			ItemStack stack = player.getInventory().getItem(i);
+			if (stack.is(MoneyItems.DOLLAR)) looseDollars += stack.getCount();
 		}
 		int looseLoss = (int) Math.ceil(looseDollars * 0.20);
 		int toRemove = looseLoss;
 		for (int i = 0; i < invSize && toRemove > 0; i++) {
-			ItemStack stack = player.getInventory().getStack(i);
-			if (stack.isOf(MoneyItems.DOLLAR)) {
+			ItemStack stack = player.getInventory().getItem(i);
+			if (stack.is(MoneyItems.DOLLAR)) {
 				int removed = Math.min(stack.getCount(), toRemove);
-				stack.decrement(removed);
+				stack.remove(removed);
 				toRemove -= removed;
 			}
 		}
@@ -203,9 +203,9 @@ public class MoneyTalks implements ModInitializer {
 		int remaining = totalDropped;
 		while (remaining > 0) {
 			ItemStack drop = new ItemStack(MoneyItems.DOLLAR);
-			int amount = Math.min(remaining, drop.getMaxCount());
+			int amount = Math.min(remaining, drop.getMaxStackSize());
 			drop.setCount(amount);
-			player.dropItem(drop, false);
+			player.drop(drop, false);
 			remaining -= amount;
 		}
 	}
