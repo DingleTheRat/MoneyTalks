@@ -19,14 +19,14 @@ public class DoubleTrimmedHopperEntity extends TrimmedHopperEntity {
 
 
     @Override
-    protected void writeData(ValueOutput view) {
-        super.writeData(view);
-        view.putLong("linked", linked != null ? linked.asLong() : Long.MIN_VALUE);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putLong("linked", linked != null ? linked.asLong() : Long.MIN_VALUE);
     }
 
     @Override
-    protected void readData(ValueInput input) {
-        super.readData(input);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         long linkedLong = input.getLong("linked").orElse(Long.MIN_VALUE);
         linked = linkedLong == Long.MIN_VALUE ? null : BlockPos.of(linkedLong);
     }

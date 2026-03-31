@@ -10,5 +10,5 @@ public class MerchantRenderState extends BlockEntityRenderState {
     public Level blockEntityWorld;
     public float rotation;
 
-    final ItemStackRenderState itemRenderState = new ItemRenderState();
+    final ItemStackRenderState itemRenderState = new ItemStackRenderState();
 }

@@ -2,22 +2,21 @@ package net.dingletherat.datagen;
 
 import net.dingletherat.MoneyItemTags;
 import net.dingletherat.block.MoneyBlocks;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MoneyItemTagProvider extends FabricTagProvider.ItemTagProvider {
-    public MoneyItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+public class MoneyItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
+    public MoneyItemTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected void configure(HolderLookup.Provider wrapperLookup) {
+    protected void addTags(HolderLookup.Provider wrapperLookup) {
         valueLookupBuilder(MoneyItemTags.MERCHANT_CARPETS)
-            .add(
-                MoneyBlocks.BLACK_MERCHANT_CARPET.asItem(),
+            .add(MoneyBlocks.BLACK_MERCHANT_CARPET.asItem(),
                 MoneyBlocks.BLUE_MERCHANT_CARPET.asItem(),
                 MoneyBlocks.BROWN_MERCHANT_CARPET.asItem(),
                 MoneyBlocks.CYAN_MERCHANT_CARPET.asItem(),
@@ -32,7 +31,6 @@ public class MoneyItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 MoneyBlocks.PURPLE_MERCHANT_CARPET.asItem(),
                 MoneyBlocks.RED_MERCHANT_CARPET.asItem(),
                 MoneyBlocks.WHITE_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.YELLOW_MERCHANT_CARPET.asItem()
-            );
+                MoneyBlocks.YELLOW_MERCHANT_CARPET.asItem());
     }
 }

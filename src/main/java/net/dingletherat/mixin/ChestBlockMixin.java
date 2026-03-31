@@ -27,21 +27,21 @@ public class ChestBlockMixin {
     private void onUseWithItem(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
         if (!(state.getBlock() instanceof ChestBlock)) return;
         if (!stack.isEmpty() && stack.getItem() instanceof DoubleTrimmedHopperItem) {
-            if (!world.isClient()) {
+            if (!world.isClientSide()) {
                 // Create a single linked item
                 ItemStack linked = stack.copyWithCount(1);
-                CompoundTag nbt = linked.contains(DataComponents.CUSTOM_DATA)
-                    ? linked.get(DataComponents.CUSTOM_DATA).copyNbt()
-                    : new NbtCompound();
+                CompoundTag nbt = linked.has(DataComponents.CUSTOM_DATA)
+                    ? linked.get(DataComponents.CUSTOM_DATA).copyTag()
+                    : new CompoundTag();
                 nbt.putLong("linked", pos.asLong());
                 linked.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
 
                 // Remove one from the original stack
-                stack.decrement(1);
+                stack.shrink(1);
 
                 // Give the linked item to the player
-                player.getInventory().insertStack(linked);
-                world.playSound(null, pos, SoundEvents.BLOCK_CHAIN_PLACE, player.getSoundCategory(), 1.0f, 1.0f);           }
+                player.getInventory().add(linked);
+                world.playSound(null, pos, SoundEvents.CHAIN_PLACE, player.getSoundSource(), 1.0f, 1.0f);           }
             cir.setReturnValue(InteractionResult.SUCCESS);
         }
     }

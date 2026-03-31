@@ -11,10 +11,10 @@ import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Registry;
@@ -31,8 +31,8 @@ public class MoneyItems {
             builder.accept(Component.translatable("Worth a dollar").withStyle(ChatFormatting.GOLD));
         }
     });
-    public static final Item WALLET = registerItem("wallet", properties -> new Wallet(properties.stacksTo(0).component(DataComponents.BUNDLE_CONTENTS, BundleContents.DEFAULT)));
-    public static final Item DOUBLE_TRIMMED_HOPPER = registerItem("double_trimmed_hopper", properties -> new DoubleTrimmedHopperItem(MoneyBlocks.DOUBLE_TRIMMED_HOPPER, properties));
+    public static final Item WALLET = registerItem("wallet", properties -> new Wallet(properties.stacksTo(0).component(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY)));
+    public static final Item DOUBLE_TRIMMED_HOPPER = registerItem("double_trimmed_hopper", properties -> new DoubleTrimmedHopperItem((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER, properties));
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name),

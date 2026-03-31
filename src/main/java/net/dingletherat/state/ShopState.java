@@ -1,6 +1,8 @@
 package net.dingletherat.state;
 
 import com.mojang.serialization.Codec;
+
+import net.dingletherat.MoneyTalks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -11,12 +13,9 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 import java.util.*;
 
 public class ShopState extends SavedData {
-    private static final Identifier STATE_KEY = Identifier.fromNamespaceAndPath("regulated", "shop_registry");
-
+    private static final Identifier STATE_KEY = Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "shop_registry");
     private final Map<UUID, List<BlockPos>> shops = new HashMap<>();
-
-    private static final Codec<Map<String, List<Long>>> MAP_CODEC =
-            Codec.unboundedMap(Codec.STRING, Codec.LONG.listOf());
+    private static final Codec<Map<String, List<Long>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, Codec.LONG.listOf());
 
     private static final Codec<ShopState> CODEC = MAP_CODEC.xmap(
             map -> {

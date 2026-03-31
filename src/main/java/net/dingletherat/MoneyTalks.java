@@ -9,16 +9,11 @@ import net.dingletherat.villager.MoneyVillagers;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.item.trading.ItemCost;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -61,90 +56,9 @@ public class MoneyTalks implements ModInitializer {
 			if (!(damageSource.getDirectEntity() instanceof ServerPlayer)) return;
 			handleDollarLoss(player, player);
 		});
-
-		// Trades
-		TradeOfferHelper.registerVillagerOffers(MoneyVillagers.INVESTOR_KEY, 1, factories -> {
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(Items.EMERALD, 15),
-						new ItemStack(MoneyItems.DOLLAR, 1),
-						10, 2, 0.1f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 2),
-						new ItemStack(MoneyItems.WALLET, 1),
-						1, 1, 0.04f));
-		});
-		TradeOfferHelper.registerVillagerOffers(MoneyVillagers.INVESTOR_KEY, 2, factories -> {
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 1),
-						new ItemStack(Items.SPRUCE_LOG, 8),
-						10, 5, 0f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 1),
-						new ItemStack(Items.ACACIA_LOG, 8),
-						10, 5, 0f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 1),
-						new ItemStack(Items.OAK_LOG, 8),
-						10, 5, 0f));
-
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(Items.SPRUCE_LOG, 8),
-						new ItemStack(MoneyItems.DOLLAR, 1),
-						10, 4, 0f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(Items.ACACIA_LOG, 8),
-						new ItemStack(MoneyItems.DOLLAR, 1),
-						10, 4, 0f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(Items.OAK_LOG, 8),
-						new ItemStack(MoneyItems.DOLLAR, 1),
-						10, 4, 0f));
-		});
-		TradeOfferHelper.registerVillagerOffers(MoneyVillagers.INVESTOR_KEY, 3, factories -> {
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(Items.DIAMOND, 4),
-						new ItemStack(MoneyItems.DOLLAR, 4),
-						3, 8, 0f));
-		});
-		TradeOfferHelper.registerVillagerOffers(MoneyVillagers.INVESTOR_KEY, 4, factories -> {
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 4),
-						new ItemStack(Items.DIAMOND, 4),
-						10, 8, 0.1f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 9),
-						new ItemStack(Items.GOLDEN_CARROT, 1),
-						10, 8, 0.2f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 12),
-						new ItemStack(Items.GOLDEN_APPLE, 1),
-						10, 8, 0.2f));
-		});
-		TradeOfferHelper.registerVillagerOffers(MoneyVillagers.INVESTOR_KEY, 5, factories -> {
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(Items.NETHERITE_SCRAP, 1),
-						new ItemStack(MoneyItems.DOLLAR, 25),
-						3, 9, 0f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 25),
-						new ItemStack(Items.NETHERITE_SCRAP, 1),
-						1, 11, 0f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 38),
-						new ItemStack(Items.TOTEM_OF_UNDYING, 1),
-						2, 11, 0f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 40),
-						new ItemStack(Items.ENCHANTED_GOLDEN_APPLE, 1),
-						2, 11, 0.1f));
-			factories.add((world, entity, random) -> new TradeOffer(
-						new TradedItem(MoneyItems.DOLLAR, 64),
-						new ItemStack(Items.NETHER_STAR, 1),
-						1, 11, 0f));
-		});
 	}
 	private void handleDollarLoss(ServerPlayer oldPlayer, ServerPlayer player) {
-		int invSize = player.getInventory().size();
+		int invSize = player.getInventory().getContainerSize();
 
 		// Deduct 15% from wallets in player inventory
 		int walletDollarsLost = 0;
@@ -193,7 +107,7 @@ public class MoneyTalks implements ModInitializer {
 			ItemStack stack = player.getInventory().getItem(i);
 			if (stack.is(MoneyItems.DOLLAR)) {
 				int removed = Math.min(stack.getCount(), toRemove);
-				stack.remove(removed);
+				stack.shrink(removed);
 				toRemove -= removed;
 			}
 		}

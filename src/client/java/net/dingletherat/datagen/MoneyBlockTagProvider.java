@@ -1,27 +1,27 @@
 package net.dingletherat.datagen;
 
-import net.dingletherat.MoneyItemTags;
 import net.dingletherat.block.MoneyBlocks;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MoneyBlockTagProvider extends FabricTagProvider.BlockTagProvider {
-    public MoneyBlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+public class MoneyBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
+    public MoneyBlockTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected void configure(HolderLookup.Provider wrapperLookup) {
+    protected void addTags(HolderLookup.Provider wrapperLookup) {
         valueLookupBuilder(BlockTags.NEEDS_IRON_TOOL)
-            .add(MoneyBlocks.TRIMMED_HOPPER)
-            .add(MoneyBlocks.DOUBLE_TRIMMED_HOPPER);
+            .add((Block) MoneyBlocks.TRIMMED_HOPPER)
+            .add((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER);
 
-        valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
-            .add(MoneyBlocks.TRIMMED_HOPPER)
-            .add(MoneyBlocks.DOUBLE_TRIMMED_HOPPER);
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
+            .add((Block) MoneyBlocks.TRIMMED_HOPPER)
+            .add((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER);
     }
 }

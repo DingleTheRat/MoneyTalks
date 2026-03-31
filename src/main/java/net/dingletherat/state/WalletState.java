@@ -2,7 +2,11 @@ package net.dingletherat.state;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.dingletherat.MoneyTalks;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
@@ -13,11 +17,10 @@ import java.util.Set;
 import java.util.UUID;
 
 public class WalletState extends SavedData {
-private static final String STATE_KEY = "wallet_registry";
-
-private final Map<UUID, WalletEntry> wallets = new HashMap<>();
-    // Wallets that have a pending deduction to apply to NBT next inventoryTick
+    private static final Identifier STATE_KEY = Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "wallet_registry");
+    private final Map<UUID, WalletEntry> wallets = new HashMap<>();
     private final Set<UUID> pendingDeductions = new HashSet<>();
+    private static final Codec<Map<String, WalletEntry>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, WalletEntry.CODEC);
 
     public static class WalletEntry {
         public String owner;
@@ -34,9 +37,6 @@ private final Map<UUID, WalletEntry> wallets = new HashMap<>();
         ).apply(instance, WalletEntry::new));
     }
 
-    private static final Codec<Map<String, WalletEntry>> MAP_CODEC =
-            Codec.unboundedMap(Codec.STRING, WalletEntry.CODEC);
-
     private static final Codec<WalletState> CODEC = MAP_CODEC.xmap(
             map -> {
                 WalletState state = new WalletState();
@@ -50,11 +50,11 @@ private final Map<UUID, WalletEntry> wallets = new HashMap<>();
             }
     );
 
-    public static final SavedDataType<WalletState> TYPE = new PersistentStateType<>(
+    public static final SavedDataType<WalletState> TYPE = new SavedDataType<>(
             STATE_KEY,
             WalletState::new,
             CODEC,
-            null
+            DataFixTypes.SAVED_DATA_COMMAND_STORAGE
     );
 
     public WalletState() {}
@@ -62,14 +62,14 @@ private final Map<UUID, WalletEntry> wallets = new HashMap<>();
     // Called from inventoryTick — NBT is authoritative, just mirror it
     public void update(UUID walletId, String owner, int dollars) {
         wallets.put(walletId, new WalletEntry(owner, dollars));
-        markDirty();
+        setDirty();
     }
 
     // Called on death — marks wallet as needing NBT update next inventoryTick
     public void applyDeduction(UUID walletId, String owner, int newDollars) {
         wallets.put(walletId, new WalletEntry(owner, newDollars));
         pendingDeductions.add(walletId);
-        markDirty();
+        setDirty();
     }
 
     // Returns the deducted amount if pending, then clears the flag
@@ -87,7 +87,7 @@ private final Map<UUID, WalletEntry> wallets = new HashMap<>();
     public void remove(UUID walletId) {
         wallets.remove(walletId);
         pendingDeductions.remove(walletId);
-        markDirty();
+        setDirty();
     }
 
     public Map<UUID, WalletEntry> getWalletsOwnedBy(String playerName) {
@@ -105,7 +105,7 @@ private final Map<UUID, WalletEntry> wallets = new HashMap<>();
     }
 
     public static WalletState get(MinecraftServer server) {
-        return server.getOverworld().getPersistentStateManager().getOrCreate(TYPE);
+        return server.overworld().getDataStorage().computeIfAbsent(TYPE);
     }
     public Map<UUID, WalletEntry> getAll() {
         return wallets;

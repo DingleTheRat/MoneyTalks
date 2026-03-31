@@ -1,7 +1,6 @@
 package net.dingletherat.block.custom;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.MapCodec;
 
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.BlockHitResult;
@@ -22,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 
 public class MerchantCarpet extends BaseEntityBlock {
@@ -39,36 +38,35 @@ public class MerchantCarpet extends BaseEntityBlock {
     }
 
     @Override
-    protected VoxelShape getOutlineShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
-    @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new MerchantCarpetEntity(pos, state);
     }
 
     @Override
-    public BlockState onBreak(ServerLevel world, BlockPos pos, BlockState state, Player player) {
-        if (!world.isClientSide()) {
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide()) {
 
-            MerchantCarpetEntity blockEntity = (MerchantCarpetEntity) world.getBlockEntity(pos);
+            MerchantCarpetEntity blockEntity = (MerchantCarpetEntity) level.getBlockEntity(pos);
             if (blockEntity != null) {
                 if (!player.getUUID().equals(blockEntity.getOwner())) {
-                    world.getBlockState(pos);
+                    level.getBlockState(pos);
                     return state;
                 }
                 blockEntity.onBreak();
             }
         }
-        return super.onBreak(world, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
-    public float calcBlockBreakingDelta(BlockState state, Player player, BlockGetter world, BlockPos pos) {
-        if (world instanceof LevelReader) {
-            BlockEntity be = ((LevelReader) world).getBlockEntity(pos);
+    public float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos) {
+        if (level instanceof LevelReader) {
+            BlockEntity be = ((LevelReader) level).getBlockEntity(pos);
             if (be instanceof MerchantCarpetEntity stall)
                 if (player.getUUID().equals(stall.getOwner()))
                     return 1f;
@@ -78,24 +76,23 @@ public class MerchantCarpet extends BaseEntityBlock {
     }
 
     @Override
-    public void onPlaced(ServerLevel world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        if (!world.isClientSide() && placer instanceof Player player) {
-            MerchantCarpetEntity blockEntity = (MerchantCarpetEntity) world.getBlockEntity(pos);
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (!level.isClientSide() && placer instanceof Player player) {
+            MerchantCarpetEntity blockEntity = (MerchantCarpetEntity) level.getBlockEntity(pos);
             if (blockEntity != null) {
                 blockEntity.setOwner(player.getUUID());
                 blockEntity.setChanged();
-                ShopState.get((world).getServer()).register(player.getUUID(), pos);
+                ShopState.get((level).getServer()).register(player.getUUID(), pos);
             }
         }
     }
 
     @Override
-    protected InteractionResult onUseWithItem(ItemStack stack, BlockState state, ServerLevel world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (hand != InteractionHand.MAIN_HAND) return InteractionResult.FAIL;
-
-        if(world.getBlockEntity(pos) instanceof MerchantCarpetEntity merchantStallEntity)
-            return merchantStallEntity.click(stack, world, player);
-
-        return InteractionResult.FAIL;
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
+        if (level.getBlockEntity(pos) instanceof MerchantCarpetEntity merchantCarpetEntity) {
+            return merchantCarpetEntity.click(stack, level, player);
+        }
+        return InteractionResult.PASS;
     }
 }
