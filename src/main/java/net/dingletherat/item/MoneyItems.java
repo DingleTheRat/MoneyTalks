@@ -31,7 +31,7 @@ public class MoneyItems {
             builder.accept(Component.translatable("Worth a dollar").withStyle(ChatFormatting.GOLD));
         }
     });
-    public static final Item WALLET = registerItem("wallet", properties -> new Wallet(properties.stacksTo(0).component(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY)));
+    public static final Item WALLET = registerItem("wallet", properties -> new Wallet(properties.stacksTo(1).component(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY)));
     public static final Item DOUBLE_TRIMMED_HOPPER = registerItem("double_trimmed_hopper", properties -> new DoubleTrimmedHopperItem((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER, properties));
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
