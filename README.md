@@ -64,4 +64,5 @@ You can craft this by placing two columns of diamonds on the left and right, and
 
 ## Gallery
 ![Investors](https://cdn.modrinth.com/data/cached_images/67e075b48eae744ac8461da20e8b7df3508f2536_0.webp)
-![Wallet & Coin](https://cdn.modrinth.com/data/cached_images/05264d1e186d2a0732cd67d7e22d8fb6a37bd370_0.webp)
+![Wallet & Coin](https://cdn.modrinth.com/data/cached_images/c3b5e175c1c1151d88b9aa1d471fc718eeb20d17_0.webp)
+![Double-Trimmed Hopper](https://cdn.modrinth.com/data/cached_images/de0d5a91d29cd5306dc0034a0f1cc38a78750a07_0.webp)
