@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "minecraft:netherite_scrap",
+    "count": 1
+  },
+  "gives": {
+    "id": "moneytalks:dollar",
+    "count": 25
+  },
+  "max_uses": 3,
+  "xp": 9,
+  "reputation_discount": 0.0
+}

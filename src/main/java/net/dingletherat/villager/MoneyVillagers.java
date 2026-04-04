@@ -1,8 +1,10 @@
 package net.dingletherat.villager;
 
+import java.util.Map;
+
 import com.google.common.collect.ImmutableSet;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PoiHelper;
@@ -48,7 +50,14 @@ public class MoneyVillagers {
                 Component.translatable("entity.minecraft.villager." + name),
                 entry -> entry.is(type), entry -> entry.is(type),
                 ImmutableSet.of(), ImmutableSet.of(),
-                SoundEvents.VILLAGER_WORK_LIBRARIAN, Int2ObjectMaps.emptyMap()));
+                SoundEvents.VILLAGER_WORK_LIBRARIAN,
+                new Int2ObjectOpenHashMap<>(Map.of(
+                    1, ResourceKey.create(Registries.TRADE_SET, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "investor/level_1")),
+                    2, ResourceKey.create(Registries.TRADE_SET, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "investor/level_2")),
+                    3, ResourceKey.create(Registries.TRADE_SET, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "investor/level_3")),
+                    4, ResourceKey.create(Registries.TRADE_SET, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "investor/level_4")),
+                    5, ResourceKey.create(Registries.TRADE_SET, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "investor/level_5"))
+            ))));
     }
 
     private static PoiType registerPOI(String name, Block... blocks) {

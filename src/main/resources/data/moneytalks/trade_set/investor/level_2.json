@@ -1,0 +1,12 @@
+{
+  "amount": 2,
+  "random_sequence": "moneytalks:trade_set/investor/level_2",
+  "trades": [
+    "moneytalks:dollar_to_spruce",
+    "moneytalks:dollar_to_acacia",
+    "moneytalks:dollar_to_oak",
+    "moneytalks:spruce_to_dollar",
+    "moneytalks:acacia_to_dollar",
+    "moneytalks:oak_to_dollar"
+  ]
+}

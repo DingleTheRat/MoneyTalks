@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "moneytalks:dollar",
+    "count": 1
+  },
+  "gives": {
+    "id": "minecraft:acacia_log",
+    "count": 8
+  },
+  "max_uses": 10,
+  "xp": 5,
+  "reputation_discount": 0.0
+}

@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "minecraft:oak_log",
+    "count": 8
+  },
+  "gives": {
+    "id": "moneytalks:dollar",
+    "count": 1
+  },
+  "max_uses": 10,
+  "xp": 4,
+  "reputation_discount": 0.0
+}

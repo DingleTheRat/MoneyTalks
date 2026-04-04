@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "moneytalks:dollar",
+    "count": 2
+  },
+  "gives": {
+    "id": "moneytalks:wallet",
+    "count": 1
+  },
+  "max_uses": 1,
+  "reputation_discount": 0.04,
+  "xp": 1
+}

@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 15
+  },
+  "gives": {
+    "id": "moneytalks:dollar",
+    "count": 1
+  },
+  "max_uses": 10,
+  "reputation_discount": 0.04,
+  "xp": 2
+}
