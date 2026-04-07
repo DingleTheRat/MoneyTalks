@@ -21,6 +21,7 @@ public class MoneyGroups {
 
                         entries.accept(MoneyItems.DOUBLE_TRIMMED_HOPPER);
                         entries.accept(MoneyBlocks.TRIMMED_HOPPER.asItem());
+                        entries.accept(MoneyBlocks.DABLOON_COMPRESSOR.asItem());
 
                         entries.accept(MoneyBlocks.BLACK_MERCHANT_CARPET.asItem());
                         entries.accept(MoneyBlocks.BLUE_MERCHANT_CARPET.asItem());

@@ -4,6 +4,7 @@ import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.custom.MerchantCarpetEntity;
 import net.dingletherat.block.entity.custom.TrimmedHopperEntity;
+import net.dingletherat.block.entity.custom.DabloonCompressorEntity;
 import net.dingletherat.block.entity.custom.DoubleTrimmedHopperEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.world.level.block.Block;
@@ -41,6 +42,9 @@ public class MoneyBlockEntities {
     public static final BlockEntityType<DoubleTrimmedHopperEntity> DOUBLE_TRIMMED_HOPPER_ENTITY =
             Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "double_trimmed_hopper_entity"),
                     FabricBlockEntityTypeBuilder.<DoubleTrimmedHopperEntity>create(DoubleTrimmedHopperEntity::new, (Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER).build());
+    public static final BlockEntityType<DabloonCompressorEntity> DABLOON_COMPRESSOR_ENTITY =
+            Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "dabloon_compressor_entity"),
+                    FabricBlockEntityTypeBuilder.<DabloonCompressorEntity>create(DabloonCompressorEntity::new, (Block) MoneyBlocks.DABLOON_COMPRESSOR).build());
 
     public static void registerBlockEntities() {
         MoneyTalks.LOGGER.info("Registering Block Entities for " + MoneyTalks.MOD_ID);

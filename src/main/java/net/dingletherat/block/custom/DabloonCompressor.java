@@ -1,0 +1,72 @@
+package net.dingletherat.block.custom;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import com.mojang.serialization.MapCodec;
+import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.block.entity.custom.DabloonCompressorEntity;
+import net.dingletherat.item.MoneyItems;
+import net.dingletherat.state.ShopState;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+
+public class DabloonCompressor extends BaseEntityBlock {
+    public static final MapCodec<DabloonCompressor> CODEC = DabloonCompressor.simpleCodec(DabloonCompressor::new);
+
+    public DabloonCompressor(BlockBehaviour.Properties properties) {
+        super(properties);
+        registerDefaultState(stateDefinition.any());
+    }
+
+    @Override
+    public MapCodec<DabloonCompressor> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new DabloonCompressorEntity(pos, state);
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, MoneyBlockEntities.DABLOON_COMPRESSOR_ENTITY, DabloonCompressorEntity::tick);
+    }
+
+    @Override
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        if (!world.isClientSide() && placer instanceof Player player) {
+            DabloonCompressorEntity be = (DabloonCompressorEntity) world.getBlockEntity(pos);
+            if (be != null) {
+                be.setOwner(player.getUUID());
+                be.setChanged();
+                ShopState.get((world).getServer()).register(player.getUUID(), pos);
+            }
+        }
+    }
+
+    @Override
+    protected InteractionResult useItemOn(final ItemStack itemStack, final BlockState state, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
+        if (!(level.getBlockEntity(pos) instanceof DabloonCompressorEntity compressor)) {
+            return InteractionResult.PASS;
+        }
+
+        if (player.getItemInHand(hand).is(MoneyItems.WALLET) && compressor.getItem(0).isEmpty()) {
+            compressor.setItem(0, player.getItemInHand(hand).copy());
+            player.getItemInHand(hand).setCount(0);
+        }
+
+        return InteractionResult.SUCCESS;
+    }
+}

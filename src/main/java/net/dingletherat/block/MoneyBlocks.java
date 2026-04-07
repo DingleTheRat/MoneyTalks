@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.custom.MerchantCarpet;
+import net.dingletherat.block.custom.DabloonCompressor;
 import net.dingletherat.block.custom.DoubleTrimmedHopper;
 import net.dingletherat.block.custom.TrimmedHopper;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -41,6 +42,7 @@ public class MoneyBlocks {
 
     public static final BlockBehaviour TRIMMED_HOPPER = registerBlock("trimmed_hopper", properties -> new TrimmedHopper(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.METAL).pushReaction(PushReaction.NORMAL)));
     public static final BlockBehaviour DOUBLE_TRIMMED_HOPPER = registerBlockWithoutBlockItem("double_trimmed_hopper", properties -> new DoubleTrimmedHopper(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.METAL).pushReaction(PushReaction.NORMAL)));
+    public static final BlockBehaviour DABLOON_COMPRESSOR = registerBlock("dabloon_compressor", properties -> new DabloonCompressor(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.STONE).pushReaction(PushReaction.NORMAL)));
 
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function) {
         Identifier id = Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name);
