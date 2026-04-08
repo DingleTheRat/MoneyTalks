@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.ChatFormatting;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;

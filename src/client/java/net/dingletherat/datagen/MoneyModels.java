@@ -13,6 +13,7 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.resources.Identifier;
@@ -38,6 +39,7 @@ public class MoneyModels extends FabricModelProvider{
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
+        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DABLOON_COMPRESSOR, TexturedModel.CUBE);
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.BLACK_MERCHANT_CARPET, "black_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.BLUE_MERCHANT_CARPET, "blue_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.BROWN_MERCHANT_CARPET, "brown_merchant_carpet");

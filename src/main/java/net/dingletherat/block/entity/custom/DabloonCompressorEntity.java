@@ -1,12 +1,12 @@
 package net.dingletherat.block.entity.custom;
 
+import java.util.List;
 import java.util.UUID;
-
 import org.jetbrains.annotations.Nullable;
-
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents.Chat;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -15,8 +15,13 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -24,6 +29,8 @@ import net.minecraft.world.level.Level;
 public class DabloonCompressorEntity extends BlockEntity implements WorldlyContainer {
     protected UUID owner;
     protected int compressing_ticks = 100;
+    protected int original_wallet_coins;
+    protected String name;
     // Item 0: wallet
     // Item 1: fuel
     // Item 2: dabloons
@@ -59,25 +66,51 @@ public class DabloonCompressorEntity extends BlockEntity implements WorldlyConta
                     }
                 } else if (dabloons.isEmpty() && !wallet.isEmpty()) {
                     compressor.setItem(0, ItemStack.EMPTY);
-                    compressor.setItem(2, wallet);
+                    ItemStack receipt = new ItemStack(Items.PAPER, 2);
+                    receipt.set(DataComponents.CUSTOM_NAME, Component.literal(compressor.getName() + " receipt")
+                            .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.AQUA)));
+                    receipt.set(DataComponents.LORE, new ItemLore(List.of(
+                                    Component.literal(Wallet.getOwner(wallet))
+                                            .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.BLUE)),
+                                    Component.literal(Integer.toString(compressor.getTransactionCoins()) + " dollars")
+                                            .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.BLUE)),
+                                    Component.literal("Day " + Long.toString(world.getGameTime() / 24000))
+                                            .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.RED))
+                    )));
+                    compressor.setItem(2, receipt);
                     compressor.compressing_ticks = 100;
                 }
             } else {
                 compressor.compressing_ticks--;
             }
         }
-        System.out.printf("%d, wallet: %d, blaze: %d, gold: %d\n", compressor.compressing_ticks,
-                Wallet.getDollars(compressor.getItem(0)), compressor.getItem(1).count(), compressor.getItem(2).count());
     }
 
     public UUID getOwner() { return owner; }
     public void setOwner(UUID owner) { this.owner = owner; }
+    public int getTransactionCoins() { return original_wallet_coins; }
+    public void setTransactionCoins(int coins) { this.original_wallet_coins = coins; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    @Override
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putString("owner", owner == null ? "" : owner.toString());
+        output.putString("compressing_ticks", Integer.toString(compressing_ticks));
+        output.putString("original_wallet_coins", Integer.toString(original_wallet_coins));
+        output.putString("name", name == null ? "Dabloon Compressor" : name);
+        ContainerHelper.saveAllItems(output, inventory);
+    }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         String ownerStr = input.getString("owner").orElse("");
         owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
+        compressing_ticks = input.getIntOr("compressing_ticks", 100);
+        original_wallet_coins = input.getIntOr("original_wallet_coins", 0);
+        name = input.getStringOr("name", "Dabloon Compressor");
         ContainerHelper.loadAllItems(input, inventory);
     }
 
