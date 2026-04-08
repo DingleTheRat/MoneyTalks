@@ -7,7 +7,6 @@ import net.dingletherat.block.entity.custom.DabloonCompressorEntity;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.state.ShopState;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -19,6 +18,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 public class DabloonCompressor extends BaseEntityBlock {
@@ -58,6 +58,7 @@ public class DabloonCompressor extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useItemOn(final ItemStack itemStack, final BlockState state, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
+        if (level.isClientSide()) return InteractionResult.PASS;
         if (!(level.getBlockEntity(pos) instanceof DabloonCompressorEntity compressor)) {
             return InteractionResult.PASS;
         }
@@ -65,6 +66,7 @@ public class DabloonCompressor extends BaseEntityBlock {
         if (player.getItemInHand(hand).is(MoneyItems.WALLET) && compressor.getItem(0).isEmpty()) {
             compressor.setItem(0, player.getItemInHand(hand).copy());
             player.getItemInHand(hand).setCount(0);
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.SUCCESS;

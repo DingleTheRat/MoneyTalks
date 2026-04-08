@@ -6,13 +6,13 @@ import org.jetbrains.annotations.Nullable;
 
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
+import net.dingletherat.item.custom.Wallet;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.ValueInput;
@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 
 public class DabloonCompressorEntity extends BlockEntity implements WorldlyContainer {
     protected UUID owner;
+    protected int compressing_ticks = 100;
     // Item 0: wallet
     // Item 1: fuel
     // Item 2: dabloons
@@ -38,9 +39,35 @@ public class DabloonCompressorEntity extends BlockEntity implements WorldlyConta
 
     public static void tick(Level world, BlockPos pos, BlockState state, DabloonCompressorEntity compressor) {
         if (world.isClientSide()) return;
-        // if (compressor.getItem(0).is(MoneyItems.WALLET)) {
-        //     
-        // }
+        if (compressor.getItem(0).is(MoneyItems.WALLET) && compressor.getItem(1).is(Items.BLAZE_POWDER)) {
+            if (compressor.compressing_ticks == 0) {
+                ItemStack wallet = compressor.getItem(0);
+                ItemStack fuel = compressor.getItem(1);
+                ItemStack dabloons = compressor.getItem(2);
+                int dollars = Wallet.getDollars(wallet);
+                if (dollars >= 10) {
+                    if (dabloons.is(Items.GOLD_BLOCK) && dabloons.getCount() != 64) {
+                        Wallet.setDollars(wallet, dollars - 10);
+                        dabloons.grow(1);
+                        fuel.shrink(1);
+                        compressor.compressing_ticks = 100;
+                    } else if (dabloons.isEmpty()) {
+                        Wallet.setDollars(wallet, dollars - 10);
+                        compressor.setItem(2, new ItemStack(Items.GOLD_BLOCK));
+                        fuel.shrink(1);
+                        compressor.compressing_ticks = 100;
+                    }
+                } else if (dabloons.isEmpty() && !wallet.isEmpty()) {
+                    compressor.setItem(0, ItemStack.EMPTY);
+                    compressor.setItem(2, wallet);
+                    compressor.compressing_ticks = 100;
+                }
+            } else {
+                compressor.compressing_ticks--;
+            }
+        }
+        System.out.printf("%d, wallet: %d, blaze: %d, gold: %d\n", compressor.compressing_ticks,
+                Wallet.getDollars(compressor.getItem(0)), compressor.getItem(1).count(), compressor.getItem(2).count());
     }
 
     public UUID getOwner() { return owner; }
@@ -59,6 +86,7 @@ public class DabloonCompressorEntity extends BlockEntity implements WorldlyConta
     @Override
     public int[] getSlotsForFace(Direction side) {
         if (side == Direction.UP) return new int[]{ 0 };
+        if (side == Direction.DOWN) return new int[]{ 2 };
         return new int[]{ 1 };
     }
 
@@ -71,7 +99,7 @@ public class DabloonCompressorEntity extends BlockEntity implements WorldlyConta
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction dir) {
-        return true;
+        return slot == 2;
     }
 
     @Override
