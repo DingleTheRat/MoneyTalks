@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents.Chat;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;

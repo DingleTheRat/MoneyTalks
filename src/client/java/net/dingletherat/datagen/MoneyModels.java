@@ -39,7 +39,6 @@ public class MoneyModels extends FabricModelProvider{
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
-        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DABLOON_COMPRESSOR, TexturedModel.CUBE);
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.BLACK_MERCHANT_CARPET, "black_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.BLUE_MERCHANT_CARPET, "blue_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.BROWN_MERCHANT_CARPET, "brown_merchant_carpet");
@@ -56,6 +55,10 @@ public class MoneyModels extends FabricModelProvider{
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.RED_MERCHANT_CARPET, "red_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.YELLOW_MERCHANT_CARPET, "yellow_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.WHITE_MERCHANT_CARPET, "white_merchant_carpet");
+
+
+        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DABLOON_COMPRESSOR, TexturedModel.CUBE);
+        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DABLOON, TexturedModel.CUBE);
     }
 
     @Override
