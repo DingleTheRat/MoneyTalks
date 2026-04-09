@@ -31,6 +31,7 @@ public class ScreenHandlerMixin {
         if (slotIndex < 0 || slotIndex >= handler.slots.size()) return;
 
         Slot targetSlot = handler.slots.get(slotIndex);
+        ItemStack stackInSlot = targetSlot.getItem();
         ItemStack cursorStack = handler.getCarried();
 
         // Block placing dollars from cursor into a container slot
@@ -40,7 +41,7 @@ public class ScreenHandlerMixin {
         }
 
         // Block shift-clicking dollars out of player inventory into container
-        if (containerInput == ContainerInput.QUICK_MOVE && nonTransferable.contains(cursorStack.getItem()) && isPlayerInventorySlot(targetSlot)) {
+        if (containerInput == ContainerInput.QUICK_MOVE && nonTransferable.contains(stackInSlot.getItem()) && isPlayerInventorySlot(targetSlot)) {
             ci.cancel();
         }
     }
