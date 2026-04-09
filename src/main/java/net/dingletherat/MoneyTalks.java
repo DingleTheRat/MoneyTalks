@@ -46,7 +46,7 @@ public class MoneyTalks implements ModInitializer {
 		MoneyBlocks.registerBlocks();
 		MoneyBlockEntities.registerBlockEntities();
 		MoneyGroups.registerItemGroups();
-		LOGGER.info("Loaded MoneyTalks!");
+		LOGGER.info("Loaded " + MOD_ID + "!");
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			walletState = WalletState.get(server);

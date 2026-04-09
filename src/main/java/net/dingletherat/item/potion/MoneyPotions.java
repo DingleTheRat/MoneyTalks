@@ -9,7 +9,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.alchemy.Potion;
 
 public class MoneyPotions {
-    public static final Potion SLIMEY_POTION = registerPotion("glowing_potion",
+    public static final Potion GLOWING_POTION = registerPotion("glowing_potion",
             new Potion("glowing_potion", new MobEffectInstance(MobEffects.GLOWING, 1200, 0)));
 
 
