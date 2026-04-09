@@ -4,6 +4,7 @@ import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyGroups;
 import net.dingletherat.item.MoneyItems;
+import net.dingletherat.item.potion.MoneyPotions;
 import net.dingletherat.state.*;
 import net.dingletherat.villager.MoneyVillagers;
 import net.fabricmc.api.ModInitializer;
@@ -39,7 +40,8 @@ public class MoneyTalks implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		MoneyItems.registerModItems();
+		MoneyItems.registerItems();
+		MoneyPotions.registerPotions();
 		MoneyVillagers.registerVillagers();
 		MoneyBlocks.registerBlocks();
 		MoneyBlockEntities.registerBlockEntities();
