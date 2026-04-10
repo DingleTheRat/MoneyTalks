@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_doubloon": {
+      "conditions": {
+        "items": [
+          {
+            "items": "moneytalks:doubloon"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "moneytalks:dollar"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_doubloon"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "moneytalks:dollar"
+    ]
+  }
+}

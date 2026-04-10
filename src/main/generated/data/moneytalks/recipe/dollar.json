@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "moneytalks:doubloon"
+  ],
+  "result": {
+    "count": 10,
+    "id": "moneytalks:dollar"
+  }
+}

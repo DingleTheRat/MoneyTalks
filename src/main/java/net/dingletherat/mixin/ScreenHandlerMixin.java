@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 
@@ -28,6 +29,7 @@ public class ScreenHandlerMixin {
 
         // Only restrict when a non-player inventory is open
         if (handler instanceof InventoryMenu) return;
+        if (handler instanceof CraftingMenu) return;
         if (slotIndex < 0 || slotIndex >= handler.slots.size()) return;
 
         Slot targetSlot = handler.slots.get(slotIndex);
