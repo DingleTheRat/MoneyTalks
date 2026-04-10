@@ -3,6 +3,8 @@ package net.dingletherat.block.entity.custom;
 import java.util.List;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
+
+import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
@@ -52,7 +54,7 @@ public class DabloonCompressorEntity extends BlockEntity implements WorldlyConta
                 ItemStack dabloons = compressor.getItem(2);
                 int dollars = Wallet.getDollars(wallet);
                 if (dollars >= 10) {
-                    if (dabloons.is(Items.GOLD_BLOCK) && dabloons.getCount() != 64) {
+                    if (dabloons.is(MoneyBlocks.DABLOON.asItem()) && dabloons.getCount() != 64) {
                         Wallet.setDollars(wallet, dollars - 10);
                         dabloons.grow(1);
                         fuel.shrink(1);
