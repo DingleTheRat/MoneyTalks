@@ -24,8 +24,8 @@ public class MoneyModels extends FabricModelProvider{
     }
 
     private static final ModelTemplate MERCHANT_CARPET_TEMPLATE = new ModelTemplate(
-        Optional.of(Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "block/merchant_carpet_base")), 
-        Optional.empty(), 
+        Optional.of(Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "block/merchant_carpet_base")),
+        Optional.empty(),
         TextureSlot.ALL
     );
 
@@ -57,8 +57,8 @@ public class MoneyModels extends FabricModelProvider{
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.WHITE_MERCHANT_CARPET, "white_merchant_carpet");
 
 
-        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DABLOON_COMPRESSOR, TexturedModel.CUBE);
-        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DABLOON, TexturedModel.CUBE);
+        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DOUBLOON_COMPRESSOR, TexturedModel.CUBE);
+        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DOUBLOON, TexturedModel.CUBE);
     }
 
     @Override

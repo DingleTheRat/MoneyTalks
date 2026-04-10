@@ -3,7 +3,7 @@ package net.dingletherat.block.custom;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import com.mojang.serialization.MapCodec;
 import net.dingletherat.block.entity.MoneyBlockEntities;
-import net.dingletherat.block.entity.custom.DabloonCompressorEntity;
+import net.dingletherat.block.entity.custom.DoubloonCompressorEntity;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.state.ShopState;
@@ -20,33 +20,33 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-public class DabloonCompressor extends BaseEntityBlock {
-    public static final MapCodec<DabloonCompressor> CODEC = DabloonCompressor.simpleCodec(DabloonCompressor::new);
+public class DoubloonCompressor extends BaseEntityBlock {
+    public static final MapCodec<DoubloonCompressor> CODEC = DoubloonCompressor.simpleCodec(DoubloonCompressor::new);
 
-    public DabloonCompressor(BlockBehaviour.Properties properties) {
+    public DoubloonCompressor(BlockBehaviour.Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any());
     }
 
     @Override
-    public MapCodec<DabloonCompressor> codec() {
+    public MapCodec<DoubloonCompressor> codec() {
         return CODEC;
     }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new DabloonCompressorEntity(pos, state);
+        return new DoubloonCompressorEntity(pos, state);
     }
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, MoneyBlockEntities.DABLOON_COMPRESSOR_ENTITY, DabloonCompressorEntity::tick);
+        return createTickerHelper(type, MoneyBlockEntities.DOUBLOON_COMPRESSOR_ENTITY, DoubloonCompressorEntity::tick);
     }
 
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
         if (!world.isClientSide() && placer instanceof Player player) {
-            DabloonCompressorEntity be = (DabloonCompressorEntity) world.getBlockEntity(pos);
+            DoubloonCompressorEntity be = (DoubloonCompressorEntity) world.getBlockEntity(pos);
             if (be != null) {
                 be.setOwner(player.getUUID());
                 Component name = itemStack.getHoverName();
@@ -62,7 +62,7 @@ public class DabloonCompressor extends BaseEntityBlock {
     @Override
     protected InteractionResult useItemOn(final ItemStack itemStack, final BlockState state, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
         if (level.isClientSide()) return InteractionResult.PASS;
-        if (!(level.getBlockEntity(pos) instanceof DabloonCompressorEntity compressor)) {
+        if (!(level.getBlockEntity(pos) instanceof DoubloonCompressorEntity compressor)) {
             return InteractionResult.PASS;
         }
 

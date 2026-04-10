@@ -19,11 +19,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.ticks.ScheduledTick;
 
-public class Dabloon extends Block {
+public class Doubloon extends Block {
     ScheduledTick<Block> scheduledTick;
     public final int TRIGGER_TIME = 500;
 
-    public Dabloon(BlockBehaviour.Properties properties) {
+    public Doubloon(BlockBehaviour.Properties properties) {
         super(properties);
     }
 

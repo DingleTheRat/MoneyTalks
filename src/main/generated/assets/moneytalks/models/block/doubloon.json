@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "moneytalks:block/dabloon"
+    "all": "moneytalks:block/doubloon"
   }
 }

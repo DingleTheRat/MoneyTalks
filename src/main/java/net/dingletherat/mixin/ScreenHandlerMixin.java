@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractContainerMenu.class)
 public class ScreenHandlerMixin {
-    private List<Item> nonTransferable = List.of(MoneyItems.DOLLAR, MoneyBlocks.DABLOON.asItem());
+    private List<Item> nonTransferable = List.of(MoneyItems.DOLLAR, MoneyBlocks.DOUBLOON.asItem());
 
     @Inject(method = "doClick", at = @At("HEAD"), cancellable = true)
     private void blockDollarIntoContainers(int slotIndex, int button, ContainerInput containerInput, Player player, CallbackInfo ci) {

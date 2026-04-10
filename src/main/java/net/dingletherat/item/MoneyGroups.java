@@ -39,8 +39,8 @@ public class MoneyGroups {
                         entries.accept(MoneyItems.DOUBLE_TRIMMED_HOPPER);
                         entries.accept(MoneyBlocks.TRIMMED_HOPPER.asItem());
 
-                        entries.accept(MoneyBlocks.DABLOON.asItem());
-                        entries.accept(MoneyBlocks.DABLOON_COMPRESSOR.asItem());
+                        entries.accept(MoneyBlocks.DOUBLOON.asItem());
+                        entries.accept(MoneyBlocks.DOUBLOON_COMPRESSOR.asItem());
                     }).build());
 
     public static void registerItemGroups() {

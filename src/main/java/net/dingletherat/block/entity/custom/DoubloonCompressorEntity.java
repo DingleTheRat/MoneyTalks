@@ -25,45 +25,45 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
-public class DabloonCompressorEntity extends BlockEntity implements WorldlyContainer {
+public class DoubloonCompressorEntity extends BlockEntity implements WorldlyContainer {
     protected UUID owner;
     protected int compressing_ticks = 100;
     protected int original_wallet_coins;
     protected String name;
     // Item 0: wallet
     // Item 1: fuel
-    // Item 2: dabloons
+    // Item 2: doubloons
     protected final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
 
-    public <T extends DabloonCompressorEntity> DabloonCompressorEntity(BlockEntityType<T> blockEntityType, BlockPos pos, BlockState state) {
+    public <T extends DoubloonCompressorEntity> DoubloonCompressorEntity(BlockEntityType<T> blockEntityType, BlockPos pos, BlockState state) {
         super(blockEntityType, pos, state);
     }
 
-    public DabloonCompressorEntity(BlockPos pos, BlockState state) {
-        super(MoneyBlockEntities.DABLOON_COMPRESSOR_ENTITY, pos, state);
+    public DoubloonCompressorEntity(BlockPos pos, BlockState state) {
+        super(MoneyBlockEntities.DOUBLOON_COMPRESSOR_ENTITY, pos, state);
     }
 
-    public static void tick(Level world, BlockPos pos, BlockState state, DabloonCompressorEntity compressor) {
+    public static void tick(Level world, BlockPos pos, BlockState state, DoubloonCompressorEntity compressor) {
         if (world.isClientSide()) return;
         if (compressor.getItem(0).is(MoneyItems.WALLET) && compressor.getItem(1).is(Items.BLAZE_POWDER)) {
             if (compressor.compressing_ticks == 0) {
                 ItemStack wallet = compressor.getItem(0);
                 ItemStack fuel = compressor.getItem(1);
-                ItemStack dabloons = compressor.getItem(2);
+                ItemStack doubloons = compressor.getItem(2);
                 int dollars = Wallet.getDollars(wallet);
                 if (dollars >= 10) {
-                    if (dabloons.is(Items.GOLD_BLOCK) && dabloons.getCount() != 64) {
+                    if (doubloons.is(Items.GOLD_BLOCK) && doubloons.getCount() != 64) {
                         Wallet.setDollars(wallet, dollars - 10);
-                        dabloons.grow(1);
+                        doubloons.grow(1);
                         fuel.shrink(1);
                         compressor.compressing_ticks = 100;
-                    } else if (dabloons.isEmpty()) {
+                    } else if (doubloons.isEmpty()) {
                         Wallet.setDollars(wallet, dollars - 10);
                         compressor.setItem(2, new ItemStack(Items.GOLD_BLOCK));
                         fuel.shrink(1);
                         compressor.compressing_ticks = 100;
                     }
-                } else if (dabloons.isEmpty() && !wallet.isEmpty()) {
+                } else if (doubloons.isEmpty() && !wallet.isEmpty()) {
                     compressor.setItem(0, ItemStack.EMPTY);
                     ItemStack receipt = new ItemStack(Items.PAPER, 2);
                     receipt.set(DataComponents.CUSTOM_NAME, Component.literal(compressor.getName() + " receipt")
@@ -98,7 +98,7 @@ public class DabloonCompressorEntity extends BlockEntity implements WorldlyConta
         output.putString("owner", owner == null ? "" : owner.toString());
         output.putString("compressing_ticks", Integer.toString(compressing_ticks));
         output.putString("original_wallet_coins", Integer.toString(original_wallet_coins));
-        output.putString("name", name == null ? "Dabloon Compressor" : name);
+        output.putString("name", name == null ? "Doubloon Compressor" : name);
         ContainerHelper.saveAllItems(output, inventory);
     }
 
@@ -109,12 +109,13 @@ public class DabloonCompressorEntity extends BlockEntity implements WorldlyConta
         owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
         compressing_ticks = input.getIntOr("compressing_ticks", 100);
         original_wallet_coins = input.getIntOr("original_wallet_coins", 0);
-        name = input.getStringOr("name", "Dabloon Compressor");
+        name = input.getStringOr("name", "Doubloon Compressor");
         ContainerHelper.loadAllItems(input, inventory);
     }
 
     @Override
     public int getContainerSize() { return 3; }
+
     @Override
     public int[] getSlotsForFace(Direction side) {
         if (side == Direction.UP) return new int[]{ 0 };
