@@ -3,6 +3,7 @@ package net.dingletherat.block.entity.custom;
 import java.util.List;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
+import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
@@ -24,6 +25,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.NonNull;
 
 public class DoubloonCompressorEntity extends BlockEntity implements WorldlyContainer {
     protected UUID owner;
@@ -52,7 +54,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
                 ItemStack doubloons = compressor.getItem(2);
                 int dollars = Wallet.getDollars(wallet);
                 if (dollars >= 10) {
-                    if (doubloons.is(Items.GOLD_BLOCK) && doubloons.getCount() != 64) {
+                    if (doubloons.is(MoneyBlocks.DOUBLOON.asItem()) && doubloons.getCount() != 64) {
                         Wallet.setDollars(wallet, dollars - 10);
                         doubloons.grow(1);
                         fuel.shrink(1);
@@ -71,7 +73,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
                     receipt.set(DataComponents.LORE, new ItemLore(List.of(
                                     Component.literal(Wallet.getOwner(wallet))
                                             .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.BLUE)),
-                                    Component.literal(Integer.toString(compressor.getTransactionCoins()) + " dollars")
+                                    Component.literal(compressor.getTransactionCoins() + " dollars")
                                             .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.BLUE)),
                                     Component.literal("Day " + Long.toString(world.getGameTime() / 24000))
                                             .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.RED))
@@ -117,7 +119,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     public int getContainerSize() { return 3; }
 
     @Override
-    public int[] getSlotsForFace(Direction side) {
+    public int @NonNull [] getSlotsForFace(Direction side) {
         if (side == Direction.UP) return new int[]{ 0 };
         if (side == Direction.DOWN) return new int[]{ 2 };
         return new int[]{ 1 };
