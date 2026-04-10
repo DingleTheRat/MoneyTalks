@@ -32,6 +32,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     protected int compressing_ticks = 100;
     protected int original_wallet_coins;
     protected String name;
+    protected String walletOwner;
     // Item 0: wallet
     // Item 1: fuel
     // Item 2: doubloons
@@ -46,13 +47,14 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, DoubloonCompressorEntity compressor) {
+        ItemStack wallet = compressor.getItem(0);
+        ItemStack fuel = compressor.getItem(1);
+        ItemStack doubloons = compressor.getItem(2);
+        int dollars = Wallet.getDollars(wallet);
+        if (dollars < 10) compressor.setItem(0, ItemStack.EMPTY);
         if (world.isClientSide()) return;
         if (compressor.getItem(0).is(MoneyItems.WALLET) && compressor.getItem(1).is(Items.BLAZE_POWDER)) {
             if (compressor.compressing_ticks == 0) {
-                ItemStack wallet = compressor.getItem(0);
-                ItemStack fuel = compressor.getItem(1);
-                ItemStack doubloons = compressor.getItem(2);
-                int dollars = Wallet.getDollars(wallet);
                 if (dollars >= 10) {
                     if (doubloons.is(MoneyBlocks.DOUBLOON.asItem()) && doubloons.getCount() != 64) {
                         Wallet.setDollars(wallet, dollars - 10);
@@ -65,21 +67,6 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
                         fuel.shrink(1);
                         compressor.compressing_ticks = 100;
                     }
-                } else if (doubloons.isEmpty() && !wallet.isEmpty()) {
-                    compressor.setItem(0, ItemStack.EMPTY);
-                    ItemStack receipt = new ItemStack(Items.PAPER, 2);
-                    receipt.set(DataComponents.CUSTOM_NAME, Component.literal(compressor.getName() + " receipt")
-                            .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.AQUA)));
-                    receipt.set(DataComponents.LORE, new ItemLore(List.of(
-                                    Component.literal(Wallet.getOwner(wallet))
-                                            .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.BLUE)),
-                                    Component.literal(compressor.getTransactionCoins() + " dollars")
-                                            .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.BLUE)),
-                                    Component.literal("Day " + Long.toString(world.getGameTime() / 24000))
-                                            .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.RED))
-                    )));
-                    compressor.setItem(2, receipt);
-                    compressor.compressing_ticks = 100;
                 }
             } else {
                 compressor.compressing_ticks--;
@@ -93,6 +80,8 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     public void setTransactionCoins(int coins) { this.original_wallet_coins = coins; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public String getWalletOwner() { return walletOwner; }
+    public void setWalletOwner(String owner) { this.walletOwner = owner; }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
@@ -101,6 +90,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         output.putString("compressing_ticks", Integer.toString(compressing_ticks));
         output.putString("original_wallet_coins", Integer.toString(original_wallet_coins));
         output.putString("name", name == null ? "Doubloon Compressor" : name);
+        output.putString("wallet_owner", walletOwner == null ? "Unknown Player" : name);
         ContainerHelper.saveAllItems(output, inventory);
     }
 
@@ -112,6 +102,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         compressing_ticks = input.getIntOr("compressing_ticks", 100);
         original_wallet_coins = input.getIntOr("original_wallet_coins", 0);
         name = input.getStringOr("name", "Doubloon Compressor");
+        walletOwner = input.getStringOr("wallet_owner", "Unknown Player");
         ContainerHelper.loadAllItems(input, inventory);
     }
 
