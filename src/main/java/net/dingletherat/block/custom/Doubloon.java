@@ -22,9 +22,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.ticks.ScheduledTick;
 
 public class Doubloon extends Block {
+    public static final long TRIGGER_TIME = 200;
+    public static final int SPAWN_OFFSET = 2;
+    public static final int MAX_Y_SPAWN_OFFSET = 32;
     ScheduledTick<Block> scheduledTick;
-    public final long TRIGGER_TIME = 200;
-    public final int SPAWN_OFFSET = 2;
     public ZombieVillager zombieVillager;
 
     public Doubloon(BlockBehaviour.Properties properties) {
@@ -34,7 +35,8 @@ public class Doubloon extends Block {
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos position, RandomSource random) {
         spawnLingeringPotion(level, position);
-        if (zombieVillager == null || !zombieVillager.isAlive()) summonZombieVillager(level, position);
+        if (zombieVillager == null || !zombieVillager.isAlive() || zombieVillager.isInvulnerable())
+            summonZombieVillager(level, position);
         scheduleTick(level, position, false);
     }
 
@@ -53,6 +55,9 @@ public class Doubloon extends Block {
         level.addFreshEntity(potionProjectile);
     }
     public void summonZombieVillager(ServerLevel level, BlockPos position) {
+        // Kill off the zombieVillager in case he is isAlive
+        if (zombieVillager != null && zombieVillager.isAlive()) zombieVillager.discard();
+
         // Create the zombieVillager that we will summon, containing and investor profession
         ZombieVillager zombieVillager = new ZombieVillager(EntityType.ZOMBIE_VILLAGER, level);
         zombieVillager.setVillagerData(zombieVillager.getVillagerData()
@@ -60,11 +65,37 @@ public class Doubloon extends Block {
 
         // Get two randoms to determine the offset at which the villager will spawn from the block
         Random random = new Random();
-        int x = random.nextInt(SPAWN_OFFSET) + 1;
-        int z = random.nextInt(SPAWN_OFFSET) + 1;
+        int xOffset = random.nextInt(SPAWN_OFFSET) + 1;
+        int zOffset = random.nextInt(SPAWN_OFFSET) + 1;
 
-        // Spawn in the villager at the BlockPos + the offset
-        zombieVillager.setPos(position.getX() + x, position.getY(), position.getZ() + z);
+        // Get the blockpos of our current cordinates
+        BlockPos targetPosition = new BlockPos(position.getX() + xOffset, position.getY(), position.getZ() + zOffset);
+
+        // Check if the spot at block Y is clear (2 blocks tall so the villager does not suffercate)
+        if (!isValidSpawn(level, targetPosition)) {
+            // Search outward from block Y, alternating up and down
+            boolean found = false;
+            for (int yOffset = 1; yOffset <= MAX_Y_SPAWN_OFFSET; yOffset++) {
+                BlockPos above = new BlockPos(targetPosition.getX(), targetPosition.getY() + yOffset, targetPosition.getZ());
+                BlockPos below = new BlockPos(targetPosition.getX(), targetPosition.getY() - yOffset, targetPosition.getZ());
+
+                if (isValidSpawn(level, above)) {
+                    targetPosition = above;
+                    found = true;
+                    break;
+                }
+                if (isValidSpawn(level, below)) {
+                    targetPosition = below;
+                    found = true;
+                    break;
+                }
+            }
+
+            // If nothing is found, that sucks. GIVE HIM INVINCIBILITY!!!!!
+            if (!found) zombieVillager.setInvulnerable(true);
+        }
+
+        zombieVillager.setPos(targetPosition.getX(), targetPosition.getY(), targetPosition.getZ());
         level.addFreshEntity(zombieVillager);
         this.zombieVillager = zombieVillager;
     }
@@ -78,5 +109,11 @@ public class Doubloon extends Block {
         long triggerTime = level.getGameTime() + (first ? 0 : TRIGGER_TIME);
         ScheduledTick<Block> tick = new ScheduledTick<>(this, position, triggerTime, 0);
         level.getBlockTicks().schedule(tick);
+    }
+    public boolean isValidSpawn(ServerLevel level, BlockPos position) {
+        BlockPos ground = position.below();
+        return level.getBlockState(ground).isSolid()
+            && level.getBlockState(position).isAir()
+            && !level.getBlockState(position.above()).isSolid();
     }
 }
