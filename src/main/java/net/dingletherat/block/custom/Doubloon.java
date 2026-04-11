@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.zombie.ZombieVillager;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownLingeringPotion;
 import net.minecraft.world.item.ItemStack;
@@ -60,16 +61,17 @@ public class Doubloon extends Block {
 
         // Create the zombieVillager that we will summon, containing and investor profession
         ZombieVillager zombieVillager = new ZombieVillager(EntityType.ZOMBIE_VILLAGER, level);
-        zombieVillager.setVillagerData(zombieVillager.getVillagerData()
-                .withProfession(BuiltInRegistries.VILLAGER_PROFESSION.wrapAsHolder(MoneyVillagers.INVESTOR)));
 
         // Get two randoms to determine the offset at which the villager will spawn from the block
         Random random = new Random();
         int xOffset = random.nextInt(SPAWN_OFFSET) + 1;
         int zOffset = random.nextInt(SPAWN_OFFSET) + 1;
+        boolean xAddition = random.nextBoolean();
+        boolean zAddition = random.nextBoolean();
 
         // Get the blockpos of our current cordinates
-        BlockPos targetPosition = new BlockPos(position.getX() + xOffset, position.getY(), position.getZ() + zOffset);
+        BlockPos targetPosition = new BlockPos(xAddition ? position.getX() + xOffset : position.getX() - xOffset,
+                position.getY(), zAddition ? position.getZ() + zOffset : position.getZ() - zOffset);
 
         // Check if the spot at block Y is clear (2 blocks tall so the villager does not suffercate)
         if (!isValidSpawn(level, targetPosition)) {
@@ -94,10 +96,37 @@ public class Doubloon extends Block {
             // If nothing is found, that sucks. GIVE HIM INVINCIBILITY!!!!!
             if (!found) zombieVillager.setInvulnerable(true);
         }
+        
+        // Make the zombie villager **REALLY** like this dabloon block
+        // IMPORTANT: This migh show as an error, BUT IT IS NOT, it compiles
+        zombieVillager.goalSelector.addGoal(1, new Goal() {
+            @Override
+            public boolean canUse() {
+                return zombieVillager.isAlive();
+            }
 
+            @Override
+            public boolean canContinueToUse() {
+                return canUse();
+            }
+
+            @Override
+            public void tick() {
+                zombieVillager.getNavigation().moveTo(
+                    xAddition ? position.getX() + 1 :  position.getX() - 1, position.getY(),
+                    xAddition ? position.getZ() + 1 :  position.getZ() - 1, 1.0
+                );
+            }
+        });
+
+        // Unleash our amazing creation into the world
         zombieVillager.setPos(targetPosition.getX(), targetPosition.getY(), targetPosition.getZ());
         level.addFreshEntity(zombieVillager);
         this.zombieVillager = zombieVillager;
+
+        // Give the villager the investor profession
+        zombieVillager.setVillagerData(zombieVillager.getVillagerData()
+            .withProfession(BuiltInRegistries.VILLAGER_PROFESSION.wrapAsHolder(MoneyVillagers.INVESTOR)));
     }
 
     @Override
