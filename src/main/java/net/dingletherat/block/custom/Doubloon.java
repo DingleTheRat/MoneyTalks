@@ -2,6 +2,9 @@ package net.dingletherat.block.custom;
 
 import java.util.Random;
 
+import com.mojang.serialization.MapCodec;
+
+import net.dingletherat.block.entity.custom.DoubloonEntity;
 import net.dingletherat.item.potion.MoneyPotions;
 import net.dingletherat.villager.MoneyVillagers;
 import net.minecraft.core.BlockPos;
@@ -17,17 +20,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.ticks.ScheduledTick;
 
-public class Doubloon extends Block {
+public class Doubloon extends BaseEntityBlock {
     public static final long TRIGGER_TIME = 200;
     public static final int SPAWN_OFFSET = 2;
     public static final int MAX_Y_SPAWN_OFFSET = 32;
+    public static final MapCodec<Doubloon> CODEC = Doubloon.simpleCodec(Doubloon::new);
     ScheduledTick<Block> scheduledTick;
-    public ZombieVillager zombieVillager;
 
     public Doubloon(BlockBehaviour.Properties properties) {
         super(properties);
@@ -35,10 +40,26 @@ public class Doubloon extends Block {
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos position, RandomSource random) {
+        // Get block entity
+        DoubloonEntity blockEntity = (DoubloonEntity) level.getBlockEntity(position);
+        if (blockEntity == null) return;
+        blockEntity.resolveVillager();
+
         spawnLingeringPotion(level, position);
-        if (zombieVillager == null || !zombieVillager.isAlive() || zombieVillager.isInvulnerable())
-            summonZombieVillager(level, position);
+        if (blockEntity.zombieVillager == null || !blockEntity.zombieVillager.isAlive() || blockEntity.zombieVillager.isInvulnerable())
+            summonZombieVillager(level, position, blockEntity);
         scheduleTick(level, position, false);
+    }
+
+
+    @Override
+    public MapCodec<Doubloon> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos position, BlockState state) {
+        return new DoubloonEntity(position, state);
     }
 
     public void spawnLingeringPotion(ServerLevel level, BlockPos position) {
@@ -55,9 +76,9 @@ public class Doubloon extends Block {
         // Throw our potion
         level.addFreshEntity(potionProjectile);
     }
-    public void summonZombieVillager(ServerLevel level, BlockPos position) {
+    public void summonZombieVillager(ServerLevel level, BlockPos position, DoubloonEntity blockEntity) {
         // Kill off the zombieVillager in case he is isAlive
-        if (zombieVillager != null && zombieVillager.isAlive()) zombieVillager.discard();
+        if (blockEntity.zombieVillager != null && blockEntity.zombieVillager.isAlive()) blockEntity.zombieVillager.discard();
 
         // Create the zombieVillager that we will summon, containing and investor profession
         ZombieVillager zombieVillager = new ZombieVillager(EntityType.ZOMBIE_VILLAGER, level);
@@ -113,16 +134,17 @@ public class Doubloon extends Block {
             @Override
             public void tick() {
                 zombieVillager.getNavigation().moveTo(
-                    xAddition ? position.getX() + 1 :  position.getX() - 1, position.getY(),
-                    xAddition ? position.getZ() + 1 :  position.getZ() - 1, 1.0
+                    xAddition ? position.getX() + 1.5 : position.getX() - 1.5, position.getY(),
+                    zAddition ? position.getZ() + 1.5 : position.getZ() - 1.5, 1.0
                 );
             }
         });
 
         // Unleash our amazing creation into the world
-        zombieVillager.setPos(targetPosition.getX(), targetPosition.getY(), targetPosition.getZ());
+        zombieVillager.setPos(targetPosition.getX() + 0.5, targetPosition.getY() + 0.5, targetPosition.getZ());
         level.addFreshEntity(zombieVillager);
-        this.zombieVillager = zombieVillager;
+        blockEntity.zombieVillager = zombieVillager;
+        blockEntity.setChanged();
 
         // Give the villager the investor profession
         zombieVillager.setVillagerData(zombieVillager.getVillagerData()

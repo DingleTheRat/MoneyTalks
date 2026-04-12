@@ -2,7 +2,6 @@ package net.dingletherat.block.custom;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import java.rmi.registry.Registry;
 import java.util.List;
 
 import com.mojang.serialization.MapCodec;
@@ -13,7 +12,9 @@ import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.state.ShopState;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity; import net.minecraft.world.level.block.entity.BlockEntityTicker; import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 public class DoubloonCompressor extends BaseEntityBlock {
