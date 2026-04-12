@@ -2,13 +2,12 @@ package net.dingletherat.block.entity.custom;
 
 import java.util.Map;
 import java.util.UUID;
-
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
+import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.state.WalletState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -44,6 +43,7 @@ public class MerchantCarpetEntity extends BlockEntity {
     private ItemStack trade = ItemStack.EMPTY;
     private Item item = null;
     private float rotation = 0;
+    private UUID wallet = null;
 
     public MerchantCarpetEntity(BlockPos pos, BlockState state) {
         super(MoneyBlockEntities.MERCHANT_CARPET_ENTITY, pos, state);
@@ -60,6 +60,7 @@ public class MerchantCarpetEntity extends BlockEntity {
         output.putString("trade", trade.isEmpty() ? "" : ItemStack.CODEC.encodeStart(
                 JsonOps.INSTANCE, trade).result().map(Object::toString).orElse(""));
         output.putString("item", item != null ? BuiltInRegistries.ITEM.getKey(item).toString() : "minecraft:air");
+        output.putString("wallet", wallet != null ? wallet.toString() : "");
     }
 
     @Override
@@ -78,6 +79,9 @@ public class MerchantCarpetEntity extends BlockEntity {
 
         Identifier identifier = Identifier.tryParse(input.getStringOr("item", "minecraft:air"));
         item = BuiltInRegistries.ITEM.getValue(identifier);
+
+        String walletString = input.getString("wallet").orElse("");
+        wallet = walletString.isEmpty() ? null : UUID.fromString(walletString);
     }
 
     public void setOwner(UUID player) {
@@ -139,6 +143,16 @@ public class MerchantCarpetEntity extends BlockEntity {
             return;
         }
 
+        Map<UUID, WalletState.WalletEntry> ownerWallets = MoneyTalks.walletState.getWalletsOwnedBy(ownerName);
+        if (wallet != null) {
+            WalletState.WalletEntry walletEntry = ownerWallets.get(wallet);
+            if (walletEntry != null) {
+                int newAmount = walletEntry.dollars + amount;
+                MoneyTalks.walletState.applyDeduction(wallet, walletEntry.owner, newAmount);
+                return;
+            }
+        }
+
         Inventory inventory = ownerPlayer.getInventory();
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
@@ -155,7 +169,6 @@ public class MerchantCarpetEntity extends BlockEntity {
             }
         }
 
-        Map<UUID, WalletState.WalletEntry> ownerWallets = MoneyTalks.walletState.getWalletsOwnedBy(ownerName);
         if (!ownerWallets.isEmpty()) {
             Map.Entry<UUID, WalletState.WalletEntry> first = ownerWallets.entrySet().iterator().next();
             int newAmount = first.getValue().dollars + amount;
@@ -202,6 +215,12 @@ public class MerchantCarpetEntity extends BlockEntity {
                 player.playSound(SoundEvents.VAULT_EJECT_ITEM, 1.0f, 1.0f);
                 update();
                 return InteractionResult.SUCCESS;
+            }
+            if (stack.is(MoneyItems.WALLET)) {
+                stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+                String walletId = data != null ? data.copyTag().getString(Wallet.NBT_WALLET_ID).orElse("") : "";
+                wallet = UUID.fromString(walletId);
             }
         }
 

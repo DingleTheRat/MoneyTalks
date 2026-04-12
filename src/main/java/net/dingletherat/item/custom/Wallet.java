@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 public class Wallet extends BundleItem {
     private static final String NBT_DOLLARS = "Dollars";
     private static final String NBT_OWNER = "Owner";
-    private static final String NBT_WALLET_ID = "WalletId";
+    public static final String NBT_WALLET_ID = "WalletId";
     private static final int ITEM_BAR_COLOR = (255 << 24) | (255 << 16) | (214 << 8) | 0;
 
     public Wallet(Properties properties) {
@@ -51,6 +51,7 @@ public class Wallet extends BundleItem {
         nbt.putInt(NBT_DOLLARS, Math.max(0, count));
         wallet.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
     }
+
 
     private static String getOwner(ItemStack wallet) {
         CustomData data = wallet.get(DataComponents.CUSTOM_DATA);
@@ -228,6 +229,13 @@ public class Wallet extends BundleItem {
             ));
             dollars -= amount;
         }
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        if (stack.has(DataComponents.ENCHANTMENT_GLINT_OVERRIDE))
+            return stack.get(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
+        return false;
     }
 
     private static void playInsertSound(Entity entity) {
