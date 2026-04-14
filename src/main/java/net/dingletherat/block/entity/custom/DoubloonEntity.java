@@ -11,6 +11,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class DoubloonEntity extends BlockEntity {
     public ZombieVillager zombieVillager;
+    public BlockPos zombieVillagerSpawnPosition;
     private EntityReference<ZombieVillager> zombieVillagerReference;
 
     public DoubloonEntity(BlockPos position, BlockState state) {
@@ -20,21 +21,27 @@ public class DoubloonEntity extends BlockEntity {
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
+
         if (zombieVillager == null) return;
-        zombieVillagerReference = EntityReference.of(zombieVillager); // pass entity not UUID
+        int[] arrayPosition = {zombieVillagerSpawnPosition.getX(), zombieVillagerSpawnPosition.getY(), zombieVillagerSpawnPosition.getZ()};
+        output.putIntArray("zombieVillagerSpawnPosition", arrayPosition);
+
+        zombieVillagerReference = EntityReference.of(zombieVillager);
         EntityReference.store(zombieVillagerReference, output, "zombieVillager");
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
+
         zombieVillagerReference = EntityReference.read(input, "zombieVillager");
-        // don't try to resolve here, level is null
+
+        int[] arrayPosition = input.getIntArray("zombieVillagerSpawnPosition").orElse(new int[]{0, 0, 0});
+        zombieVillagerSpawnPosition = new BlockPos(arrayPosition[0], arrayPosition[1], arrayPosition[2]);
     }
 
     public void resolveVillager() {
-        if (zombieVillager == null && zombieVillagerReference != null && level != null) {
+        if (zombieVillager == null && zombieVillagerReference != null && level != null)
             zombieVillager = EntityReference.get(zombieVillagerReference, level, ZombieVillager.class);
-        }
     }
 }
