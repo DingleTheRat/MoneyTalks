@@ -38,6 +38,7 @@ public class CompressorMenu extends AbstractContainerMenu {
         this.container = container;
         this.playerInventory = playerInventory;
         this.data = data;
+        addDataSlots(data);
 
         // Container slot thingys
         addSlot(new Slot(container, WALLET_SLOT, 56, 17) {
