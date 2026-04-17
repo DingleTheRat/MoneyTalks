@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -29,15 +30,45 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 public class DoubloonCompressorEntity extends BlockEntity implements WorldlyContainer, MenuProvider {
+    // Slots
+    public static final int WALLET_SLOT = 0;
+    public static final int FUEL_SLOT = 1;
+    public static final int DOUBLOON_SLOT = 2;
+
+    // Other
+    public static final int COMPRESSION_TICKS = 100;
+    public static final int TAKE_COINS = 10;
+
     protected UUID owner;
-    protected int compressing_ticks = 100;
+    protected int compression_progress = COMPRESSION_TICKS;
     protected int original_wallet_coins;
     protected String name;
     protected String walletOwner;
-    // Item 0: wallet
-    // Item 1: fuel
-    // Item 2: doubloons
     protected final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
+
+    // Arrow render
+    public static final int ARROW_PROGRESS = 0;
+    public static final int ARROW_COMPRESSION_TICKS = 1;
+    public final ContainerData data = new ContainerData() {
+        @Override
+        public int get(int index) {
+            return switch (index) {
+                case ARROW_PROGRESS -> compression_progress;
+                case ARROW_COMPRESSION_TICKS -> COMPRESSION_TICKS;
+                default -> ARROW_PROGRESS;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+            if (index == ARROW_PROGRESS) compression_progress = value;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    };
 
     public <T extends DoubloonCompressorEntity> DoubloonCompressorEntity(BlockEntityType<T> blockEntityType, BlockPos pos, BlockState state) {
         super(blockEntityType, pos, state);
@@ -49,40 +80,48 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable(this.getBlockState().getBlock().getDescriptionId());
+        return Component.translatable("block.moneytalks.doubloon_compressor");
     }
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new CompressorMenu(id, inventory, this);
+        return new CompressorMenu(id, inventory, this, data);
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, DoubloonCompressorEntity compressor) {
+        // NO CLIENTS >:(
         if (world.isClientSide()) return;
 
-        ItemStack wallet = compressor.getItem(0);
-        ItemStack fuel = compressor.getItem(1);
-        ItemStack doubloons = compressor.getItem(2);
+        // Get every item in every slot
+        ItemStack wallet = compressor.getItem(WALLET_SLOT);
+        ItemStack fuel = compressor.getItem(FUEL_SLOT);
+        ItemStack doubloons = compressor.getItem(DOUBLOON_SLOT);
+
+        // If the wallet or blaze powder slots do not have their item, return
+        if (!wallet.is(MoneyItems.WALLET) || !fuel.is(Items.BLAZE_POWDER)) return;
+
+        // Get the amount of dollars in the wallet and get rid of it if we can't take anymore coins
         int dollars = Wallet.getDollars(wallet);
-        if (dollars < 10) compressor.setItem(0, ItemStack.EMPTY);
-        if (compressor.getItem(0).is(MoneyItems.WALLET) && compressor.getItem(1).is(Items.BLAZE_POWDER)) {
-            if (compressor.compressing_ticks == 0) {
-                if (dollars >= 10) {
-                    if (doubloons.is(MoneyBlocks.DOUBLOON.asItem()) && doubloons.getCount() != 64) {
-                        Wallet.setDollars(wallet, dollars - 10);
-                        doubloons.grow(1);
-                        fuel.shrink(1);
-                        compressor.compressing_ticks = 100;
-                    } else if (doubloons.isEmpty()) {
-                        Wallet.setDollars(wallet, dollars - 10);
-                        compressor.setItem(2, new ItemStack(Items.GOLD_BLOCK));
-                        fuel.shrink(1);
-                        compressor.compressing_ticks = 100;
-                    }
-                }
-            } else {
-                compressor.compressing_ticks--;
-            }
+        if (dollars < TAKE_COINS) compressor.setItem(WALLET_SLOT, ItemStack.EMPTY);
+
+        // If we aren't done compressing, decrease the progress and return
+        if (compressor.compression_progress != 0) {
+            compressor.compression_progress--;
+            return;
+        }
+
+        // Finish compression, as long as it isn't the max stack size
+        if (doubloons.getCount() != doubloons.getMaxStackSize()) {
+            // Remove da money from da wallet
+            Wallet.setDollars(wallet, dollars - TAKE_COINS);
+
+            // Increase or add in a doubloon into the output slot (doubloon slot)
+            if (compressor.getItem(DOUBLOON_SLOT) == ItemStack.EMPTY) compressor.setItem(DOUBLOON_SLOT, new ItemStack(MoneyBlocks.DOUBLOON.asItem()));
+            else compressor.getItem(DOUBLOON_SLOT).grow(1);
+
+            // Remove a blaze powder and reset the compressing_progress
+            fuel.shrink(1);
+            compressor.compression_progress = COMPRESSION_TICKS;
         }
     }
 
@@ -99,7 +138,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putString("owner", owner == null ? "" : owner.toString());
-        output.putString("compressing_ticks", Integer.toString(compressing_ticks));
+        output.putString("compressing_progress", Integer.toString(compression_progress));
         output.putString("original_wallet_coins", Integer.toString(original_wallet_coins));
         output.putString("name", name == null ? "Doubloon Compressor" : name);
         output.putString("wallet_owner", walletOwner == null ? "Unknown Player" : name);
@@ -111,7 +150,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         super.loadAdditional(input);
         String ownerStr = input.getString("owner").orElse("");
         owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
-        compressing_ticks = input.getIntOr("compressing_ticks", 100);
+        compression_progress = input.getIntOr("compressing_progress", COMPRESSION_TICKS);
         original_wallet_coins = input.getIntOr("original_wallet_coins", 0);
         name = input.getStringOr("name", "Doubloon Compressor");
         walletOwner = input.getStringOr("wallet_owner", "Unknown Player");
@@ -129,15 +168,15 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     }
 
     @Override
-    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction dir) {
-        if (slot == 0) { return stack.is(MoneyItems.WALLET); }
-        if (slot == 1) { return stack.is(Items.BLAZE_POWDER); }
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
+        if (slot == WALLET_SLOT) { return stack.is(MoneyItems.WALLET); }
+        if (slot == FUEL_SLOT) { return stack.is(Items.BLAZE_POWDER); }
         return false;
     }
 
     @Override
-    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction dir) {
-        return slot == 2;
+    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        return slot == DOUBLOON_SLOT;
     }
 
     @Override

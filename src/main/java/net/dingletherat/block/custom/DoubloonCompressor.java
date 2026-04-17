@@ -75,8 +75,6 @@ public class DoubloonCompressor extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-        player.openMenu(compressor);
-
         if (player.getItemInHand(hand).is(MoneyItems.WALLET) && compressor.getItem(0).isEmpty()) {
             compressor.setItem(0, player.getItemInHand(hand).copy());
             int dollars = Wallet.getDollars(player.getItemInHand(hand));
@@ -104,6 +102,8 @@ public class DoubloonCompressor extends BaseEntityBlock {
                 player.drop(receipt, false);
             }
         }
+
+        player.openMenu(compressor);
 
         return InteractionResult.SUCCESS;
     }

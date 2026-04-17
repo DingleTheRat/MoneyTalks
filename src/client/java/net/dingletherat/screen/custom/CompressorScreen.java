@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class CompressorScreen extends AbstractContainerScreen<CompressorMenu> {
     public static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/furnace.png") ;
+    public static final Identifier ARROW_TEXTURE = Identifier.withDefaultNamespace("container/furnace/burn_progress");
 
     public CompressorScreen(CompressorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);

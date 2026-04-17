@@ -4,10 +4,13 @@ import net.dingletherat.item.MoneyItems;
 import net.dingletherat.screen.MoneyMenus;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -27,11 +30,13 @@ public class CompressorMenu extends AbstractContainerMenu {
 
     public Container container;
     public Inventory playerInventory;
+    public final ContainerData data;
 
-    public CompressorMenu(int syncId, Inventory playerInventory, Container container) {
+    public CompressorMenu(int syncId, Inventory playerInventory, Container container, ContainerData data) {
         super(MoneyMenus.COMPRESSOR_MENU, syncId);
         this.container = container;
         this.playerInventory = playerInventory;
+        this.data = data;
 
         // Container slot thingys
         addSlot(new Slot(container, WALLET_SLOT, 56, 17) {
@@ -66,6 +71,9 @@ public class CompressorMenu extends AbstractContainerMenu {
         // Inventory slot thingys
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
+    }
+    public CompressorMenu(int syncId, Inventory playerInventory) {
+        this(syncId, playerInventory, new SimpleContainer(3), new SimpleContainerData(2));
     }
 
     @Override
