@@ -1,5 +1,6 @@
 package net.dingletherat.screen.custom;
 
+import net.dingletherat.MoneyTalks;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.screen.MoneyMenus;
 import net.minecraft.resources.Identifier;
@@ -47,7 +48,7 @@ public class CompressorMenu extends AbstractContainerMenu {
 
             @Override
             public Identifier getNoItemIcon() {
-                return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
+                return Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "wallet");
             }
         });
         addSlot(new Slot(container, FUEL_SLOT, 56, 53) {
@@ -58,7 +59,7 @@ public class CompressorMenu extends AbstractContainerMenu {
 
             @Override
             public Identifier getNoItemIcon() {
-                return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
+                return Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "blaze_powder");
             }
         });
         addSlot(new Slot(container, DOUBLOON_SLOT, 116, 35) {
