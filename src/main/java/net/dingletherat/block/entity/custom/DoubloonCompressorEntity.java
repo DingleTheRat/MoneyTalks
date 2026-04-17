@@ -6,23 +6,29 @@ import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
+import net.dingletherat.screen.custom.CompressorMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
-public class DoubloonCompressorEntity extends BlockEntity implements WorldlyContainer {
+public class DoubloonCompressorEntity extends BlockEntity implements WorldlyContainer, MenuProvider {
     protected UUID owner;
     protected int compressing_ticks = 100;
     protected int original_wallet_coins;
@@ -41,13 +47,24 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         super(MoneyBlockEntities.DOUBLOON_COMPRESSOR_ENTITY, pos, state);
     }
 
+    @Override
+    public Component getDisplayName() {
+        return Component.translatable(this.getBlockState().getBlock().getDescriptionId());
+    }
+
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new CompressorMenu(id, inventory, this);
+    }
+
     public static void tick(Level world, BlockPos pos, BlockState state, DoubloonCompressorEntity compressor) {
+        if (world.isClientSide()) return;
+
         ItemStack wallet = compressor.getItem(0);
         ItemStack fuel = compressor.getItem(1);
         ItemStack doubloons = compressor.getItem(2);
         int dollars = Wallet.getDollars(wallet);
         if (dollars < 10) compressor.setItem(0, ItemStack.EMPTY);
-        if (world.isClientSide()) return;
         if (compressor.getItem(0).is(MoneyItems.WALLET) && compressor.getItem(1).is(Items.BLAZE_POWDER)) {
             if (compressor.compressing_ticks == 0) {
                 if (dollars >= 10) {
@@ -139,7 +156,9 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     public void setItem(int slot, ItemStack stack) { inventory.set(slot, stack); setChanged(); }
 
     @Override
-    public boolean stillValid(Player player) { return true; }
+    public boolean stillValid(Player player) {
+        return Container.stillValidBlockEntity(this, player);
+    }
 
     @Override
     public void clearContent() { inventory.clear(); }
