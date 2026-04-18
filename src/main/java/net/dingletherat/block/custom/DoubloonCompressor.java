@@ -80,7 +80,7 @@ public class DoubloonCompressor extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useItemOn(final ItemStack itemStack, final BlockState state, final Level level, final BlockPos position, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
-        if (level.isClientSide()) return InteractionResult.FAIL;
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (!(level.getBlockEntity(position) instanceof DoubloonCompressorEntity compressor)) {
             return InteractionResult.PASS;
         }

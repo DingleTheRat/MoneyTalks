@@ -1,6 +1,7 @@
 {
   "values": [
     "moneytalks:trimmed_hopper",
-    "moneytalks:double_trimmed_hopper"
+    "moneytalks:double_trimmed_hopper",
+    "moneytalks:doubloon_compressor"
   ]
 }

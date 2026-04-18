@@ -17,5 +17,6 @@ public class MoneyLootTableProvider extends FabricBlockLootSubProvider {
     public void generate() {
         dropSelf((Block) MoneyBlocks.TRIMMED_HOPPER);
         dropSelf((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER);
+        dropSelf((Block) MoneyBlocks.DOUBLOON_COMPRESSOR);
     }
 }

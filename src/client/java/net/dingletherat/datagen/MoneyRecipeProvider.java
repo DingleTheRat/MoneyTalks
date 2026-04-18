@@ -85,9 +85,19 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                     .define('H', Blocks.HOPPER)
                     .unlockedBy("has_diamond", has(Items.DIAMOND))
                     .save(recipeExporter);
+
                 shapeless(RecipeCategory.MISC, new ItemStackTemplate(MoneyItems.DOLLAR, 10))
                     .requires(MoneyBlocks.DOUBLOON.asItem())
                     .unlockedBy("has_doubloon", has(MoneyBlocks.DOUBLOON.asItem()))
+                    .save(recipeExporter);
+                shaped(RecipeCategory.MISC, (Block) MoneyBlocks.DOUBLOON_COMPRESSOR)
+                    .pattern("DDD")
+                    .pattern("DND")
+                    .pattern("SSS")
+                    .define('D', Items.DEEPSLATE)
+                    .define('N', Items.NETHERITE_INGOT)
+                    .define('S', Blocks.SOUL_SAND)
+                    .unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT))
                     .save(recipeExporter);
             }
         };
