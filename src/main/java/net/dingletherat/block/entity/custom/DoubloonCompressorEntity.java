@@ -42,7 +42,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
 
     protected UUID owner;
     protected int compression_progress = COMPRESSION_TICKS;
-    protected int compressions = COMPRESSIONS_PER_FUEL;
+    protected int compressions = 0;
     protected boolean fueled = false;
     protected int original_wallet_coins;
     protected String name;
@@ -111,12 +111,13 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         if (fuel.is(Items.BLAZE_POWDER) && !compressor.fueled) {
             fuel.shrink(1);
             compressor.fueled = true;
+            compressor.compressions = COMPRESSIONS_PER_FUEL;
             setChanged(world, position, state);
             return;
         }
 
-        // If the wallet or blaze powder slots do not have their item, return
-        if (!wallet.is(MoneyItems.WALLET) || !fuel.is(Items.BLAZE_POWDER)) return;
+        // Return if it's not fueled or has no wallet to deduct the coins from
+        if (!wallet.is(MoneyItems.WALLET) || !compressor.fueled) return;
 
         // Get the amount of dollars in the wallet and get rid of it if we can't take anymore coins
         int dollars = Wallet.getDollars(wallet);
@@ -142,7 +143,6 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
             compressor.compressions--;
             if (compressor.compressions <= 0) {
                 compressor.fueled = false;
-                compressor.compressions = COMPRESSIONS_PER_FUEL;
             }
 
             // Finish everything off

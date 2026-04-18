@@ -69,9 +69,9 @@ public class DoubloonCompressor extends BaseEntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(final ItemStack itemStack, final BlockState state, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
-        if (level.isClientSide()) return InteractionResult.PASS;
-        if (!(level.getBlockEntity(pos) instanceof DoubloonCompressorEntity compressor)) {
+    protected InteractionResult useItemOn(final ItemStack itemStack, final BlockState state, final Level level, final BlockPos position, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
+        if (level.isClientSide()) return InteractionResult.FAIL;
+        if (!(level.getBlockEntity(position) instanceof DoubloonCompressorEntity compressor)) {
             return InteractionResult.PASS;
         }
 
@@ -98,13 +98,14 @@ public class DoubloonCompressor extends BaseEntityBlock {
             )));
             player.getItemInHand(hand).shrink(1);
 
-            if (!player.getInventory().add(receipt)) {
-                player.drop(receipt, false);
-            }
+            if (!player.getInventory().add(receipt)) player.drop(receipt, false);
+            return InteractionResult.SUCCESS;
         }
 
-        player.openMenu(compressor);
-
-        return InteractionResult.SUCCESS;
+        if (compressor.getOwner() == player.getUUID()) {
+            player.openMenu(compressor);
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.FAIL;
     }
 }
