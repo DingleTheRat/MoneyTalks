@@ -37,36 +37,46 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
 
     // Other
     public static final int COMPRESSION_TICKS = 100;
+    public static final int COMPRESSIONS_PER_FUEL = 3;
     public static final int TAKE_COINS = 10;
 
     protected UUID owner;
     protected int compression_progress = COMPRESSION_TICKS;
+    protected int compressions = COMPRESSIONS_PER_FUEL;
+    protected boolean fueled = false;
     protected int original_wallet_coins;
     protected String name;
     protected String walletOwner;
     protected final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
 
-    // Arrow render
-    public static final int ARROW_PROGRESS = 0;
-    public static final int ARROW_COMPRESSION_TICKS = 1;
+    // For the displays in the UI (arrow and fuel)
+    public static final int DISPLAYS_PROGRESS = 0;
+    public static final int DISPLAYS_COMPRESSION_TICKS = 1;
+    public static final int DISPLAYS_COMPRESSIONS = 2;
+    public static final int DISPLAYS_COMPRESSIONS_PER_FUEL = 3;
     public final ContainerData data = new ContainerData() {
         @Override
         public int get(int index) {
             return switch (index) {
-                case ARROW_PROGRESS -> compression_progress;
-                case ARROW_COMPRESSION_TICKS -> COMPRESSION_TICKS;
-                default -> ARROW_PROGRESS;
+                case DISPLAYS_PROGRESS -> compression_progress;
+                case DISPLAYS_COMPRESSION_TICKS -> COMPRESSION_TICKS;
+                case DISPLAYS_COMPRESSIONS -> compressions;
+                case DISPLAYS_COMPRESSIONS_PER_FUEL -> COMPRESSIONS_PER_FUEL;
+                default -> 0;
             };
         }
 
         @Override
         public void set(int index, int value) {
-            if (index == ARROW_PROGRESS) compression_progress = value;
+            switch (index) {
+                case DISPLAYS_PROGRESS -> compression_progress = value;
+                case DISPLAYS_COMPRESSIONS -> compressions = value;
+            }
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 4;
         }
     };
 
@@ -84,11 +94,11 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new CompressorMenu(id, inventory, this, data);
+    public AbstractContainerMenu createMenu(int syncId, Inventory inventory, Player player) {
+        return new CompressorMenu(syncId, inventory, this, data);
     }
 
-    public static void tick(Level world, BlockPos pos, BlockState state, DoubloonCompressorEntity compressor) {
+    public static void tick(Level world, BlockPos position, BlockState state, DoubloonCompressorEntity compressor) {
         // NO CLIENTS >:(
         if (world.isClientSide()) return;
 
@@ -96,6 +106,14 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         ItemStack wallet = compressor.getItem(WALLET_SLOT);
         ItemStack fuel = compressor.getItem(FUEL_SLOT);
         ItemStack doubloons = compressor.getItem(DOUBLOON_SLOT);
+
+        // If the compressor has no more fuel, take some.
+        if (fuel.is(Items.BLAZE_POWDER) && !compressor.fueled) {
+            fuel.shrink(1);
+            compressor.fueled = true;
+            setChanged(world, position, state);
+            return;
+        }
 
         // If the wallet or blaze powder slots do not have their item, return
         if (!wallet.is(MoneyItems.WALLET) || !fuel.is(Items.BLAZE_POWDER)) return;
@@ -107,6 +125,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         // If we aren't done compressing, decrease the progress and return
         if (compressor.compression_progress != 0) {
             compressor.compression_progress--;
+            setChanged(world, position, state);
             return;
         }
 
@@ -119,9 +138,16 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
             if (compressor.getItem(DOUBLOON_SLOT) == ItemStack.EMPTY) compressor.setItem(DOUBLOON_SLOT, new ItemStack(MoneyBlocks.DOUBLOON.asItem()));
             else compressor.getItem(DOUBLOON_SLOT).grow(1);
 
-            // Remove a blaze powder and reset the compressing_progress
-            fuel.shrink(1);
+            // Increment compressions. If it reached 3, set fueled to be false so it can consume some.
+            compressor.compressions--;
+            if (compressor.compressions <= 0) {
+                compressor.fueled = false;
+                compressor.compressions = COMPRESSIONS_PER_FUEL;
+            }
+
+            // Finish everything off
             compressor.compression_progress = COMPRESSION_TICKS;
+            setChanged(world, position, state);
         }
     }
 
@@ -138,8 +164,12 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putString("owner", owner == null ? "" : owner.toString());
-        output.putString("compressing_progress", Integer.toString(compression_progress));
-        output.putString("original_wallet_coins", Integer.toString(original_wallet_coins));
+
+        output.putInt("compressing_progress", compression_progress);
+        output.putInt("compressions", compressions);
+        output.putBoolean("fueled", fueled);
+        
+        output.putInt("original_wallet_coins", original_wallet_coins);
         output.putString("name", name == null ? "Doubloon Compressor" : name);
         output.putString("wallet_owner", walletOwner == null ? "Unknown Player" : name);
         ContainerHelper.saveAllItems(output, inventory);
@@ -150,7 +180,11 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         super.loadAdditional(input);
         String ownerStr = input.getString("owner").orElse("");
         owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
+
         compression_progress = input.getIntOr("compressing_progress", COMPRESSION_TICKS);
+        compressions = input.getIntOr("compressings", COMPRESSIONS_PER_FUEL);
+        fueled = input.getBooleanOr("fueled", false);
+
         original_wallet_coins = input.getIntOr("original_wallet_coins", 0);
         name = input.getStringOr("name", "Doubloon Compressor");
         walletOwner = input.getStringOr("wallet_owner", "Unknown Player");
