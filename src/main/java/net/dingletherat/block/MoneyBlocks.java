@@ -44,8 +44,8 @@ public class MoneyBlocks {
     public static final BlockBehaviour TRIMMED_HOPPER = registerBlock("trimmed_hopper", properties -> new TrimmedHopper(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.METAL).pushReaction(PushReaction.NORMAL)));
     public static final BlockBehaviour DOUBLE_TRIMMED_HOPPER = registerBlockWithoutBlockItem("double_trimmed_hopper", properties -> new DoubleTrimmedHopper(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.METAL).pushReaction(PushReaction.NORMAL)));
 
-    public static final BlockBehaviour DOUBLOON = registerBlock("doubloon", properties -> new Doubloon(properties));
-    public static final BlockBehaviour DOUBLOON_COMPRESSOR = registerBlock("doubloon_compressor", properties -> new DoubloonCompressor(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.STONE).pushReaction(PushReaction.NORMAL)));
+    public static final BlockBehaviour DOUBLOON = registerBlock("doubloon", properties -> new Doubloon(properties.strength(0)));
+    public static final BlockBehaviour DOUBLOON_COMPRESSOR = registerBlock("doubloon_compressor", properties -> new DoubloonCompressor(properties.noOcclusion().strength(3.0f, 6.0f).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE).lightLevel(state -> state.getValue(DoubloonCompressor.FUELED) ? 13 : 0)));
 
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function) {
         Identifier id = Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name);

@@ -3,6 +3,7 @@ package net.dingletherat.block.entity.custom;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 import net.dingletherat.block.MoneyBlocks;
+import net.dingletherat.block.custom.DoubloonCompressor;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
@@ -43,7 +44,6 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     protected UUID owner;
     protected int compression_progress = COMPRESSION_TICKS;
     protected int compressions = 0;
-    protected boolean fueled = false;
     protected int original_wallet_coins;
     protected String name;
     protected String walletOwner;
@@ -108,16 +108,16 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         ItemStack doubloons = compressor.getItem(DOUBLOON_SLOT);
 
         // If the compressor has no more fuel, take some.
-        if (fuel.is(Items.BLAZE_POWDER) && !compressor.fueled) {
+        if (fuel.is(Items.BLAZE_POWDER) && !state.getValue(DoubloonCompressor.FUELED)) {
             fuel.shrink(1);
-            compressor.fueled = true;
+            world.setBlock(position, state.setValue(DoubloonCompressor.FUELED, true), 3);
             compressor.compressions = COMPRESSIONS_PER_FUEL;
             setChanged(world, position, state);
             return;
         }
 
         // Return if it's not fueled or has no wallet to deduct the coins from
-        if (!wallet.is(MoneyItems.WALLET) || !compressor.fueled) return;
+        if (!wallet.is(MoneyItems.WALLET) || !state.getValue(DoubloonCompressor.FUELED)) return;
 
         // Get the amount of dollars in the wallet and get rid of it if we can't take anymore coins
         int dollars = Wallet.getDollars(wallet);
@@ -141,9 +141,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
 
             // Increment compressions. If it reached 3, set fueled to be false so it can consume some.
             compressor.compressions--;
-            if (compressor.compressions <= 0) {
-                compressor.fueled = false;
-            }
+            if (compressor.compressions <= 0) world.setBlock(position, state.setValue(DoubloonCompressor.FUELED, false), 3);
 
             // Finish everything off
             compressor.compression_progress = COMPRESSION_TICKS;
@@ -167,7 +165,6 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
 
         output.putInt("compressing_progress", compression_progress);
         output.putInt("compressions", compressions);
-        output.putBoolean("fueled", fueled);
         
         output.putInt("original_wallet_coins", original_wallet_coins);
         output.putString("name", name == null ? "Doubloon Compressor" : name);
@@ -183,7 +180,6 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
 
         compression_progress = input.getIntOr("compressing_progress", COMPRESSION_TICKS);
         compressions = input.getIntOr("compressings", COMPRESSIONS_PER_FUEL);
-        fueled = input.getBooleanOr("fueled", false);
 
         original_wallet_coins = input.getIntOr("original_wallet_coins", 0);
         name = input.getStringOr("name", "Doubloon Compressor");
