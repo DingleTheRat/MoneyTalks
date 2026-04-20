@@ -56,7 +56,6 @@ public class MoneyModels extends FabricModelProvider{
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.YELLOW_MERCHANT_CARPET, "yellow_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.WHITE_MERCHANT_CARPET, "white_merchant_carpet");
 
-
         blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DOUBLOON_COMPRESSOR, TexturedModel.CUBE);
         blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DOUBLOON, TexturedModel.CUBE);
     }
