@@ -13,25 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(HopperBlockEntity.class)
 public class HopperBlockEntityMixin {
 
-    /**
-     * Prevents hoppers from pulling/pushing a specific item.
-     * This injects into the static transfer method that handles all
-     * hopper item movement (both entity pickup and container transfer).
-     */
-    @Inject(
-        method = "addItem(Lnet/minecraft/world/Container;Lnet/minecraft/world/Container;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/core/Direction;)Lnet/minecraft/world/item/ItemStack;",
-        at = @At("HEAD"),
-        cancellable = true
-    )
-    private static void preventSpecificItemPickup(
-        Container to,
-        Container from,
-        ItemStack stack,
-        Direction direction,
-        CallbackInfoReturnable<ItemStack> cir
-    ) {
-        if (MoneyTalks.nonTransferable.contains(stack.getItem())) {
-            cir.setReturnValue(stack);
-        }
+    @Inject(method = "addItem(Lnet/minecraft/world/Container;Lnet/minecraft/world/Container;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/core/Direction;)Lnet/minecraft/world/item/ItemStack;", at = @At("HEAD"), cancellable = true)
+    private static void preventSpecificItemPickup(Container to, Container from, ItemStack stack, Direction direction, CallbackInfoReturnable<ItemStack> cir) {
+        if (MoneyTalks.nonTransferable.contains(stack.getItem())) cir.setReturnValue(stack);
     }
 }

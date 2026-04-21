@@ -122,9 +122,8 @@ public class MerchantCarpetEntity extends BlockEntity {
 
     public void update() {
         setChanged();
-        if (getLevel() != null && !getLevel().isClientSide()) {
+        if (getLevel() != null && !getLevel().isClientSide())
             getLevel().sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-        }
     }
 
     private void payOwner(Level level, int amount) {
@@ -179,7 +178,7 @@ public class MerchantCarpetEntity extends BlockEntity {
                 update();
                 return InteractionResult.SUCCESS;
             }
-            if (item == null) {
+            if (item == null && MoneyTalks.nonTransferable.contains(stack.getItem())) {
                 trade = stack.copy();
                 item = trade.getItem();
                 amount = stack.getCount();
@@ -249,10 +248,9 @@ public class MerchantCarpetEntity extends BlockEntity {
                 drop.setCount(amount);
                 Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), drop);
             }
-            if (collected > 0) {
+            if (collected > 0)
                 Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
                         new ItemStack(MoneyItems.DOLLAR, collected));
-            }
         }
     }
 }
