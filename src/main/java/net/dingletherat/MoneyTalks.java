@@ -61,9 +61,19 @@ public class MoneyTalks implements ModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
 			if (!(entity instanceof ServerPlayer player)) return;
+			handleDoubloonLoss(player, player);
 			if (!(damageSource.getDirectEntity() instanceof ServerPlayer)) return;
 			handleDollarLoss(player, player);
 		});
+	}
+	private void handleDoubloonLoss(ServerPlayer oldPlayer, ServerPlayer newPlayer) {
+		for (int i = 0; i < oldPlayer.getInventory().getContainerSize(); i++) {
+			ItemStack stack = oldPlayer.getInventory().getItem(i);
+			if (stack.is(MoneyBlocks.DOUBLOON.asItem())) {
+				oldPlayer.getInventory().setItem(i, ItemStack.EMPTY);
+				oldPlayer.drop(stack, true, false);
+			}
+		}
 	}
 	private void handleDollarLoss(ServerPlayer oldPlayer, ServerPlayer player) {
 		int invSize = player.getInventory().getContainerSize();
