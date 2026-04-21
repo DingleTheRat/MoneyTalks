@@ -13,11 +13,13 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -29,6 +31,7 @@ public class MoneyTalks implements ModInitializer {
 	public static final String MOD_ID = "moneytalks";
 	public static WalletState walletState;
 	public static ShopState shopState;
+    public static final List<Item> nonTransferable = List.of(MoneyItems.DOLLAR, MoneyBlocks.DOUBLOON.asItem());
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.

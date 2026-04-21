@@ -206,7 +206,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
-        return slot == DOUBLOON_SLOT;
+        return false;
     }
 
     @Override
