@@ -19,9 +19,6 @@ public class MoneyGroups {
                         entries.accept(MoneyItems.DOLLAR);
                         entries.accept(MoneyItems.WALLET);
 
-                        entries.accept(MoneyItems.DOUBLE_TRIMMED_HOPPER);
-                        entries.accept(MoneyBlocks.TRIMMED_HOPPER.asItem());
-
                         entries.accept(MoneyBlocks.BLACK_MERCHANT_CARPET.asItem());
                         entries.accept(MoneyBlocks.BLUE_MERCHANT_CARPET.asItem());
                         entries.accept(MoneyBlocks.BROWN_MERCHANT_CARPET.asItem());
@@ -38,6 +35,12 @@ public class MoneyGroups {
                         entries.accept(MoneyBlocks.RED_MERCHANT_CARPET.asItem());
                         entries.accept(MoneyBlocks.WHITE_MERCHANT_CARPET.asItem());
                         entries.accept(MoneyBlocks.YELLOW_MERCHANT_CARPET.asItem());
+
+                        entries.accept(MoneyItems.DOUBLE_TRIMMED_HOPPER);
+                        entries.accept(MoneyBlocks.TRIMMED_HOPPER.asItem());
+
+                        entries.accept(MoneyBlocks.DOUBLOON.asItem());
+                        entries.accept(MoneyBlocks.DOUBLOON_COMPRESSOR.asItem());
                     }).build());
 
     public static void registerItemGroups() {

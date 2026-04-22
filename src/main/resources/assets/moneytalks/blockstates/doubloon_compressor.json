@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "fueled=false": {
+      "model": "moneytalks:block/doubloon_compressor"
+    },
+    "fueled=true": {
+      "model": "moneytalks:block/doubloon_compressor_fueled"
+    }
+  }
+}

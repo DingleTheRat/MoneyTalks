@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.ChatFormatting;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -38,13 +37,13 @@ public class Wallet extends BundleItem {
         super(properties);
     }
 
-    private static int getDollars(ItemStack wallet) {
+    public static int getDollars(ItemStack wallet) {
         CustomData data = wallet.get(DataComponents.CUSTOM_DATA);
         if (data == null) return 0;
         return data.copyTag().getInt(NBT_DOLLARS).orElse(0);
     }
 
-    private static void setDollars(ItemStack wallet, int count) {
+    public static void setDollars(ItemStack wallet, int count) {
         CompoundTag nbt = wallet.has(DataComponents.CUSTOM_DATA)
                 ? wallet.get(DataComponents.CUSTOM_DATA).copyTag()
                 : new CompoundTag();
@@ -52,8 +51,7 @@ public class Wallet extends BundleItem {
         wallet.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
     }
 
-
-    private static String getOwner(ItemStack wallet) {
+    public static String getOwner(ItemStack wallet) {
         CustomData data = wallet.get(DataComponents.CUSTOM_DATA);
         if (data == null) return null;
         String owner = data.copyTag().getString(NBT_OWNER).orElse("");

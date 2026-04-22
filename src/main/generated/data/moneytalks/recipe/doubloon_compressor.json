@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "minecraft:deepslate",
+    "N": "minecraft:netherite_ingot",
+    "S": "minecraft:soul_sand"
+  },
+  "pattern": [
+    "DDD",
+    "DND",
+    "SSS"
+  ],
+  "result": {
+    "id": "moneytalks:doubloon_compressor"
+  }
+}

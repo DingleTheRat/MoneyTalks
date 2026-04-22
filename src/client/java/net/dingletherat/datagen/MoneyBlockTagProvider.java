@@ -22,6 +22,7 @@ public class MoneyBlockTagProvider extends FabricTagsProvider.BlockTagsProvider 
 
         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((Block) MoneyBlocks.TRIMMED_HOPPER)
-            .add((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER);
+            .add((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER)
+            .add((Block) MoneyBlocks.DOUBLOON_COMPRESSOR);
     }
 }

@@ -3,6 +3,7 @@ package net.dingletherat.datagen;
 import net.dingletherat.MoneyItemTags;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
+import net.dingletherat.item.MoneyItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.world.level.block.Block;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -82,6 +84,20 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                     .define('D', Items.DIAMOND)
                     .define('H', Blocks.HOPPER)
                     .unlockedBy("has_diamond", has(Items.DIAMOND))
+                    .save(recipeExporter);
+
+                shapeless(RecipeCategory.MISC, new ItemStackTemplate(MoneyItems.DOLLAR, 10))
+                    .requires(MoneyBlocks.DOUBLOON.asItem())
+                    .unlockedBy("has_doubloon", has(MoneyBlocks.DOUBLOON.asItem()))
+                    .save(recipeExporter);
+                shaped(RecipeCategory.MISC, (Block) MoneyBlocks.DOUBLOON_COMPRESSOR)
+                    .pattern("DDD")
+                    .pattern("DND")
+                    .pattern("SSS")
+                    .define('D', Items.DEEPSLATE)
+                    .define('N', Items.NETHERITE_INGOT)
+                    .define('S', Blocks.SOUL_SAND)
+                    .unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT))
                     .save(recipeExporter);
             }
         };

@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.custom.TrimmedHopper;
 import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.mixin.ScreenHandlerMixin;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -78,6 +79,8 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
         AABB itemBox = AABB.ofSize(Vec3.atCenterOf(above), 1, 1, 1);
         for (ItemEntity itemEntity : world.getEntitiesOfClass(ItemEntity.class, itemBox, e -> !e.isRemoved())) {
             ItemStack stack = itemEntity.getItem();
+            if (MoneyTalks.nonTransferable.contains(stack.getItem())) continue;
+
             if (!stack.isEmpty()) {
                 for (int j = 0; j < inventory.size(); j++) {
                     ItemStack slot = inventory.get(j);

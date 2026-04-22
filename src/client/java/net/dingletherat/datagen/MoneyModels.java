@@ -13,6 +13,7 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.resources.Identifier;
@@ -23,8 +24,8 @@ public class MoneyModels extends FabricModelProvider{
     }
 
     private static final ModelTemplate MERCHANT_CARPET_TEMPLATE = new ModelTemplate(
-        Optional.of(Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "block/merchant_carpet_base")), 
-        Optional.empty(), 
+        Optional.of(Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "block/merchant_carpet_base")),
+        Optional.empty(),
         TextureSlot.ALL
     );
 
@@ -54,6 +55,9 @@ public class MoneyModels extends FabricModelProvider{
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.RED_MERCHANT_CARPET, "red_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.YELLOW_MERCHANT_CARPET, "yellow_merchant_carpet");
         registerMerchantCarpet(blockStateModelGenerator, (Block) MoneyBlocks.WHITE_MERCHANT_CARPET, "white_merchant_carpet");
+
+        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DOUBLOON_COMPRESSOR, TexturedModel.CUBE);
+        blockStateModelGenerator.createTrivialBlock((Block) MoneyBlocks.DOUBLOON, TexturedModel.CUBE);
     }
 
     @Override

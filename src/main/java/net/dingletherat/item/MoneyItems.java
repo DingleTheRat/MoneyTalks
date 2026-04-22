@@ -38,8 +38,8 @@ public class MoneyItems {
         return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name),
                 function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name)))));
     }
-    public static void registerModItems() {
-        MoneyTalks.LOGGER.info("Registering Mod Items for " + MoneyTalks.MOD_ID);
+    public static void registerItems() {
+        MoneyTalks.LOGGER.info("Registering Items for " + MoneyTalks.MOD_ID);
 
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SEARCH).register(entries -> {
             entries.accept(DOLLAR);

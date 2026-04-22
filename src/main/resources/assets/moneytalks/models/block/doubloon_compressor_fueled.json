@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "moneytalks:block/doubloon_compressor_side_fueled",
+    "up": "moneytalks:block/doubloon_compressor_top_fueled",
+    "down": "moneytalks:block/doubloon_compressor_bottom",
+    "north": "moneytalks:block/doubloon_compressor_side_fueled",
+    "south": "moneytalks:block/doubloon_compressor_side_fueled",
+    "east": "moneytalks:block/doubloon_compressor_side_fueled",
+    "west": "moneytalks:block/doubloon_compressor_side_fueled"
+  }
+}

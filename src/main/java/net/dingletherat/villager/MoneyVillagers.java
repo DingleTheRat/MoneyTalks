@@ -37,8 +37,11 @@ public class MoneyVillagers {
         (Block) MoneyBlocks.PURPLE_MERCHANT_CARPET,
         (Block) MoneyBlocks.RED_MERCHANT_CARPET,
         (Block) MoneyBlocks.WHITE_MERCHANT_CARPET,
-        (Block) MoneyBlocks.YELLOW_MERCHANT_CARPET
+        (Block) MoneyBlocks.YELLOW_MERCHANT_CARPET,
+
+        (Block) MoneyBlocks.DOUBLOON
     );
+
     public static final ResourceKey<VillagerProfession> INVESTOR_KEY = ResourceKey.create(
         Registries.VILLAGER_PROFESSION, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "investor"));
     public static final VillagerProfession INVESTOR = registerProfession("investor", INVESTOR_POI_KEY);

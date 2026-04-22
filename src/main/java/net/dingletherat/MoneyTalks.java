@@ -4,6 +4,8 @@ import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyGroups;
 import net.dingletherat.item.MoneyItems;
+import net.dingletherat.item.potion.MoneyPotions;
+import net.dingletherat.screen.MoneyMenus;
 import net.dingletherat.state.*;
 import net.dingletherat.villager.MoneyVillagers;
 import net.fabricmc.api.ModInitializer;
@@ -11,10 +13,13 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +31,7 @@ public class MoneyTalks implements ModInitializer {
 	public static final String MOD_ID = "moneytalks";
 	public static WalletState walletState;
 	public static ShopState shopState;
+    public static final List<Item> nonTransferable = List.of(MoneyItems.DOLLAR, MoneyBlocks.DOUBLOON.asItem());
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -39,12 +45,14 @@ public class MoneyTalks implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		MoneyItems.registerModItems();
+		MoneyItems.registerItems();
+		MoneyPotions.registerPotions();
+		MoneyMenus.registerMenus();
 		MoneyVillagers.registerVillagers();
 		MoneyBlocks.registerBlocks();
 		MoneyBlockEntities.registerBlockEntities();
 		MoneyGroups.registerItemGroups();
-		LOGGER.info("Loaded MoneyTalks!");
+		LOGGER.info("Loaded " + MOD_ID + "!");
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			walletState = WalletState.get(server);
@@ -53,9 +61,19 @@ public class MoneyTalks implements ModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
 			if (!(entity instanceof ServerPlayer player)) return;
+			handleDoubloonLoss(player, player);
 			if (!(damageSource.getDirectEntity() instanceof ServerPlayer)) return;
 			handleDollarLoss(player, player);
 		});
+	}
+	private void handleDoubloonLoss(ServerPlayer oldPlayer, ServerPlayer newPlayer) {
+		for (int i = 0; i < oldPlayer.getInventory().getContainerSize(); i++) {
+			ItemStack stack = oldPlayer.getInventory().getItem(i);
+			if (stack.is(MoneyBlocks.DOUBLOON.asItem())) {
+				oldPlayer.getInventory().setItem(i, ItemStack.EMPTY);
+				oldPlayer.drop(stack, true, false);
+			}
+		}
 	}
 	private void handleDollarLoss(ServerPlayer oldPlayer, ServerPlayer player) {
 		int invSize = player.getInventory().getContainerSize();

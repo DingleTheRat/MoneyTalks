@@ -2,7 +2,11 @@
   "required": true,
   "package": "net.dingletherat.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": ["ScreenHandlerMixin", "ChestBlockMixin"],
+  "mixins": [
+    "ScreenHandlerMixin",
+    "ChestBlockMixin",
+    "HopperBlockEntityMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
