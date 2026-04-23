@@ -2,10 +2,9 @@
   "amount": 2,
   "random_sequence": "moneytalks:trade_set/investor/level_5",
   "trades": [
-    "moneytalks:netherite_scrap_to_dollar",
-    "moneytalks:dollar_to_netherite_scrap",
+    "moneytalks:netherite_to_dollar",
+    "moneytalks:dollar_to_netherite",
     "moneytalks:dollar_to_totem",
-    "moneytalks:dollar_to_enchanted_golden_apple",
-    "moneytalks:dollar_to_nether_star"
+    "moneytalks:dollar_to_enchanted_golden_apple"
   ]
 }
