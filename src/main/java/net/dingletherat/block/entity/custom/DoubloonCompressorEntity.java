@@ -85,7 +85,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     }
 
     public DoubloonCompressorEntity(BlockPos pos, BlockState state) {
-        super(MoneyBlockEntities.DOUBLOON_COMPRESSOR_ENTITY, pos, state);
+        super(MoneyBlockEntities.DOUBLOON_COMPRESSOR_ENTITY.get(), pos, state);
     }
 
     @Override

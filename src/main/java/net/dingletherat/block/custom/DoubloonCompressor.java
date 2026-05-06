@@ -59,7 +59,7 @@ public class DoubloonCompressor extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, MoneyBlockEntities.DOUBLOON_COMPRESSOR_ENTITY, DoubloonCompressorEntity::tick);
+        return createTickerHelper(type, MoneyBlockEntities.DOUBLOON_COMPRESSOR_ENTITY.get(), DoubloonCompressorEntity::tick);
     }
 
     @Override

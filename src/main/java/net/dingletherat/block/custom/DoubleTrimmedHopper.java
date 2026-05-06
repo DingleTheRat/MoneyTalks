@@ -28,7 +28,7 @@ public class DoubleTrimmedHopper extends TrimmedHopper {
     }
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, MoneyBlockEntities.DOUBLE_TRIMMED_HOPPER_ENTITY, DoubleTrimmedHopperEntity::tick);
+        return createTickerHelper(type, MoneyBlockEntities.DOUBLE_TRIMMED_HOPPER_ENTITY.get(), DoubleTrimmedHopperEntity::tick);
     }
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {

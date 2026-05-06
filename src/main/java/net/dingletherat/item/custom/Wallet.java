@@ -78,7 +78,7 @@ public class Wallet extends BundleItem {
     private static ItemStack removeDollars(ItemStack wallet, Player player) {
         int current = getDollars(wallet);
         if (current <= 0) return ItemStack.EMPTY;
-        ItemStack dollar = MoneyItems.DOLLAR.getDefaultInstance();
+        ItemStack dollar = MoneyItems.DOLLAR.get().getDefaultInstance();
         int take = Math.min(current, dollar.getMaxStackSize());
         dollar.setCount(take);
         setDollars(wallet, current - take);
@@ -217,7 +217,7 @@ public class Wallet extends BundleItem {
         int dollars = getDollars(entity.getItem());
         setDollars(entity.getItem(), 0);
         while (dollars > 0) {
-            ItemStack drop = MoneyItems.DOLLAR.getDefaultInstance();
+            ItemStack drop = MoneyItems.DOLLAR.get().getDefaultInstance();
             int amount = Math.min(dollars, drop.getMaxStackSize());
             drop.setCount(amount);
             entity.level().addFreshEntity(new ItemEntity(

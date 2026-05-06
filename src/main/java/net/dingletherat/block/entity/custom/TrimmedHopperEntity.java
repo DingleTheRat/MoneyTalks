@@ -42,7 +42,7 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
     }
 
     public TrimmedHopperEntity(BlockPos pos, BlockState state) {
-        super(MoneyBlockEntities.TRIMMED_HOPPER_ENTITY, pos, state);
+        super(MoneyBlockEntities.TRIMMED_HOPPER_ENTITY.get(), pos, state);
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, TrimmedHopperEntity hopper) {

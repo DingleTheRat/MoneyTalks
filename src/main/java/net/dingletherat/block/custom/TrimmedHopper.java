@@ -103,7 +103,7 @@ public class TrimmedHopper extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, MoneyBlockEntities.TRIMMED_HOPPER_ENTITY, TrimmedHopperEntity::tick);
+        return createTickerHelper(type, MoneyBlockEntities.TRIMMED_HOPPER_ENTITY.get(), TrimmedHopperEntity::tick);
     }
 
     @Override

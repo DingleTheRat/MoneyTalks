@@ -89,7 +89,7 @@ public class Doubloon extends BaseEntityBlock {
         Random random = new Random();
 
         // If there's already a doubloon at the bottom, adding another zombieVillager might make it cluttered, so make it only a chance
-        if (level.getBlockState(position.below()).getBlock() == MoneyBlocks.DOUBLOON
+        if (level.getBlockState(position.below()).getBlock() == MoneyBlocks.DOUBLOON.get()
                 && random.nextInt(100) <= NON_SPAWN_CHANCE) return;
 
         // Create the zombieVillager that we will summon, containing an investor profession
@@ -147,7 +147,7 @@ public class Doubloon extends BaseEntityBlock {
 
         // Give the villager the investor profession
         zombieVillager.setVillagerData(zombieVillager.getVillagerData()
-            .withProfession(BuiltInRegistries.VILLAGER_PROFESSION.wrapAsHolder(MoneyVillagers.INVESTOR)));
+            .withProfession(BuiltInRegistries.VILLAGER_PROFESSION.wrapAsHolder(MoneyVillagers.INVESTOR.get())));
 
         // Unleash our amazing creation into the world
         zombieVillager.setPos(targetPosition.getX() + 0.5, targetPosition.getY(), targetPosition.getZ() + 0.5);

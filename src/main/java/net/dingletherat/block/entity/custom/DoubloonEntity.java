@@ -15,7 +15,7 @@ public class DoubloonEntity extends BlockEntity {
     private EntityReference<ZombieVillager> zombieVillagerReference;
 
     public DoubloonEntity(BlockPos position, BlockState state) {
-        super(MoneyBlockEntities.DOUBLOON_ENTITY, position, state);
+        super(MoneyBlockEntities.DOUBLOON_ENTITY.get(), position, state);
     }
 
     @Override

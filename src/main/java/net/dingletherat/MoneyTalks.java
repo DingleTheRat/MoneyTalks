@@ -4,15 +4,16 @@ import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyGroups;
 import net.dingletherat.item.MoneyItems;
-import net.dingletherat.item.potion.MoneyPotions;
-import net.dingletherat.screen.MoneyMenus;
 import net.dingletherat.state.*;
 import net.dingletherat.villager.MoneyVillagers;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -25,47 +26,47 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class MoneyTalks implements ModInitializer {
+import com.mojang.logging.LogUtils;
+
+@Mod(MoneyTalks.MOD_ID)
+public class MoneyTalks {
 	public static final String MOD_ID = "moneytalks";
 	public static WalletState walletState;
 	public static ShopState shopState;
-	public static final List<Item> nonTransferable = List.of(MoneyItems.DOLLAR, MoneyBlocks.DOUBLOON.asItem());
+	public static final List<Item> nonTransferable = List.of(MoneyItems.DOLLAR.get(), MoneyBlocks.DOUBLOON.get().asItem());
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Logger LOGGER = LogUtils.getLogger();
 
+    public MoneyTalks(IEventBus modEventBus, ModContainer modContainer) {
+		MoneyItems.register(modEventBus);
+		MoneyBlocks.register(modEventBus);
+		MoneyBlockEntities.register(modEventBus);
+		MoneyGroups.registerItemGroups(modEventBus);
+		modEventBus.addListener(MoneyGroups::onBuildCreativeTab);
+		MoneyVillagers.registerVillagers(modEventBus);
 
-	@Override
-	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
+		// Events
+        NeoForge.EVENT_BUS.addListener(this::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(this::onPlayerDeath);
 
-		MoneyItems.registerItems();
-		MoneyPotions.registerPotions();
-		MoneyMenus.registerMenus();
-		MoneyVillagers.registerVillagers();
-		MoneyBlocks.registerBlocks();
-		MoneyBlockEntities.registerBlockEntities();
-		MoneyGroups.registerItemGroups();
-		LOGGER.info("Loaded " + MOD_ID + "!");
+        LOGGER.info("Loaded " + MOD_ID + "!");
+    }
 
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			walletState = WalletState.get(server);
-			shopState = ShopState.get(server);
-		});
+    private void onServerStarted(ServerStartedEvent event) {
+        walletState = WalletState.get(event.getServer());
+        shopState = ShopState.get(event.getServer());
+    }
 
-		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
-			if (!(entity instanceof ServerPlayer player)) return;
-			handleDoubloonLoss(player, player);
-			if (!(damageSource.getDirectEntity() instanceof ServerPlayer)) return;
-			handleDollarLoss(player, player);
-		});
-	}
+    private void onPlayerDeath(LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        handleDoubloonLoss(player, player);
+        if (!(event.getSource().getDirectEntity() instanceof ServerPlayer)) return;
+        handleDollarLoss(player, player);
+    }
 	private void handleDoubloonLoss(ServerPlayer oldPlayer, ServerPlayer newPlayer) {
 		for (int i = 0; i < oldPlayer.getInventory().getContainerSize(); i++) {
 			ItemStack stack = oldPlayer.getInventory().getItem(i);
@@ -134,7 +135,7 @@ public class MoneyTalks implements ModInitializer {
 		int totalDropped = (looseLoss - toRemove) + walletDollarsLost;
 		int remaining = totalDropped;
 		while (remaining > 0) {
-			ItemStack drop = new ItemStack(MoneyItems.DOLLAR);
+			ItemStack drop = new ItemStack(MoneyItems.DOLLAR.get());
 			int amount = Math.min(remaining, drop.getMaxStackSize());
 			drop.setCount(amount);
 			player.drop(drop, false);

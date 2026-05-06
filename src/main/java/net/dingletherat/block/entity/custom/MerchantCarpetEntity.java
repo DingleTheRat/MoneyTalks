@@ -46,7 +46,7 @@ public class MerchantCarpetEntity extends BlockEntity {
     private UUID wallet = null;
 
     public MerchantCarpetEntity(BlockPos pos, BlockState state) {
-        super(MoneyBlockEntities.MERCHANT_CARPET_ENTITY, pos, state);
+        super(MoneyBlockEntities.MERCHANT_CARPET_ENTITY.get(), pos, state);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class MerchantCarpetEntity extends BlockEntity {
         if (item != null && item != Items.AIR && amount >= purchaseAmount && purchaseAmount > 0)
             return new ItemStack(item);
         if (price != 0)
-            return new ItemStack(MoneyItems.DOLLAR);
+            return new ItemStack(MoneyItems.DOLLAR.get());
         return ItemStack.EMPTY;
     }
 
@@ -209,7 +209,7 @@ public class MerchantCarpetEntity extends BlockEntity {
                 return InteractionResult.SUCCESS;
             }
             if (stack.isEmpty()) {
-                player.getInventory().add(new ItemStack(MoneyItems.DOLLAR, collected));
+                player.getInventory().add(new ItemStack(MoneyItems.DOLLAR.get(), collected));
                 collected = 0;
                 player.playSound(SoundEvents.VAULT_EJECT_ITEM, 1.0f, 1.0f);
                 update();
@@ -269,7 +269,7 @@ public class MerchantCarpetEntity extends BlockEntity {
             }
             if (collected > 0)
                 Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
-                        new ItemStack(MoneyItems.DOLLAR, collected));
+                        new ItemStack(MoneyItems.DOLLAR.get(), collected));
         }
     }
 }

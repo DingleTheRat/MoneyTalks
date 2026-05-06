@@ -14,7 +14,7 @@ public class DoubleTrimmedHopperEntity extends TrimmedHopperEntity {
     private BlockPos linked = null;
 
     public DoubleTrimmedHopperEntity(BlockPos pos, BlockState state) {
-        super(MoneyBlockEntities.DOUBLE_TRIMMED_HOPPER_ENTITY, pos, state);
+        super(MoneyBlockEntities.DOUBLE_TRIMMED_HOPPER_ENTITY.get(), pos, state);
     }
 
 
