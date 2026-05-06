@@ -31,7 +31,7 @@ public class MoneyTalks implements ModInitializer {
 	public static final String MOD_ID = "moneytalks";
 	public static WalletState walletState;
 	public static ShopState shopState;
-    public static final List<Item> nonTransferable = List.of(MoneyItems.DOLLAR, MoneyBlocks.DOUBLOON.asItem());
+	public static final List<Item> nonTransferable = List.of(MoneyItems.DOLLAR, MoneyBlocks.DOUBLOON.asItem());
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.

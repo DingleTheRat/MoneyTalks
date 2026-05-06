@@ -42,7 +42,6 @@ public class TrimmedHopper extends BaseEntityBlock {
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
-    // --- VoxelShapes (matching vanilla HopperBlock exactly) ---
     private static final VoxelShape TOP = Block.box(0, 10, 0, 16, 16, 16);
     private static final VoxelShape FUNNEL = Block.box(4, 4, 4, 12, 10, 12);
     private static final VoxelShape STEM = Block.box(6, 0, 6, 10, 4, 10);
@@ -87,21 +86,15 @@ public class TrimmedHopper extends BaseEntityBlock {
         return CODEC;
     }
 
-    // --- Shape ---
-
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPES.getOrDefault(state.getValue(FACING), DOWN_SHAPE);
     }
 
-    // --- Rendering ---
-
     @Override
     protected RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
-
-    // --- Block entity ---
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
