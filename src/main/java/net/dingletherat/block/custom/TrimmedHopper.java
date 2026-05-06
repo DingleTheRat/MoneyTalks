@@ -125,8 +125,6 @@ public class TrimmedHopper extends BaseEntityBlock {
         }
     }
 
-// --- Redstone: enable/disable via redstone signal (vanilla behaviour) ---
-
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, Orientation orientation, boolean movedByPiston) {
         if (!level.isClientSide()) {
@@ -136,8 +134,6 @@ public class TrimmedHopper extends BaseEntityBlock {
             }
         }
     }
-
-    // --- Comparator support ---
 
     @Override
     protected boolean hasAnalogOutputSignal(BlockState state) {
