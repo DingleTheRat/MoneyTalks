@@ -1,6 +1,0 @@
-{
-  "parent": "moneytalks:block/merchant_carpet_base",
-  "textures": {
-    "all": "moneytalks:block/green_merchant_carpet"
-  }
-}

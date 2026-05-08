@@ -2,17 +2,27 @@ package net.dingletherat;
 
 import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.datagen.MoneyBlockTagProvider;
+import net.dingletherat.datagen.MoneyItemTagProvider;
+import net.dingletherat.datagen.MoneyLootTableProvider;
+import net.dingletherat.datagen.MoneyModels;
+import net.dingletherat.datagen.MoneyRecipeProvider;
 import net.dingletherat.item.MoneyGroups;
 import net.dingletherat.item.MoneyItems;
+import net.dingletherat.item.potion.MoneyPotions;
+import net.dingletherat.screen.MoneyMenus;
 import net.dingletherat.state.*;
 import net.dingletherat.villager.MoneyVillagers;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.minecraft.world.item.Item;
@@ -25,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 
@@ -44,12 +55,15 @@ public class MoneyTalks {
 
 	public MoneyTalks(IEventBus modEventBus, ModContainer modContainer) {
 		MoneyItems.register(modEventBus);
+		MoneyPotions.register(modEventBus);
 		MoneyBlocks.register(modEventBus);
 		MoneyBlockEntities.register(modEventBus);
 		MoneyGroups.registerItemGroups(modEventBus);
 		modEventBus.addListener(MoneyGroups::onBuildCreativeTab);
 		MoneyVillagers.registerVillagers(modEventBus);
+		MoneyMenus.register(modEventBus);
 		modEventBus.addListener(this::onCommonSetup);
+		modEventBus.addListener(this::onGatherData);
 
 		// Events
 		NeoForge.EVENT_BUS.addListener(this::onServerStarted);
@@ -60,6 +74,17 @@ public class MoneyTalks {
 
 	private void onCommonSetup(FMLCommonSetupEvent event) {
 	    nonTransferable = List.of(MoneyItems.DOLLAR.get(), MoneyBlocks.DOUBLOON.get().asItem());
+	}
+
+	private void onGatherData(GatherDataEvent.Client event) {
+		DataGenerator generator = event.getGenerator();
+		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+
+		generator.addProvider(true, new MoneyModels(generator.getPackOutput()));
+		generator.addProvider(true, new MoneyBlockTagProvider(generator.getPackOutput(), lookupProvider));
+		generator.addProvider(true, new MoneyItemTagProvider(generator.getPackOutput(), lookupProvider));
+		generator.addProvider(true, new MoneyRecipeProvider.Runner(generator.getPackOutput(), lookupProvider));
+		generator.addProvider(true, new MoneyLootTableProvider(generator.getPackOutput(), lookupProvider));
 	}
 
 	private void onServerStarted(ServerStartedEvent event) {

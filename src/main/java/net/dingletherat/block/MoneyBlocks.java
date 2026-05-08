@@ -2,15 +2,10 @@ package net.dingletherat.block;
 
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.function.Function;
 
@@ -21,13 +16,9 @@ import net.dingletherat.block.custom.DoubloonCompressor;
 import net.dingletherat.block.custom.MerchantCarpet;
 import net.dingletherat.block.custom.TrimmedHopper;
 import net.dingletherat.item.MoneyItems;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.resources.Identifier;
 
 public class MoneyBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MoneyTalks.MOD_ID);

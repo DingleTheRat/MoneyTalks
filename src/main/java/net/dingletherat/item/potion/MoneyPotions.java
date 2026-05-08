@@ -1,23 +1,21 @@
 package net.dingletherat.item.potion;
 
 import net.dingletherat.MoneyTalks;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.alchemy.Potion;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class MoneyPotions {
-    public static final Potion GLOWING_POTION = registerPotion("glowing_potion",
-            new Potion("glowing_potion", new MobEffectInstance(MobEffects.GLOWING, 1200, 0)));
+    public static final DeferredRegister<Potion> POTIONS =
+        DeferredRegister.create(Registries.POTION, MoneyTalks.MOD_ID);
 
+    public static final DeferredHolder<Potion, Potion> GLOWING_POTION = POTIONS.register("glowing_potion", () -> new Potion("glowing_potion", new MobEffectInstance(MobEffects.GLOWING, 1200, 0)));
 
-    private static Potion registerPotion(String name, Potion potion) {
-        return Registry.register(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, name), potion);
-    }
-
-    public static void registerPotions() {
-        MoneyTalks.LOGGER.info("Registering Mod Potions for " + MoneyTalks.MOD_ID);
+    public static void register(IEventBus modEventBus) {
+        POTIONS.register(modEventBus);
     }
 }

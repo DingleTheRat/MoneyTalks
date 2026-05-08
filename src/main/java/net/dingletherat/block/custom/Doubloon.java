@@ -79,7 +79,7 @@ public class Doubloon extends BaseEntityBlock {
 
         // Get an ItemStack of the glowing potion, to set the type, and add it to the potion projectile
         potion.setItem(PotionContents.createItemStack(Items.LINGERING_POTION,
-            BuiltInRegistries.POTION.wrapAsHolder(MoneyPotions.GLOWING_POTION)));
+            BuiltInRegistries.POTION.wrapAsHolder(MoneyPotions.GLOWING_POTION.get())));
 
         // Throw our potion
         level.addFreshEntity(potion);

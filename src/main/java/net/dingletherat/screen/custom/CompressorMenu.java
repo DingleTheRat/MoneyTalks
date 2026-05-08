@@ -32,7 +32,7 @@ public class CompressorMenu extends AbstractContainerMenu {
     public final ContainerData data;
 
     public CompressorMenu(int syncId, Inventory playerInventory, Container container, ContainerData data) {
-        super(MoneyMenus.COMPRESSOR_MENU, syncId);
+        super(MoneyMenus.COMPRESSOR_MENU.get(), syncId);
         this.container = container;
         this.playerInventory = playerInventory;
         this.data = data;
