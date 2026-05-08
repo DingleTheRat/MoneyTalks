@@ -11,6 +11,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -34,39 +35,44 @@ public class MoneyTalks {
 	public static final String MOD_ID = "moneytalks";
 	public static WalletState walletState;
 	public static ShopState shopState;
-	public static final List<Item> nonTransferable = List.of(MoneyItems.DOLLAR.get(), MoneyBlocks.DOUBLOON.get().asItem());
+	public static List<Item> nonTransferable;
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-    public MoneyTalks(IEventBus modEventBus, ModContainer modContainer) {
+	public MoneyTalks(IEventBus modEventBus, ModContainer modContainer) {
 		MoneyItems.register(modEventBus);
 		MoneyBlocks.register(modEventBus);
 		MoneyBlockEntities.register(modEventBus);
 		MoneyGroups.registerItemGroups(modEventBus);
 		modEventBus.addListener(MoneyGroups::onBuildCreativeTab);
 		MoneyVillagers.registerVillagers(modEventBus);
+		modEventBus.addListener(this::onCommonSetup);
 
 		// Events
-        NeoForge.EVENT_BUS.addListener(this::onServerStarted);
-        NeoForge.EVENT_BUS.addListener(this::onPlayerDeath);
+		NeoForge.EVENT_BUS.addListener(this::onServerStarted);
+		NeoForge.EVENT_BUS.addListener(this::onPlayerDeath);
 
-        LOGGER.info("Loaded " + MOD_ID + "!");
-    }
+		LOGGER.info("Loaded " + MOD_ID + "!");
+	}
 
-    private void onServerStarted(ServerStartedEvent event) {
-        walletState = WalletState.get(event.getServer());
-        shopState = ShopState.get(event.getServer());
-    }
+	private void onCommonSetup(FMLCommonSetupEvent event) {
+	    nonTransferable = List.of(MoneyItems.DOLLAR.get(), MoneyBlocks.DOUBLOON.get().asItem());
+	}
 
-    private void onPlayerDeath(LivingDeathEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        handleDoubloonLoss(player, player);
-        if (!(event.getSource().getDirectEntity() instanceof ServerPlayer)) return;
-        handleDollarLoss(player, player);
-    }
+	private void onServerStarted(ServerStartedEvent event) {
+		walletState = WalletState.get(event.getServer());
+		shopState = ShopState.get(event.getServer());
+	}
+
+	private void onPlayerDeath(LivingDeathEvent event) {
+		if (!(event.getEntity() instanceof ServerPlayer player)) return;
+		handleDoubloonLoss(player, player);
+		if (!(event.getSource().getDirectEntity() instanceof ServerPlayer)) return;
+		handleDollarLoss(player, player);
+	}
 	private void handleDoubloonLoss(ServerPlayer oldPlayer, ServerPlayer newPlayer) {
 		for (int i = 0; i < oldPlayer.getInventory().getContainerSize(); i++) {
 			ItemStack stack = oldPlayer.getInventory().getItem(i);
