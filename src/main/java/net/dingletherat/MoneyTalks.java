@@ -9,7 +9,6 @@ import net.dingletherat.datagen.MoneyModels;
 import net.dingletherat.datagen.MoneyRecipeProvider;
 import net.dingletherat.item.MoneyGroups;
 import net.dingletherat.item.MoneyItems;
-import net.dingletherat.item.potion.MoneyPotions;
 import net.dingletherat.screen.MoneyMenus;
 import net.dingletherat.state.*;
 import net.dingletherat.villager.MoneyVillagers;
@@ -55,7 +54,6 @@ public class MoneyTalks {
 
 	public MoneyTalks(IEventBus modEventBus, ModContainer modContainer) {
 		MoneyItems.register(modEventBus);
-		MoneyPotions.register(modEventBus);
 		MoneyBlocks.register(modEventBus);
 		MoneyBlockEntities.register(modEventBus);
 		MoneyGroups.registerItemGroups(modEventBus);
