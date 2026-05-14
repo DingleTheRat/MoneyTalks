@@ -16,10 +16,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class Doubloon extends BaseEntityBlock {
-    public static final long TRIGGER_TIME = 200;
-    public static final int SPAWN_OFFSET = 2;
-    public static final int MAX_Y_SPAWN_OFFSET = 32;
-    public static final int NON_SPAWN_CHANCE = 70;
     public static final MapCodec<Doubloon> CODEC = simpleCodec(Doubloon::new);
 
     public Doubloon(BlockBehaviour.Properties properties) {
