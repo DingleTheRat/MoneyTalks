@@ -4,7 +4,6 @@ import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyGroups;
 import net.dingletherat.item.MoneyItems;
-import net.dingletherat.item.potion.MoneyPotions;
 import net.dingletherat.screen.MoneyMenus;
 import net.dingletherat.state.*;
 import net.dingletherat.villager.MoneyVillagers;
