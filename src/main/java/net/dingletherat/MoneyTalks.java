@@ -46,7 +46,6 @@ public class MoneyTalks implements ModInitializer {
 		// Proceed with mild caution.
 
 		MoneyItems.registerItems();
-		MoneyPotions.registerPotions();
 		MoneyMenus.registerMenus();
 		MoneyVillagers.registerVillagers();
 		MoneyBlocks.registerBlocks();

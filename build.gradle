@@ -22,7 +22,6 @@ repositories {
 
 loom {
 	splitEnvironmentSourceSets()
-	accessWidenerPath = file("src/main/resources/access_wideners/goals.accesswidener")
 
 	mods {
 		"moneytalks" {
