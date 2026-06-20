@@ -16,11 +16,11 @@ public class MoneyBlockTagProvider extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(BlockTags.NEEDS_IRON_TOOL)
-            .add(MoneyBlocks.TRIMMED_HOPPER.get())
-            .add(MoneyBlocks.DOUBLE_TRIMMED_HOPPER.get());
+            .add(MoneyBlocks.TRIMMED_HOPPER.get().builtInRegistryHolder().getKey())
+            .add(MoneyBlocks.DOUBLE_TRIMMED_HOPPER.get().builtInRegistryHolder().getKey());
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add(MoneyBlocks.TRIMMED_HOPPER.get())
-            .add(MoneyBlocks.DOUBLE_TRIMMED_HOPPER.get())
-            .add(MoneyBlocks.DOUBLOON_COMPRESSOR.get());
+            .add(MoneyBlocks.TRIMMED_HOPPER.get().builtInRegistryHolder().getKey())
+            .add(MoneyBlocks.DOUBLE_TRIMMED_HOPPER.get().builtInRegistryHolder().getKey())
+            .add(MoneyBlocks.DOUBLOON_COMPRESSOR.get().builtInRegistryHolder().getKey());
     }
 }

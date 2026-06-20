@@ -13,6 +13,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -31,22 +32,22 @@ public class MoneyRecipeProvider extends RecipeProvider {
     @Override
     protected void buildRecipes() {
         List<CarpetPair> pairs = List.of(
-            new CarpetPair(MoneyBlocks.BLACK_MERCHANT_CARPET.get(), Items.BLACK_WOOL, Items.BLACK_DYE),
-            new CarpetPair(MoneyBlocks.BLUE_MERCHANT_CARPET.get(), Items.BLUE_WOOL, Items.BLUE_DYE),
-            new CarpetPair(MoneyBlocks.BROWN_MERCHANT_CARPET.get(), Items.BROWN_WOOL, Items.BROWN_DYE),
-            new CarpetPair(MoneyBlocks.CYAN_MERCHANT_CARPET.get(), Items.CYAN_WOOL, Items.CYAN_DYE),
-            new CarpetPair(MoneyBlocks.GRAY_MERCHANT_CARPET.get(), Items.GRAY_WOOL, Items.GRAY_DYE),
-            new CarpetPair(MoneyBlocks.GREEN_MERCHANT_CARPET.get(), Items.GREEN_WOOL, Items.GREEN_DYE),
-            new CarpetPair(MoneyBlocks.LIGHT_BLUE_MERCHANT_CARPET.get(), Items.LIGHT_BLUE_WOOL, Items.LIGHT_BLUE_DYE),
-            new CarpetPair(MoneyBlocks.LIGHT_GRAY_MERCHANT_CARPET.get(), Items.LIGHT_GRAY_WOOL, Items.LIGHT_GRAY_DYE),
-            new CarpetPair(MoneyBlocks.LIME_MERCHANT_CARPET.get(), Items.LIME_WOOL, Items.LIME_DYE),
-            new CarpetPair(MoneyBlocks.MAGENTA_MERCHANT_CARPET.get(), Items.MAGENTA_WOOL, Items.MAGENTA_DYE),
-            new CarpetPair(MoneyBlocks.ORANGE_MERCHANT_CARPET.get(), Items.ORANGE_WOOL, Items.ORANGE_DYE),
-            new CarpetPair(MoneyBlocks.PINK_MERCHANT_CARPET.get(), Items.PINK_WOOL, Items.PINK_DYE),
-            new CarpetPair(MoneyBlocks.PURPLE_MERCHANT_CARPET.get(), Items.PURPLE_WOOL, Items.PURPLE_DYE),
-            new CarpetPair(MoneyBlocks.RED_MERCHANT_CARPET.get(), Items.RED_WOOL, Items.RED_DYE),
-            new CarpetPair(MoneyBlocks.WHITE_MERCHANT_CARPET.get(), Items.WHITE_WOOL, Items.WHITE_DYE),
-            new CarpetPair(MoneyBlocks.YELLOW_MERCHANT_CARPET.get(), Items.YELLOW_WOOL, Items.YELLOW_DYE)
+                new CarpetPair((Block) MoneyBlocks.BLACK_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.BLACK), Items.DYE.pick(DyeColor.BLACK)),
+                new CarpetPair((Block) MoneyBlocks.BLUE_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.BLUE), Items.DYE.pick(DyeColor.BLUE)),
+                new CarpetPair((Block) MoneyBlocks.BROWN_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.BROWN), Items.DYE.pick(DyeColor.BROWN)),
+                new CarpetPair((Block) MoneyBlocks.CYAN_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.CYAN), Items.DYE.pick(DyeColor.CYAN)),
+                new CarpetPair((Block) MoneyBlocks.GRAY_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.GRAY), Items.DYE.pick(DyeColor.GRAY)),
+                new CarpetPair((Block) MoneyBlocks.GREEN_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.GREEN), Items.DYE.pick(DyeColor.GREEN)),
+                new CarpetPair((Block) MoneyBlocks.LIGHT_BLUE_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.LIGHT_BLUE), Items.DYE.pick(DyeColor.LIGHT_BLUE)),
+                new CarpetPair((Block) MoneyBlocks.LIGHT_GRAY_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.LIGHT_GRAY), Items.DYE.pick(DyeColor.LIGHT_GRAY)),
+                new CarpetPair((Block) MoneyBlocks.LIME_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.LIME), Items.DYE.pick(DyeColor.LIME)),
+                new CarpetPair((Block) MoneyBlocks.MAGENTA_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.MAGENTA), Items.DYE.pick(DyeColor.MAGENTA)),
+                new CarpetPair((Block) MoneyBlocks.ORANGE_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.ORANGE), Items.DYE.pick(DyeColor.ORANGE)),
+                new CarpetPair((Block) MoneyBlocks.PINK_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.PINK), Items.DYE.pick(DyeColor.PINK)),
+                new CarpetPair((Block) MoneyBlocks.PURPLE_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.PURPLE), Items.DYE.pick(DyeColor.PURPLE)),
+                new CarpetPair((Block) MoneyBlocks.RED_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.RED), Items.DYE.pick(DyeColor.RED)),
+                new CarpetPair((Block) MoneyBlocks.WHITE_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.WHITE), Items.DYE.pick(DyeColor.WHITE)),
+                new CarpetPair((Block) MoneyBlocks.YELLOW_MERCHANT_CARPET.get(), Items.WOOL.pick(DyeColor.YELLOW), Items.DYE.pick(DyeColor.YELLOW))
         );
 
         for (CarpetPair pair : pairs) {
