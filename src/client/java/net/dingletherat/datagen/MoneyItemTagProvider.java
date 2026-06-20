@@ -15,22 +15,22 @@ public class MoneyItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        valueLookupBuilder(MoneyItemTags.MERCHANT_CARPETS)
-            .add(MoneyBlocks.BLACK_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.BLUE_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.BROWN_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.CYAN_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.GRAY_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.GREEN_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.LIGHT_BLUE_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.LIGHT_GRAY_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.LIME_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.MAGENTA_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.ORANGE_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.PINK_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.PURPLE_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.RED_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.WHITE_MERCHANT_CARPET.asItem(),
-                MoneyBlocks.YELLOW_MERCHANT_CARPET.asItem());
+        builder(MoneyItemTags.MERCHANT_CARPETS)
+            .add(MoneyBlocks.BLACK_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.BLUE_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.BROWN_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.CYAN_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.GRAY_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.GREEN_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.LIGHT_BLUE_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.LIGHT_GRAY_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.LIME_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.MAGENTA_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.ORANGE_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.PINK_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.PURPLE_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.RED_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.WHITE_MERCHANT_CARPET.asItem().builtInRegistryHolder().key(),
+                MoneyBlocks.YELLOW_MERCHANT_CARPET.asItem().builtInRegistryHolder().key());
     }
 }

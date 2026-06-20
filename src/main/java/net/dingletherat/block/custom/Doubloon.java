@@ -6,7 +6,7 @@ import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import net.dingletherat.block.entity.custom.DoubloonEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Display.BlockDisplay;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -34,7 +34,7 @@ public class Doubloon extends BaseEntityBlock {
     public void onPlace(BlockState state, Level level, BlockPos position, BlockState oldState, boolean isMoving) {
         if (!level.isClientSide()) {
             // Create a block display, which will give the block an outline
-            BlockDisplay display = new BlockDisplay(EntityType.BLOCK_DISPLAY, level);
+            BlockDisplay display = new BlockDisplay(EntityTypes.BLOCK_DISPLAY, level);
             display.setPos(position.getX(), position.getY(), position.getZ());
             display.setBlockState(state);
             display.setGlowingTag(true);
