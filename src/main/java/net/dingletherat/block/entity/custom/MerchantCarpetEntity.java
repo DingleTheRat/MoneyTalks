@@ -191,7 +191,7 @@ public class MerchantCarpetEntity extends BlockEntity {
                 update();
                 return InteractionResult.SUCCESS;
             }
-            if (item == null && MoneyTalks.nonTransferable.contains(stack.getItem())) {
+            if (item == null && !MoneyTalks.nonTransferable.contains(stack.getItem())) {
                 trade = stack.copy();
                 item = trade.getItem();
                 amount = stack.getCount();
