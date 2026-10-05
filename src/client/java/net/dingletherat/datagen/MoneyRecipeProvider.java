@@ -8,7 +8,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -32,8 +34,8 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
     record CarpetPair(Block carpet, Item wool, Item dye) {}
 
     @Override
-    protected RecipeProvider createRecipeProvider(HolderLookup.Provider wrapperLookup, RecipeOutput recipeExporter) {
-        return new RecipeProvider(wrapperLookup, recipeExporter) {
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider wrapperLookup, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+        return new RecipeProvider(recipes, advancements) {
             @Override
             public void buildRecipes() {
             List<CarpetPair> pairs = List.of(
@@ -60,7 +62,7 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                         .pattern("WWW")
                         .define('W', pair.wool())
                         .unlockedBy("has_wool", has(pair.wool()))
-                        .save(recipeExporter, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID,
+                        .save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID,
                             "merchant_carpet_" + BuiltInRegistries.ITEM.getKey(pair.wool()).getPath())));
                 }
                 for (CarpetPair target : pairs) {
@@ -68,7 +70,7 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                         .requires(MoneyItemTags.MERCHANT_CARPETS)
                         .requires(target.dye())
                         .unlockedBy("has_dye", has(target.dye()))
-                        .save(recipeExporter, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID,
+                        .save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID,
                             "merchant_carpet_dye_" + BuiltInRegistries.ITEM.getKey(target.dye()).getPath())));
                 }
 
@@ -79,18 +81,18 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                     .define('D', Items.DIAMOND)
                     .define('H', Blocks.HOPPER)
                     .unlockedBy("has_diamond", has(Items.DIAMOND))
-                    .save(recipeExporter);
+                    .save(output);
                 shaped(RecipeCategory.MISC, (Block) MoneyBlocks.TRIMMED_HOPPER)
                     .pattern("DHD")
                     .define('D', Items.DIAMOND)
                     .define('H', Blocks.HOPPER)
                     .unlockedBy("has_diamond", has(Items.DIAMOND))
-                    .save(recipeExporter);
+                    .save(output);
 
                 shapeless(RecipeCategory.MISC, new ItemStackTemplate(MoneyItems.DOLLAR, 10))
                     .requires(MoneyBlocks.DOUBLOON.asItem())
                     .unlockedBy("has_doubloon", has(MoneyBlocks.DOUBLOON.asItem()))
-                    .save(recipeExporter);
+                    .save(output);
                 shaped(RecipeCategory.MISC, (Block) MoneyBlocks.DOUBLOON_COMPRESSOR)
                     .pattern("DDD")
                     .pattern("DND")
@@ -99,7 +101,7 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                     .define('N', Items.NETHERITE_INGOT)
                     .define('S', Blocks.SOUL_SAND)
                     .unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT))
-                    .save(recipeExporter);
+                    .save(output);
             }
         };
     }

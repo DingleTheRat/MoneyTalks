@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moneytalks:merchant_carpet_dye_purple_dye"
+        "recipes": "moneytalks:merchant_carpet_dye_purple_dye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

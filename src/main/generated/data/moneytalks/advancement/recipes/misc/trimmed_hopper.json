@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moneytalks:trimmed_hopper"
+        "recipes": "moneytalks:trimmed_hopper"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

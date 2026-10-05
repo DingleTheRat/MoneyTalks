@@ -16,6 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
+import net.minecraft.world.entity.item.ItemEntity;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,7 +71,8 @@ public class MoneyTalks implements ModInitializer {
 			ItemStack stack = oldPlayer.getInventory().getItem(i);
 			if (stack.is(MoneyBlocks.DOUBLOON.asItem())) {
 				oldPlayer.getInventory().setItem(i, ItemStack.EMPTY);
-				oldPlayer.drop(stack, true, false);
+				ItemEntity itemEntity = oldPlayer.createItemStackToDrop(stack, true, false);
+				if (itemEntity != null) oldPlayer.level().addFreshEntity(itemEntity);
 			}
 		}
 	}
@@ -135,7 +138,7 @@ public class MoneyTalks implements ModInitializer {
 			ItemStack drop = new ItemStack(MoneyItems.DOLLAR);
 			int amount = Math.min(remaining, drop.getMaxStackSize());
 			drop.setCount(amount);
-			player.drop(drop, false);
+			player.drop(drop, false, Prediction.PREDICTED);
 			remaining -= amount;
 		}
 	}

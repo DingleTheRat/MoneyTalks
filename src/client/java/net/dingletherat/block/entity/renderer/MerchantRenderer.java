@@ -43,7 +43,7 @@ public class MerchantRenderer implements BlockEntityRenderer<MerchantCarpetEntit
         matrices.pushPose();
         matrices.translate(0.5f, 0.5f, 0.5f);
         matrices.scale(0.5f, 0.5f, 0.5f);
-        matrices.mulPose(Axis.YP.rotationDegrees(state.rotation));
+        matrices.rotateDegrees(Axis.YP, state.rotation);
         state.itemRenderState.submit(matrices, queue, getLightLevel(state.blockEntityWorld, state.lightPosition), OverlayTexture.NO_OVERLAY, 0);
         matrices.popPose();
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moneytalks:dollar"
+        "recipes": "moneytalks:dollar"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -4,7 +4,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.List;
 
-import com.mojang.serialization.MapCodec;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.block.entity.custom.DoubloonCompressorEntity;
 import net.dingletherat.item.MoneyItems;
@@ -31,19 +30,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
+import net.minecraft.util.Prediction;
 
 public class DoubloonCompressor extends BaseEntityBlock {
-    public static final MapCodec<DoubloonCompressor> CODEC = DoubloonCompressor.simpleCodec(DoubloonCompressor::new);
     public static final BooleanProperty FUELED = BooleanProperty.create("fueled");
 
     public DoubloonCompressor(BlockBehaviour.Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(FUELED, false));
-    }
-
-    @Override
-    public MapCodec<DoubloonCompressor> codec() {
-        return CODEC;
     }
 
     @Override
@@ -108,7 +102,7 @@ public class DoubloonCompressor extends BaseEntityBlock {
             )));
             player.getItemInHand(hand).shrink(1);
 
-            if (!player.getInventory().add(receipt)) player.drop(receipt, false);
+            if (!player.getInventory().add(receipt)) player.drop(receipt, false, Prediction.PREDICTED);
             return InteractionResult.SUCCESS;
         }
 
