@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moneytalks:merchant_carpet_magenta_wool"
+        "recipes": "moneytalks:merchant_carpet_magenta_wool"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

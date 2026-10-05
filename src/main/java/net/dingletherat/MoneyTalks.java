@@ -13,6 +13,9 @@ import net.dingletherat.screen.MoneyMenus;
 import net.dingletherat.state.*;
 import net.dingletherat.villager.MoneyVillagers;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.component.CustomData;
@@ -28,6 +31,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
+import net.minecraft.world.entity.item.ItemEntity;
 
 import java.util.HashSet;
 import java.util.List;
@@ -76,13 +81,14 @@ public class MoneyTalks {
 
 	private void onGatherData(GatherDataEvent.Client event) {
 		DataGenerator generator = event.getGenerator();
-		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getReloadableLookupProvider();
 
 		generator.addProvider(true, new MoneyModels(generator.getPackOutput()));
 		generator.addProvider(true, new MoneyBlockTagProvider(generator.getPackOutput(), lookupProvider));
 		generator.addProvider(true, new MoneyItemTagProvider(generator.getPackOutput(), lookupProvider));
-		generator.addProvider(true, new MoneyRecipeProvider.Runner(generator.getPackOutput(), lookupProvider));
-		generator.addProvider(true, new MoneyLootTableProvider(generator.getPackOutput(), lookupProvider));
+		event.createReloadableRegistryObjects(new RegistrySetBuilder()
+			.add(RecipeProvider.asBootstrap(MoneyRecipeProvider::new))
+			.add(Registries.LOOT_TABLE, new MoneyLootTableProvider()));
 	}
 
 	private void onServerStarted(ServerStartedEvent event) {
@@ -101,7 +107,8 @@ public class MoneyTalks {
 			ItemStack stack = oldPlayer.getInventory().getItem(i);
 			if (stack.is(MoneyBlocks.DOUBLOON.asItem())) {
 				oldPlayer.getInventory().setItem(i, ItemStack.EMPTY);
-				oldPlayer.drop(stack, true, false);
+				ItemEntity dropped = oldPlayer.createItemStackToDrop(stack, true, false);
+				if (dropped != null) oldPlayer.level().addFreshEntity(dropped);
 			}
 		}
 	}
@@ -167,7 +174,7 @@ public class MoneyTalks {
 			ItemStack drop = new ItemStack(MoneyItems.DOLLAR.get());
 			int amount = Math.min(remaining, drop.getMaxStackSize());
 			drop.setCount(amount);
-			player.drop(drop, false);
+			player.drop(drop, false, Prediction.SERVER_ONLY);
 			remaining -= amount;
 		}
 	}

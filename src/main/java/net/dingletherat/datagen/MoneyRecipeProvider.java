@@ -4,27 +4,26 @@ import net.dingletherat.MoneyItemTags;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.item.MoneyItems;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class MoneyRecipeProvider extends RecipeProvider {
-    public MoneyRecipeProvider(HolderLookup.Provider lookupProvider, RecipeOutput output) {
-        super(lookupProvider, output);
+    public MoneyRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     record CarpetPair(Block carpet, Item wool, Item dye) {}
@@ -98,21 +97,5 @@ public class MoneyRecipeProvider extends RecipeProvider {
             .define('S', Blocks.SOUL_SAND)
             .unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT))
             .save(output);
-    }
-
-    public static class Runner extends RecipeProvider.Runner {
-        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-            super(output, lookupProvider);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider lookupProvider, RecipeOutput output) {
-            return new MoneyRecipeProvider(lookupProvider, output);
-        }
-
-        @Override
-        public String getName() {
-            return MoneyTalks.MOD_ID + " Recipes";
-        }
     }
 }

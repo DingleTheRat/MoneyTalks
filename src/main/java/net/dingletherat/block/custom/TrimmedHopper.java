@@ -6,7 +6,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.redstone.Orientation;
 
-import com.mojang.serialization.MapCodec;
 
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.block.entity.custom.TrimmedHopperEntity;
@@ -38,7 +37,6 @@ import net.minecraft.world.level.Level;
 import java.util.Map;
 
 public class TrimmedHopper extends BaseEntityBlock {
-  public static final MapCodec<TrimmedHopper> CODEC = TrimmedHopper.simpleCodec(TrimmedHopper::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
@@ -81,10 +79,6 @@ public class TrimmedHopper extends BaseEntityBlock {
                 .setValue(ENABLED, true);
     }
 
-    @Override
-    public MapCodec<TrimmedHopper> codec(){
-        return CODEC;
-    }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {

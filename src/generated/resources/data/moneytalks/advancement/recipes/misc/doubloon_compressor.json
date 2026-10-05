@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moneytalks:doubloon_compressor"
+        "recipes": "moneytalks:doubloon_compressor"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

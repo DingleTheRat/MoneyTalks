@@ -3,7 +3,6 @@ package net.dingletherat.block.custom;
 import org.joml.Vector3f;
 
 import com.mojang.math.Transformation;
-import com.mojang.serialization.MapCodec;
 import net.dingletherat.block.entity.custom.DoubloonEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Display;
@@ -16,14 +15,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class Doubloon extends BaseEntityBlock {
-    public static final MapCodec<Doubloon> CODEC = simpleCodec(Doubloon::new);
 
     public Doubloon(BlockBehaviour.Properties properties) {
         super(properties);
     }
 
-    @Override
-    public MapCodec<Doubloon> codec() { return CODEC; }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos position, BlockState state) {

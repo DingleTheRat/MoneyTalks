@@ -1,7 +1,6 @@
 package net.dingletherat.block.custom;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import com.mojang.serialization.MapCodec;
 import net.dingletherat.block.entity.custom.MerchantCarpetEntity;
 import net.dingletherat.state.ShopState;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,17 +21,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 
 public class MerchantCarpet extends BaseEntityBlock {
-    public static final MapCodec<MerchantCarpet> CODEC = MerchantCarpet.simpleCodec(MerchantCarpet::new);
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 0.1875, 1); // 1/16 tall
 
     public MerchantCarpet(BlockBehaviour.Properties properties) {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
