@@ -1,13 +1,13 @@
 {
   "wants": {
     "id": "moneytalks:dollar",
-    "count": 9
+    "count": 1
   },
   "gives": {
     "id": "minecraft:golden_carrot",
-    "count": 1
+    "count": 2
   },
   "max_uses": 10,
   "xp": 8,
-  "reputation_discount": 0.2
+  "reputation_discount": 0.05
 }

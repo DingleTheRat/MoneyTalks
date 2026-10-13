@@ -7,7 +7,7 @@
     "id": "moneytalks:dollar",
     "count": 1
   },
-  "max_uses": 10,
-  "reputation_discount": 0.04,
+  "max_uses": 5,
+  "reputation_discount": 0.0,
   "xp": 2
 }

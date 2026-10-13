@@ -4,10 +4,10 @@
     "count": 1
   },
   "gives": {
-    "id": "minecraft:spruce_log",
-    "count": 8
+    "id": "minecraft:experience_bottle",
+    "count": 4
   },
   "max_uses": 10,
-  "xp": 5,
+  "xp": 8,
   "reputation_discount": 0.0
 }

@@ -42,25 +42,27 @@ You can craft this by placing two columns of diamonds on the left and right, and
 
 ### Level #1 (guaranteed)
 - 2 Dollars -> Wallet (1 use)
-- 15 Emeralds -> Dollar (10 uses)
+- 8 Emeralds -> Dollar (5 uses)
+- Dollar -> 4 Emeralds (10 uses)
 ### Level #2 (random)
-- 8 Logs (Acatia, Spruce, Oak) -> Dollar (10 uses)
-- Dollar -> 8 Logs (Acatia, Spruce, Oak) (10 uses)
+- 32 Logs (Acacia, Spruce, Oak) -> Dollar (5 uses)
+- Dollar -> 16 Glass (10 uses)
+- Dollar -> 4 Bottles o' Enchanting (10 uses)
 ### Level #3 (guaranteed)
-- 4 Diamonds -> 4 Dollars (3 uses)
+- 4 Diamonds -> 3 Dollars (6 uses)
+- 6 Dollars -> 4 Diamonds (10 uses)
 ### Level #4 (random)
-- 4 Dollars -> 2 Diamonds (10 uses)
-- 9 Dollars -> 1 Golden Carrot (10 uses)
-- 12 Dollars -> 1 Golden Apple 10 uses)
+- 1 Dollar -> 2 Golden Carrots (10 uses)
+- 5 Dollars -> 1 Golden Apple (10 uses)
+- 1 Dollar -> 4 Wind Charges (8 uses)
 ### Level #5 (random)
-- Netherite Scrap -> 25 Dollars (3 uses)
-- 25 Dollars -> Netherite Scrap (1 use)
-- 38 Dollars -> Totem of Undying (2 uses)
+- Netherite Ingot -> 36 Dollars (1 use)
+- 64 Dollars -> Netherite Ingot (1 use)
+- 32 Dollars -> Totem of Undying (2 uses)
 - 40 Dollars -> Enchanted Golden Apple (2 uses)
-- 64 Dollars -> Nether Star (1 use)
 ### Legend:
 - Random - the following trades are not guaranteed to show up - only two of them can.
--  Guaranteed - All trades shown WILL show up
+- Guaranteed - All trades shown WILL show up
 - Uses- How many times can you trade before you have to again?
 </details>
 

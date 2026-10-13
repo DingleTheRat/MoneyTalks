@@ -5,9 +5,9 @@
   },
   "gives": {
     "id": "moneytalks:dollar",
-    "count": 50
+    "count": 36
   },
-  "max_uses": 3,
+  "max_uses": 1,
   "xp": 9,
   "reputation_discount": 0.0
 }
