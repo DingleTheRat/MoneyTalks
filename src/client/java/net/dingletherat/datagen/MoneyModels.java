@@ -62,7 +62,7 @@ public class MoneyModels extends FabricModelProvider{
 
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-        itemModelGenerator.generateFlatItem(MoneyItems.DOLLAR, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(MoneyItems.COIN, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(MoneyItems.WALLET, ModelTemplates.FLAT_ITEM);
     }
 }

@@ -32,7 +32,7 @@ public class MoneyTalks implements ModInitializer {
 	public static final String MOD_ID = "moneytalks";
 	public static WalletState walletState;
 	public static ShopState shopState;
-    public static final List<Item> nonTransferable = List.of(MoneyItems.DOLLAR, MoneyBlocks.DOUBLOON.asItem());
+	    public static final List<Item> nonTransferable = List.of(MoneyItems.COIN, MoneyBlocks.DOUBLOON.asItem());
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -118,13 +118,13 @@ public class MoneyTalks implements ModInitializer {
 		int looseDollars = 0;
 		for (int i = 0; i < invSize; i++) {
 			ItemStack stack = player.getInventory().getItem(i);
-			if (stack.is(MoneyItems.DOLLAR)) looseDollars += stack.getCount();
+			if (stack.is(MoneyItems.COIN)) looseDollars += stack.getCount();
 		}
 		int looseLoss = (int) Math.ceil(looseDollars * 0.20);
 		int toRemove = looseLoss;
 		for (int i = 0; i < invSize && toRemove > 0; i++) {
 			ItemStack stack = player.getInventory().getItem(i);
-			if (stack.is(MoneyItems.DOLLAR)) {
+			if (stack.is(MoneyItems.COIN)) {
 				int removed = Math.min(stack.getCount(), toRemove);
 				stack.shrink(removed);
 				toRemove -= removed;
@@ -135,7 +135,7 @@ public class MoneyTalks implements ModInitializer {
 		int totalDropped = (looseLoss - toRemove) + walletDollarsLost;
 		int remaining = totalDropped;
 		while (remaining > 0) {
-			ItemStack drop = new ItemStack(MoneyItems.DOLLAR);
+			ItemStack drop = new ItemStack(MoneyItems.COIN);
 			int amount = Math.min(remaining, drop.getMaxStackSize());
 			drop.setCount(amount);
 			player.drop(drop, false, Prediction.PREDICTED);

@@ -89,7 +89,7 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                     .unlockedBy("has_diamond", has(Items.DIAMOND))
                     .save(output);
 
-                shapeless(RecipeCategory.MISC, new ItemStackTemplate(MoneyItems.DOLLAR, 10))
+                shapeless(RecipeCategory.MISC, new ItemStackTemplate(MoneyItems.COIN, 10))
                     .requires(MoneyBlocks.DOUBLOON.asItem())
                     .unlockedBy("has_doubloon", has(MoneyBlocks.DOUBLOON.asItem()))
                     .save(output);

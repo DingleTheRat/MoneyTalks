@@ -28,7 +28,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class Wallet extends BundleItem {
-    private static final String NBT_DOLLARS = "Dollars";
+    private static final String NBT_DOLLARS = "Coins";
     private static final String NBT_OWNER = "Owner";
     public static final String NBT_WALLET_ID = "WalletId";
     private static final int ITEM_BAR_COLOR = (255 << 24) | (255 << 16) | (214 << 8) | 0;
@@ -59,7 +59,7 @@ public class Wallet extends BundleItem {
     }
 
     private static boolean isDollar(ItemStack stack) {
-        return !stack.isEmpty() && stack.is(MoneyItems.DOLLAR);
+        return !stack.isEmpty() && stack.is(MoneyItems.COIN);
     }
 
     private static boolean insertDollars(ItemStack wallet, ItemStack incoming, Player player) {
@@ -78,7 +78,7 @@ public class Wallet extends BundleItem {
     private static ItemStack removeDollars(ItemStack wallet, Player player) {
         int current = getDollars(wallet);
         if (current <= 0) return ItemStack.EMPTY;
-        ItemStack dollar = MoneyItems.DOLLAR.getDefaultInstance();
+        ItemStack dollar = MoneyItems.COIN.getDefaultInstance();
         int take = Math.min(current, dollar.getMaxStackSize());
         dollar.setCount(take);
         setDollars(wallet, current - take);
@@ -217,7 +217,7 @@ public class Wallet extends BundleItem {
         int dollars = getDollars(entity.getItem());
         setDollars(entity.getItem(), 0);
         while (dollars > 0) {
-            ItemStack drop = MoneyItems.DOLLAR.getDefaultInstance();
+            ItemStack drop = MoneyItems.COIN.getDefaultInstance();
             int amount = Math.min(dollars, drop.getMaxStackSize());
             drop.setCount(amount);
             entity.level().addFreshEntity(new ItemEntity(

@@ -16,7 +16,7 @@ public class MoneyGroups {
             FabricCreativeModeTab.builder().icon(() -> new ItemStack(MoneyItems.WALLET))
                     .title(Component.translatable("itemgroup." + MoneyTalks.MOD_ID + ".money_group"))
                     .displayItems((displayContext, entries) -> {
-                        entries.accept(MoneyItems.DOLLAR);
+                        entries.accept(MoneyItems.COIN);
                         entries.accept(MoneyItems.WALLET);
 
                         entries.accept(MoneyBlocks.BLACK_MERCHANT_CARPET.asItem());

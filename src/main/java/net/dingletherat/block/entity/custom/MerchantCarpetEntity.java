@@ -97,7 +97,7 @@ public class MerchantCarpetEntity extends BlockEntity {
         if (item != null && item != Items.AIR && amount >= purchaseAmount && purchaseAmount > 0)
             return new ItemStack(item);
         if (price != 0)
-            return new ItemStack(MoneyItems.DOLLAR);
+            return new ItemStack(MoneyItems.COIN);
         return ItemStack.EMPTY;
     }
 
@@ -184,7 +184,7 @@ public class MerchantCarpetEntity extends BlockEntity {
 
         if (owner != null && player != null && owner.equals(player.getUUID())) {
             if (price == 0) {
-                if (!stack.is(MoneyItems.DOLLAR)) return InteractionResult.FAIL;
+                if (!stack.is(MoneyItems.COIN)) return InteractionResult.FAIL;
                 price = stack.getCount();
                 stack.setCount(0);
                 player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
@@ -209,7 +209,7 @@ public class MerchantCarpetEntity extends BlockEntity {
                 return InteractionResult.SUCCESS;
             }
             if (stack.isEmpty()) {
-                player.getInventory().add(new ItemStack(MoneyItems.DOLLAR, collected));
+                player.getInventory().add(new ItemStack(MoneyItems.COIN, collected));
                 collected = 0;
                 player.playSound(SoundEvents.VAULT_EJECT_ITEM, 1.0f, 1.0f);
                 update();
@@ -225,7 +225,7 @@ public class MerchantCarpetEntity extends BlockEntity {
 
         if (price == 0 || item == null || amount == 0) return InteractionResult.FAIL;
         if (stack.getCount() < price) return InteractionResult.FAIL;
-        if (!stack.is(MoneyItems.DOLLAR)) return InteractionResult.FAIL;
+        if (!stack.is(MoneyItems.COIN)) return InteractionResult.FAIL;
         if (amount < purchaseAmount) return InteractionResult.FAIL;
 
         stack.shrink(price);
@@ -269,7 +269,7 @@ public class MerchantCarpetEntity extends BlockEntity {
             }
             if (collected > 0)
                 Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
-                        new ItemStack(MoneyItems.DOLLAR, collected));
+                        new ItemStack(MoneyItems.COIN, collected));
         }
     }
 }
