@@ -11,7 +11,8 @@
     },
     "icon": {
       "components": {
-        "minecraft:enchantment_glint_override": true
+        "minecraft:enchantment_glint_override": true,
+        "moneytalks:coins": 1
       },
       "id": "moneytalks:wallet"
     },

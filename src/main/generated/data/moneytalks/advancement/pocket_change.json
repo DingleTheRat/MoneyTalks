@@ -10,6 +10,9 @@
       "translate": "advancements.moneytalks.pocket_change.description"
     },
     "icon": {
+      "components": {
+        "moneytalks:coins": 1
+      },
       "id": "moneytalks:wallet"
     },
     "title": {

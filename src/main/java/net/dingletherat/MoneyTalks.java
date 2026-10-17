@@ -38,6 +38,8 @@ public class MoneyTalks implements ModInitializer {
 	public static final int ADVANCEMENT_DEEP_POCKETS_GOAL = 1000;
 	public static final int ADVANCEMENT_MONOPOLY_GOAL = 100;
 	public static final int ADVANCEMENT_RICHEST_PIRATE_GOAL = 192;
+	public static final int TEXTURE_WALLET_HALF_FULL_GOAL = 1;
+	public static final int TEXTURE_WALLET_FULL_GOAL = ADVANCEMENT_DEEP_POCKETS_GOAL;
 
 	public static WalletState walletState;
 	public static ShopState shopState;
@@ -54,13 +56,13 @@ public class MoneyTalks implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
+		MoneyDataComponents.registerDataComponents();
 		MoneyItems.registerItems();
 		MoneyMenus.registerMenus();
 		MoneyVillagers.registerVillagers();
 		MoneyBlocks.registerBlocks();
 		MoneyBlockEntities.registerBlockEntities();
 		MoneyGroups.registerItemGroups();
-		MoneyDataComponents.registerDataComponents();
 		LOGGER.info("Loaded " + MOD_ID + "!");
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {

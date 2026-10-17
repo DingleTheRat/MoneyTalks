@@ -158,7 +158,7 @@ public class Wallet extends BundleItem {
         int coins = wallet.getOrDefault(MoneyDataComponents.COINS, 0);
         String owner = getOwnerName(wallet);
 
-        String phrase = owner != null ? (owner + "'s Wallet has " + coins + " coins") : ("This Wallet has " + coins + " coins");
+        String phrase = owner != null ? (owner + "'s Wallet has " + coins + " Coins") : ("Holds an infinite amount of Coins");
         textConsumer.accept(Component.literal(phrase).withStyle(coins > 0 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
     }
 

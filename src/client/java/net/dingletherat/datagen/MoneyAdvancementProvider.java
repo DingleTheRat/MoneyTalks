@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
+import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
@@ -38,8 +39,12 @@ public class MoneyAdvancementProvider extends FabricAdvancementProvider {
         // Assets
         ItemStackTemplate fueledCompressor = new ItemStackTemplate(MoneyBlocks.DOUBLOON_COMPRESSOR.asItem(), DataComponentPatch.builder()
             .set(DataComponents.ITEM_MODEL, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "doubloon_compressor_fueled")).build());
-        ItemStackTemplate glintWallet = new ItemStackTemplate(MoneyItems.WALLET, DataComponentPatch.builder()
-            .set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true).build());
+        ItemStackTemplate glintHalfFullWallet = new ItemStackTemplate(MoneyItems.WALLET, DataComponentPatch.builder()
+            .set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true).set(MoneyDataComponents.COINS, 1).build());
+        ItemStackTemplate halfFullWallet = new ItemStackTemplate(MoneyItems.WALLET, DataComponentPatch.builder()
+            .set(MoneyDataComponents.COINS, MoneyTalks.TEXTURE_WALLET_HALF_FULL_GOAL).build());
+        ItemStackTemplate fullWallet = new ItemStackTemplate(MoneyItems.WALLET, DataComponentPatch.builder()
+            .set(MoneyDataComponents.COINS, MoneyTalks.TEXTURE_WALLET_FULL_GOAL).build());
         ItemStackTemplate glintCoin = new ItemStackTemplate(MoneyItems.COIN, DataComponentPatch.builder()
             .set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true).build());
         ItemStackTemplate glintDoubloon = new ItemStackTemplate(MoneyBlocks.DOUBLOON.asItem(), DataComponentPatch.builder()
@@ -56,7 +61,7 @@ public class MoneyAdvancementProvider extends FabricAdvancementProvider {
         // Given via code in the Wallet
         AdvancementHolder pocketChange = Advancement.Builder.advancement()
             .parent(moneyTalks)
-            .display(MoneyItems.WALLET, Component.translatable("advancements.moneytalks.pocket_change.title"), Component.translatable("advancements.moneytalks.pocket_change.description"),
+            .display(halfFullWallet, Component.translatable("advancements.moneytalks.pocket_change.title"), Component.translatable("advancements.moneytalks.pocket_change.description"),
                     AdvancementType.TASK, true, true, false)
             .addCriterion("inserted_coin", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
             .save(consumer, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "pocket_change"));
@@ -76,7 +81,7 @@ public class MoneyAdvancementProvider extends FabricAdvancementProvider {
         // Given via code in the Wallet
         AdvancementHolder deepPockets = Advancement.Builder.advancement()
             .parent(noRefunds)
-            .display(glintWallet, Component.translatable("advancements.moneytalks.deep_pockets.title"), Component.translatable("advancements.moneytalks.deep_pockets.description"),
+            .display(fullWallet, Component.translatable("advancements.moneytalks.deep_pockets.title"), Component.translatable("advancements.moneytalks.deep_pockets.description"),
                     AdvancementType.CHALLENGE, true, true, false)
             .addCriterion("inserted_" + MoneyTalks.ADVANCEMENT_DEEP_POCKETS_GOAL + "_coins", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
             .save(consumer, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "deep_pockets"));
@@ -96,7 +101,7 @@ public class MoneyAdvancementProvider extends FabricAdvancementProvider {
         // Given via code in the MerchantCarpetEntity
         AdvancementHolder directDeposit = Advancement.Builder.advancement()
             .parent(openForBusiness)
-            .display(glintWallet, Component.translatable("advancements.moneytalks.direct_deposit.title"), Component.translatable("advancements.moneytalks.direct_deposit.description"),
+            .display(glintHalfFullWallet, Component.translatable("advancements.moneytalks.direct_deposit.title"), Component.translatable("advancements.moneytalks.direct_deposit.description"),
                     AdvancementType.TASK, true, true, false)
             .addCriterion("setup_auto_deposit", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
             .save(consumer, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "direct_deposit"));

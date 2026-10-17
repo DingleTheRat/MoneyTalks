@@ -2,6 +2,7 @@ package net.dingletherat;
 
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.block.entity.renderer.MerchantRenderer;
+import net.dingletherat.item.WalletCoinsProperty;
 import net.dingletherat.screen.MoneyMenus;
 import net.dingletherat.screen.custom.CompressorScreen;
 import net.fabricmc.api.ClientModInitializer;
@@ -14,5 +15,6 @@ public class MoneyTalksClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		BlockEntityRenderers.register(MoneyBlockEntities.MERCHANT_CARPET_ENTITY, MerchantRenderer::new);
 		MenuScreens.register(MoneyMenus.COMPRESSOR_MENU, CompressorScreen::new);
+		WalletCoinsProperty.register();
 	}
 }

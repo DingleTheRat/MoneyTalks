@@ -13,7 +13,11 @@ import net.minecraft.resources.Identifier;
 public class MoneyGroups {
     public static final CreativeModeTab MONEY_GROUP = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
             Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "money_group"),
-            FabricCreativeModeTab.builder().icon(() -> new ItemStack(MoneyItems.WALLET))
+            FabricCreativeModeTab.builder().icon(() -> {
+                        ItemStack fullWallet = new ItemStack(MoneyItems.WALLET);
+                        fullWallet.set(MoneyDataComponents.COINS, MoneyTalks.TEXTURE_WALLET_FULL_GOAL);
+                        return fullWallet;
+                    })
                     .title(Component.translatable("itemgroup." + MoneyTalks.MOD_ID + ".money_group"))
                     .displayItems((displayContext, entries) -> {
                         entries.accept(MoneyItems.COIN);

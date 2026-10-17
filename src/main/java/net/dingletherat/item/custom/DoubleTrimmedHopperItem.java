@@ -47,7 +47,7 @@ public class DoubleTrimmedHopperItem extends BlockItem {
             BlockPos position = stack.get(MoneyDataComponents.COORDINATES);
             String positionText = position.getX() + ", " + position.getY() + ", " + position.getZ();
             textConsumer.accept(Component.literal("Linked to a chest at " + positionText).withStyle(ChatFormatting.GOLD));
-        } else textConsumer.accept(Component.literal("Not linked").withStyle(ChatFormatting.GRAY));
+        } else textConsumer.accept(Component.literal("Not linked to a chest").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

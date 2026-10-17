@@ -1,6 +1,26 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "moneytalks:item/wallet"
+    "type": "minecraft:range_dispatch",
+    "entries": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "moneytalks:item/wallet_half_filled"
+        },
+        "threshold": 1.0
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "moneytalks:item/wallet_filled"
+        },
+        "threshold": 1000.0
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "moneytalks:item/wallet_empty"
+    },
+    "property": "moneytalks:coins"
   }
 }
