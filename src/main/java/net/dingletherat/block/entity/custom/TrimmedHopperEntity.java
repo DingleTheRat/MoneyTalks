@@ -32,6 +32,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 
 public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProvider {
+    public static final String DATA_OWNER = "owner";
+
     protected UUID owner;
     protected final NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     protected int transferCooldown = -1;
@@ -215,14 +217,14 @@ public class TrimmedHopperEntity extends BlockEntity implements Hopper, MenuProv
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putString("owner", owner == null ? "" : owner.toString());
+        output.putString(DATA_OWNER, owner == null ? "" : owner.toString());
         ContainerHelper.saveAllItems(output, inventory);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        String ownerStr = input.getString("owner").orElse("");
+        String ownerStr = input.getString(DATA_OWNER).orElse("");
         owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
         ContainerHelper.loadAllItems(input, inventory);
     }

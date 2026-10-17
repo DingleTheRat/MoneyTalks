@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.block.entity.custom.DoubloonCompressorEntity;
+import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.state.ShopState;
@@ -81,9 +82,9 @@ public class DoubloonCompressor extends BaseEntityBlock {
 
         if (player.getItemInHand(hand).is(MoneyItems.WALLET) && compressor.getItem(0).isEmpty()) {
             compressor.setItem(0, player.getItemInHand(hand).copy());
-            int dollars = Wallet.getCoins(player.getItemInHand(hand));
-            compressor.setTransactionCoins(Math.round(dollars/10)*10);
-            compressor.setWalletOwner(Wallet.getOwner(player.getItemInHand(hand)));
+            int coins = player.getItemInHand(hand).getOrDefault(MoneyDataComponents.COINS, 0);
+            compressor.setTransactionCoins(Math.round(coins / 10) * 10);
+            compressor.setWalletOwner(Wallet.getOwnerName(player.getItemInHand(hand)));
             player.getItemInHand(hand).setCount(0);
             return InteractionResult.SUCCESS;
         }

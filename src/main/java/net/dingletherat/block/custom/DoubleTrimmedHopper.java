@@ -2,14 +2,12 @@ package net.dingletherat.block.custom;
 
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.block.entity.custom.DoubleTrimmedHopperEntity;
+import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.state.ShopState;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,22 +29,17 @@ public class DoubleTrimmedHopper extends TrimmedHopper {
         return createTickerHelper(type, MoneyBlockEntities.DOUBLE_TRIMMED_HOPPER_ENTITY, DoubleTrimmedHopperEntity::tick);
     }
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(Level world, BlockPos position, BlockState state, LivingEntity placer, ItemStack itemStack) {
         if (!world.isClientSide() && placer instanceof Player player) {
-            DoubleTrimmedHopperEntity be = (DoubleTrimmedHopperEntity) world.getBlockEntity(pos);
-            if (be != null) {
-                be.setOwner(player.getUUID());
-                CustomData data = itemStack.get(DataComponents.CUSTOM_DATA);
-                if (data != null) {
-                    CompoundTag tag = data.copyTag();
-                    if (tag.contains("linked")) {
-                        tag.getLong("linked").ifPresent(l -> be.setLinkedChest(BlockPos.of(l)));
-                    }
-                }
-                be.setChanged();
-                world.sendBlockUpdated(pos, state, state, 3);
-                ShopState.get(((ServerLevel) world).getServer()).register(player.getUUID(), pos);
-            }
+            DoubleTrimmedHopperEntity blockEntity = (DoubleTrimmedHopperEntity) world.getBlockEntity(position);
+            if (blockEntity == null) return;
+
+            if (itemStack.has(MoneyDataComponents.COORDINATES)) blockEntity.setLinkedChest(itemStack.get(MoneyDataComponents.COORDINATES));
+
+            blockEntity.setOwner(player.getUUID());
+            blockEntity.setChanged();
+            world.sendBlockUpdated(position, state, state, 3);
+            ShopState.get(((ServerLevel) world).getServer()).register(player.getUUID(), position);
         }
     }
 }

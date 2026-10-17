@@ -11,6 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public class DoubleTrimmedHopperEntity extends TrimmedHopperEntity {
+    public static final String DATA_LINKED = "linked";
+
     private BlockPos linked = null;
 
     public DoubleTrimmedHopperEntity(BlockPos pos, BlockState state) {
@@ -21,17 +23,17 @@ public class DoubleTrimmedHopperEntity extends TrimmedHopperEntity {
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putLong("linked", linked != null ? linked.asLong() : Long.MIN_VALUE);
+        output.putLong(DATA_LINKED,linked != null ? linked.asLong() : Long.MIN_VALUE);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        long linkedLong = input.getLong("linked").orElse(Long.MIN_VALUE);
+        long linkedLong = input.getLongOr(DATA_LINKED,Long.MIN_VALUE);
         linked = linkedLong == Long.MIN_VALUE ? null : BlockPos.of(linkedLong);
     }
 
-    public static void tick(Level world, BlockPos pos, BlockState state, DoubleTrimmedHopperEntity hopper) {
+    public static void tick(Level world, BlockPos position, BlockState state, DoubleTrimmedHopperEntity hopper) {
         if (world.isClientSide()) return;
         if (hopper.transferCooldown > 0) {
             hopper.transferCooldown--;
@@ -39,26 +41,26 @@ public class DoubleTrimmedHopperEntity extends TrimmedHopperEntity {
         }
 
         hopper.transferCooldown = 0;
-        hopper.pullItems(world, pos, state);
-        hopper.pushItems(world, pos, state);
+        hopper.pullItems(world, position, state);
+        hopper.pushItems(world, position, state);
     }
 
     @Override
-    protected void pushItems(Level world, BlockPos pos, BlockState state) {
+    protected void pushItems(Level world, BlockPos position, BlockState state) {
         if (linked == null) return;
 
-        BlockEntity be = world.getBlockEntity(linked);
-        if (be == null || !(be instanceof Container)) {
+        BlockEntity blockEntity = world.getBlockEntity(linked);
+        if (blockEntity == null || !(blockEntity instanceof Container)) {
             linked = null;
             setChanged();
             return;
         }
 
-        transferTo((Container) be);
+        transferTo((Container) blockEntity);
     }
 
-    public void setLinkedChest(BlockPos pos) {
-        linked = pos;
+    public void setLinkedChest(BlockPos position) {
+        linked = position;
         setChanged();
     }
 

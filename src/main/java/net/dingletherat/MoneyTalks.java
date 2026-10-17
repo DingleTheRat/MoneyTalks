@@ -2,8 +2,10 @@ package net.dingletherat;
 
 import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyGroups;
 import net.dingletherat.item.MoneyItems;
+import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.screen.MoneyMenus;
 import net.dingletherat.state.*;
 import net.dingletherat.villager.MoneyVillagers;
@@ -11,11 +13,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Prediction;
@@ -61,6 +60,7 @@ public class MoneyTalks implements ModInitializer {
 		MoneyBlocks.registerBlocks();
 		MoneyBlockEntities.registerBlockEntities();
 		MoneyGroups.registerItemGroups();
+		MoneyDataComponents.registerDataComponents();
 		LOGGER.info("Loaded " + MOD_ID + "!");
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
@@ -90,22 +90,21 @@ public class MoneyTalks implements ModInitializer {
 
 		// Deduct 15% from wallets in player inventory
 		int walletDollarsLost = 0;
-		Set<String> inventoryWalletIds = new HashSet<>();
+		Set<UUID> inventoryWalletIds = new HashSet<>();
 		for (int i = 0; i < invSize; i++) {
 			ItemStack stack = player.getInventory().getItem(i);
-			if (stack.is(MoneyItems.WALLET) && stack.has(DataComponents.CUSTOM_DATA)) {
-				CompoundTag nbt = stack.get(DataComponents.CUSTOM_DATA).copyTag();
-				int stored = nbt.getInt("Dollars").orElse(0);
+			if (stack.is(MoneyItems.WALLET) && stack.has(MoneyDataComponents.COINS)) {
+				int stored = stack.get(MoneyDataComponents.COINS);
 				int loss = (int) Math.ceil(stored * 0.15);
 				int newAmount = Math.max(0, stored - loss);
-				nbt.putInt("Dollars", newAmount);
-				stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
+				stack.set(MoneyDataComponents.COINS, newAmount);
 				walletDollarsLost += loss;
-				String walletId = nbt.getString("WalletId").orElse("");
-				if (!walletId.isEmpty()) {
+				UUID walletId = stack.get(MoneyDataComponents.WALLET_ID);
+				if (walletId != null) {
 					inventoryWalletIds.add(walletId);
 					if (walletState != null) {
-						walletState.update(UUID.fromString(walletId), nbt.getString("Owner").orElse(""), newAmount);
+						String owner = Wallet.getOwnerName(stack);
+						walletState.update(walletId, owner != null ? owner : "", newAmount);
 					}
 				}
 			}
@@ -114,7 +113,7 @@ public class MoneyTalks implements ModInitializer {
 		// Deduct 15% from wallets in containers via WalletState
 		if (walletState != null) {
 			for (Map.Entry<UUID, WalletState.WalletEntry> entry : walletState.getWalletsOwnedBy(player.getName().getString()).entrySet()) {
-				if (!inventoryWalletIds.contains(entry.getKey().toString())) {
+				if (!inventoryWalletIds.contains(entry.getKey())) {
 					int stored = entry.getValue().coins;
 					int loss = (int) Math.ceil(stored * 0.15);
 					walletDollarsLost += loss;

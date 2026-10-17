@@ -6,6 +6,7 @@ import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.custom.DoubloonCompressor;
 import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.screen.custom.CompressorMenu;
@@ -40,6 +41,14 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     public static final int COMPRESSION_TICKS = 100;
     public static final int COMPRESSIONS_PER_FUEL = 3;
     public static final int TAKE_COINS = 10;
+
+    // NBT
+    public static final String DATA_OWNER = "owner";
+    public static final String DATA_COMPRESSING_PROGRESS = "compressing_progress";
+    public static final String DATA_COMPRESSIONS = "compressions";
+    public static final String DATA_ORIGINAL_WALLET_COINS = "original_wallet_coins";
+    public static final String DATA_NAME = "name";
+    public static final String DATA_WALLET_OWNER = "wallet_owner";
 
     protected UUID owner;
     protected int compression_progress = COMPRESSION_TICKS;
@@ -121,9 +130,12 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         // Return if it's not fueled or has no wallet to deduct the coins from
         if (!wallet.is(MoneyItems.WALLET) || !state.getValue(DoubloonCompressor.FUELED)) return;
 
-        // Get the amount of dollars in the wallet and get rid of it if we can't take anymore coins
-        int dollars = Wallet.getCoins(wallet);
-        if (dollars < TAKE_COINS) compressor.setItem(WALLET_SLOT, ItemStack.EMPTY);
+        // Get the amount of coins in the wallet and get rid of it if we can't take anymore coins
+        int coins = wallet.getOrDefault(MoneyDataComponents.COINS, 0);
+        if (coins < TAKE_COINS) {
+            compressor.setItem(WALLET_SLOT, ItemStack.EMPTY);
+            return;
+        }
 
         // If we aren't done compressing, decrease the progress and return
         if (compressor.compression_progress != 0) {
@@ -135,7 +147,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         // Finish compression, as long as it isn't the max stack size
         if (doubloons.getCount() != doubloons.getMaxStackSize()) {
             // Remove da money from da wallet
-            Wallet.setCoins(wallet, dollars - TAKE_COINS);
+            wallet.set(MoneyDataComponents.COINS, coins - TAKE_COINS);
 
             // Increase or add in a doubloon into the output slot (doubloon slot)
             if (compressor.getItem(DOUBLOON_SLOT) == ItemStack.EMPTY) compressor.setItem(DOUBLOON_SLOT, new ItemStack(MoneyBlocks.DOUBLOON.asItem()));
@@ -163,29 +175,29 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putString("owner", owner == null ? "" : owner.toString());
+        output.putString(DATA_OWNER, owner == null ? "" : owner.toString());
 
-        output.putInt("compressing_progress", compression_progress);
-        output.putInt("compressions", compressions);
-        
-        output.putInt("original_wallet_coins", original_wallet_coins);
-        output.putString("name", name == null ? "Doubloon Compressor" : name);
-        output.putString("wallet_owner", walletOwner == null ? "Unknown Player" : name);
+        output.putInt(DATA_COMPRESSING_PROGRESS, compression_progress);
+        output.putInt(DATA_COMPRESSIONS, compressions);
+
+        output.putInt(DATA_ORIGINAL_WALLET_COINS, original_wallet_coins);
+        output.putString(DATA_NAME, name == null ? "Doubloon Compressor" : name);
+        output.putString(DATA_WALLET_OWNER, walletOwner == null ? "Unknown Player" : walletOwner);
         ContainerHelper.saveAllItems(output, inventory);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        String ownerString = input.getString("owner").orElse("");
+        String ownerString = input.getString(DATA_OWNER).orElse("");
         owner = ownerString.isEmpty() ? null : UUID.fromString(ownerString);
 
-        compression_progress = input.getIntOr("compressing_progress", COMPRESSION_TICKS);
-        compressions = input.getIntOr("compressings", COMPRESSIONS_PER_FUEL);
+        compression_progress = input.getIntOr(DATA_COMPRESSING_PROGRESS, COMPRESSION_TICKS);
+        compressions = input.getIntOr(DATA_COMPRESSIONS, COMPRESSIONS_PER_FUEL);
 
-        original_wallet_coins = input.getIntOr("original_wallet_coins", 0);
-        name = input.getStringOr("name", "Doubloon Compressor");
-        walletOwner = input.getStringOr("wallet_owner", "Unknown Player");
+        original_wallet_coins = input.getIntOr(DATA_ORIGINAL_WALLET_COINS, 0);
+        name = input.getStringOr(DATA_NAME, "Doubloon Compressor");
+        walletOwner = input.getStringOr(DATA_WALLET_OWNER, "Unknown Player");
         ContainerHelper.loadAllItems(input, inventory);
     }
 

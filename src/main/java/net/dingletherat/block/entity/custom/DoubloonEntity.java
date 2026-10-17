@@ -11,6 +11,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 public class DoubloonEntity extends BlockEntity {
+    public static final String DATA_OUTLINE = "outline";
+
     public BlockDisplay outline;
     private EntityReference<BlockDisplay> outlineReference;
 
@@ -24,13 +26,13 @@ public class DoubloonEntity extends BlockEntity {
 
         if (outline == null) return;
         outlineReference = EntityReference.of(outline);
-        EntityReference.store(outlineReference, output, "outline");
+        EntityReference.store(outlineReference, output, DATA_OUTLINE);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        outlineReference = EntityReference.read(input, "outline");
+        outlineReference = EntityReference.read(input, DATA_OUTLINE);
     }
 
     @Override

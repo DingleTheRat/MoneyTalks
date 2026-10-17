@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.state.WalletState;
@@ -35,57 +36,68 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 public class MerchantCarpetEntity extends BlockEntity {
+    public static final String DATA_PRICE = "price";
+    public static final String DATA_AMOUNT = "amount";
+    public static final String DATA_PURCHASE_AMOUNT = "purchaseAmount";
+    public static final String DATA_COLLECTED = "collected";
+    public static final String DATA_OWNER = "owner";
+    public static final String DATA_TRADE = "trade";
+    public static final String DATA_ITEM = "item";
+    public static final String DATA_WALLET = "wallet";
+    public static final String DATA_PURCHASES = "purchases";
+
     private int price = 0;
-    private UUID owner = null;
     private int purchaseAmount = 0;
     private int collected = 0;
+    private int purchases = 0; // Counter for Monopoly advancement
+    private UUID owner = null;
     private int amount = 0;
     private ItemStack trade = ItemStack.EMPTY;
     private Item item = null;
     private float rotation = 0;
     private UUID wallet = null;
-    private int purchases = 0; // Counter for Monopoly advancement
 
-    public MerchantCarpetEntity(BlockPos pos, BlockState state) {
-        super(MoneyBlockEntities.MERCHANT_CARPET_ENTITY, pos, state);
+    public MerchantCarpetEntity(BlockPos position, BlockState state) {
+        super(MoneyBlockEntities.MERCHANT_CARPET_ENTITY, position, state);
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putInt("price", price);
-        output.putInt("amount", amount);
-        output.putString("owner", owner != null ? owner.toString() : "");
-        output.putInt("purchaseAmount", purchaseAmount);
-        output.putInt("collected", collected);
-        output.putString("trade", trade.isEmpty() ? "" : ItemStack.CODEC.encodeStart(
+        output.putInt(DATA_PRICE, price);
+        output.putInt(DATA_AMOUNT, amount);
+        output.putInt(DATA_PURCHASE_AMOUNT, purchaseAmount);
+        output.putInt(DATA_COLLECTED, collected);
+        output.putInt(DATA_PURCHASES, purchases);
+        output.putString(DATA_OWNER, owner != null ? owner.toString() : "");
+        output.putString(DATA_TRADE, trade.isEmpty() ? "" : ItemStack.CODEC.encodeStart(
                 JsonOps.INSTANCE, trade).result().map(Object::toString).orElse(""));
-        output.putString("item", item != null ? BuiltInRegistries.ITEM.getKey(item).toString() : "minecraft:air");
-        output.putString("wallet", wallet != null ? wallet.toString() : "");
-        output.putInt("purchases", purchases);
+        output.putString(DATA_ITEM, item != null ? BuiltInRegistries.ITEM.getKey(item).toString() : "minecraft:air");
+        output.putString(DATA_WALLET, wallet != null ? wallet.toString() : "");
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        price = input.getIntOr("price", 0);
-        amount = input.getIntOr("amount", 0);
-        String ownerString = input.getStringOr("owner", "");
-        owner = ownerString.isEmpty() ? null : UUID.fromString(ownerString);
-        purchaseAmount = input.getIntOr("purchaseAmount", 0);
-        collected = input.getIntOr("collected", 0);
+        price = input.getIntOr(DATA_PRICE, 0);
+        amount = input.getIntOr(DATA_AMOUNT, 0);
+        purchaseAmount = input.getIntOr(DATA_PURCHASE_AMOUNT, 0);
+        collected = input.getIntOr(DATA_COLLECTED, 0);
+        purchases = input.getIntOr(DATA_PURCHASES, 0);
 
-        String tradeString = input.getStringOr("trade", "");
+        String ownerString = input.getStringOr(DATA_OWNER, "");
+        owner = ownerString.isEmpty() ? null : UUID.fromString(ownerString);
+
+        String tradeString = input.getStringOr(DATA_TRADE, "");
         trade = tradeString.isEmpty() ? ItemStack.EMPTY : ItemStack.CODEC.parse(
                 JsonOps.INSTANCE, new JsonParser().parse(tradeString)).result().orElse(ItemStack.EMPTY);
 
-        Identifier identifier = Identifier.tryParse(input.getStringOr("item", "minecraft:air"));
+        Identifier identifier = Identifier.tryParse(input.getStringOr(DATA_ITEM, "minecraft:air"));
         item = BuiltInRegistries.ITEM.getValue(identifier);
 
-        String walletString = input.getStringOr("wallet", "");
+        String walletString = input.getStringOr(DATA_WALLET, "");
         wallet = walletString.isEmpty() ? null : UUID.fromString(walletString);
 
-        purchases = input.getIntOr("purchases", 0);
     }
 
     public void setOwner(UUID player) {
@@ -159,17 +171,12 @@ public class MerchantCarpetEntity extends BlockEntity {
         Inventory inventory = ownerPlayer.getInventory();
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            if (stack.is(MoneyItems.WALLET) && stack.has(DataComponents.CUSTOM_DATA)) {
-                CompoundTag nbt = stack.get(DataComponents.CUSTOM_DATA).copyTag();
-                int newAmount = nbt.getInt("Dollars").orElse(0) + amount;
-                nbt.putInt("Dollars", newAmount);
-                stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
-                String walletId = nbt.getString("WalletId").orElse("");
-                if (!walletId.isEmpty()) {
-                    MoneyTalks.walletState.update(UUID.fromString(walletId), ownerName, newAmount);
-                }
-                return;
-            }
+            if (!stack.is(MoneyItems.WALLET) || !stack.has(MoneyDataComponents.WALLET_ID)) continue;
+
+            int newAmount = stack.getOrDefault(MoneyDataComponents.COINS, 0) + amount;
+            stack.set(MoneyDataComponents.COINS, newAmount);
+            MoneyTalks.walletState.update(stack.get(MoneyDataComponents.WALLET_ID), ownerName, newAmount);
+            return;
         }
 
         if (!ownerWallets.isEmpty()) {
@@ -186,50 +193,8 @@ public class MerchantCarpetEntity extends BlockEntity {
     public InteractionResult click(ItemStack stack, Level level, Player player) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
 
-        if (owner != null && player != null && owner.equals(player.getUUID())) {
-            if (price == 0) {
-                if (!stack.is(MoneyItems.COIN)) return InteractionResult.FAIL;
-                price = stack.getCount();
-                stack.setCount(0);
-                player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
-                update();
-                return InteractionResult.SUCCESS;
-            }
-            if (item == null && !MoneyTalks.NON_TRANSFERABLE.contains(stack.getItem())) {
-                trade = stack.copy();
-                item = trade.getItem();
-                amount = stack.getCount();
-                purchaseAmount = stack.getCount();
-
-                stack.shrink(stack.getCount());
-                player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
-                update();
-                MoneyTalks.grantAdvancement(player, "open_for_business", "setup_merchant_carpet");
-
-                return InteractionResult.SUCCESS;
-            }
-            if (item == stack.getItem() && ItemStack.isSameItemSameComponents(trade, stack)) {
-                amount += stack.getCount();
-                stack.shrink(stack.getCount());
-                player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
-                update();
-                return InteractionResult.SUCCESS;
-            }
-            if (stack.isEmpty()) {
-                player.getInventory().add(new ItemStack(MoneyItems.COIN, collected));
-                collected = 0;
-                player.playSound(SoundEvents.VAULT_EJECT_ITEM, 1.0f, 1.0f);
-                update();
-                return InteractionResult.SUCCESS;
-            }
-            if (stack.is(MoneyItems.WALLET)) {
-                stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-                CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-                String walletId = data != null ? data.copyTag().getString(Wallet.NBT_WALLET_ID).orElse("") : "";
-                wallet = UUID.fromString(walletId);
-                MoneyTalks.grantAdvancement(player, "direct_deposit", "setup_auto_deposit");
-            }
-        }
+        if (owner != null && player != null && owner.equals(player.getUUID()))
+            if (ownerClick(stack, player)) return InteractionResult.SUCCESS;
 
         if (price == 0 || item == null || amount == 0) return InteractionResult.FAIL;
         if (stack.getCount() < price) return InteractionResult.FAIL;
@@ -246,7 +211,9 @@ public class MerchantCarpetEntity extends BlockEntity {
         amount -= purchaseAmount;
 
         if (!level.isClientSide()) {
-            String message = player.getName().getString() + " bought " + purchaseAmount + " " + trade.getItemName().getString() + " for " + price + " Dollar!";
+            String coinString = price == 1 ? " Coin" : " Coins";
+            String message = player.getName().getString() + " bought " + purchaseAmount + " " + trade.getItemName().getString() + " for " + price + coinString;
+
             ServerPlayer ownerPlayer = level.getServer().getPlayerList().getPlayer(owner);
             if (ownerPlayer != null) {
                 ownerPlayer.sendSystemMessage(Component.literal(message).withStyle(ChatFormatting.GOLD), true);
@@ -261,6 +228,54 @@ public class MerchantCarpetEntity extends BlockEntity {
         MoneyTalks.grantAdvancement(player, "no_refunds", "bought_something");
         update();
         return InteractionResult.SUCCESS;
+    }
+
+    /**
+     * @return If to return in the method calling it
+     **/
+    public boolean ownerClick(ItemStack stack, Player player) {
+        if (price == 0) {
+            if (!stack.is(MoneyItems.COIN)) return true;
+            price = stack.getCount();
+            stack.setCount(0);
+            player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
+            update();
+            return true;
+        }
+        if (item == null && !MoneyTalks.NON_TRANSFERABLE.contains(stack.getItem())) {
+            trade = stack.copy();
+            item = trade.getItem();
+            amount = stack.getCount();
+            purchaseAmount = stack.getCount();
+
+            stack.shrink(stack.getCount());
+            player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
+            update();
+            MoneyTalks.grantAdvancement(player, "open_for_business", "setup_merchant_carpet");
+
+            return true;
+        }
+        if (item == stack.getItem() && ItemStack.isSameItemSameComponents(trade, stack)) {
+            amount += stack.getCount();
+            stack.shrink(stack.getCount());
+            player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
+            update();
+            return true;
+        }
+        if (stack.isEmpty()) {
+            player.getInventory().add(new ItemStack(MoneyItems.COIN, collected));
+            collected = 0;
+            player.playSound(SoundEvents.VAULT_EJECT_ITEM, 1.0f, 1.0f);
+            update();
+            return true;
+        }
+        if (stack.is(MoneyItems.WALLET)) {
+            stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+            wallet = stack.get(MoneyDataComponents.WALLET_ID);
+            MoneyTalks.grantAdvancement(player, "direct_deposit", "setup_auto_deposit");
+        }
+
+        return false;
     }
 
     public InteractionResult hopperInsert(ItemStack stack, Level level) {
