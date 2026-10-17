@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "moneytalks:coin",
+    "count": 1
+  },
+  "gives": {
+    "id": "minecraft:blaze_powder",
+    "count": 3
+  },
+  "max_uses": 8,
+  "xp": 6,
+  "reputation_discount": 0.05
+}

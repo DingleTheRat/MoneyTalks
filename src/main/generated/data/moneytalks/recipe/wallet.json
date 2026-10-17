@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": "minecraft:leather"
+  },
+  "pattern": [
+    "L L",
+    "LLL"
+  ],
+  "result": {
+    "id": "moneytalks:wallet"
+  }
+}

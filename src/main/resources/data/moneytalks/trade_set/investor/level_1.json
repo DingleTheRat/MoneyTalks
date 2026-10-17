@@ -1,5 +1,10 @@
 {
   "amount": 3,
   "random_sequence": "moneytalks:trade_set/investor/level_1",
-  "trades": "#moneytalks:investor/level_1"
+  "trades": [
+    "moneytalks:coin_to_emerald",
+    "moneytalks:emerald_to_coin",
+    "moneytalks:diamond_to_coin",
+    "moneytalks:coin_to_diamond"
+  ]
 }

@@ -4,7 +4,8 @@
     "W": "minecraft:brown_wool"
   },
   "pattern": [
-    "WWW"
+    "WW",
+    "WW"
   ],
   "result": {
     "id": "moneytalks:brown_merchant_carpet"

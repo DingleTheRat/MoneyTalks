@@ -59,7 +59,8 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
 
                 for (CarpetPair pair : pairs) {
                     shaped(RecipeCategory.MISC, pair.carpet())
-                        .pattern("WWW")
+                        .pattern("WW")
+                        .pattern("WW")
                         .define('W', pair.wool())
                         .unlockedBy("has_wool", has(pair.wool()))
                         .save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID,
@@ -73,6 +74,13 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                         .save(output, ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID,
                             "merchant_carpet_dye_" + BuiltInRegistries.ITEM.getKey(target.dye()).getPath())));
                 }
+
+                shaped(RecipeCategory.MISC, MoneyItems.WALLET)
+                    .pattern("L L")
+                    .pattern("LLL")
+                    .define('L', Items.LEATHER)
+                    .unlockedBy("has_leather", has(Items.LEATHER))
+                    .save(output);
 
                 shaped(RecipeCategory.MISC, (Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER)
                     .pattern("D D")

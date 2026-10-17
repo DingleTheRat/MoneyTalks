@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "minecraft:gold_ingot",
+    "count": 16
+  },
+  "gives": {
+    "id": "moneytalks:coin",
+    "count": 1
+  },
+  "max_uses": 5,
+  "xp": 6,
+  "reputation_discount": 0.0
+}
