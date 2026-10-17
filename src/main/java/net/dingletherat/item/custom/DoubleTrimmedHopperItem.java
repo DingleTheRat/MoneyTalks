@@ -17,7 +17,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Prediction;
+import net.dingletherat.item.LegacyData;
 import net.dingletherat.item.MoneyDataComponents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -25,6 +29,11 @@ import net.minecraft.core.component.DataComponents;
 public class DoubleTrimmedHopperItem extends BlockItem {
     public DoubleTrimmedHopperItem(Block block, Properties properties) {
         super(block, properties);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, EquipmentSlot slot) {
+        LegacyData.migrate(stack);
     }
 
     @Override

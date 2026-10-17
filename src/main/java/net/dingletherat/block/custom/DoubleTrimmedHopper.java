@@ -2,6 +2,7 @@ package net.dingletherat.block.custom;
 
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.block.entity.custom.DoubleTrimmedHopperEntity;
+import net.dingletherat.item.LegacyData;
 import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.state.ShopState;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,6 +35,7 @@ public class DoubleTrimmedHopper extends TrimmedHopper {
             DoubleTrimmedHopperEntity blockEntity = (DoubleTrimmedHopperEntity) world.getBlockEntity(position);
             if (blockEntity == null) return;
 
+            LegacyData.migrate(itemStack);
             if (itemStack.has(MoneyDataComponents.COORDINATES)) blockEntity.setLinkedChest(itemStack.get(MoneyDataComponents.COORDINATES));
 
             blockEntity.setOwner(player.getUUID());

@@ -1,6 +1,7 @@
 package net.dingletherat.item.custom;
 
 import net.dingletherat.MoneyTalks;
+import net.dingletherat.item.LegacyData;
 import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.state.WalletState;
@@ -78,6 +79,7 @@ public class Wallet extends BundleItem {
         if (!(entity instanceof Player player)) return;
 
         // Data setters
+        LegacyData.migrate(wallet);
         if (MoneyTalks.walletState == null) MoneyTalks.walletState = WalletState.get(world.getServer());
         if (!wallet.has(MoneyDataComponents.COINS)) wallet.set(MoneyDataComponents.COINS, 0);
         if (!wallet.has(MoneyDataComponents.OWNER)) wallet.set(MoneyDataComponents.OWNER, ResolvableProfile.createResolved(player.getGameProfile()));

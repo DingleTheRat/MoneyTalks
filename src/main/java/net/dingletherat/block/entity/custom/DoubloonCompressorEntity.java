@@ -6,6 +6,7 @@ import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.custom.DoubloonCompressor;
 import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.item.LegacyData;
 import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
@@ -129,6 +130,8 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
 
         // Return if it's not fueled or has no wallet to deduct the coins from
         if (!wallet.is(MoneyItems.WALLET) || !state.getValue(DoubloonCompressor.FUELED)) return;
+
+        LegacyData.migrate(wallet);
 
         // Get the amount of coins in the wallet and get rid of it if we can't take anymore coins
         int coins = wallet.getOrDefault(MoneyDataComponents.COINS, 0);

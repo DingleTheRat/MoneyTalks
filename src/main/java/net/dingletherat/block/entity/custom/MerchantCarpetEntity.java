@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.item.LegacyData;
 import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
@@ -91,6 +92,7 @@ public class MerchantCarpetEntity extends BlockEntity {
         String tradeString = input.getStringOr(DATA_TRADE, "");
         trade = tradeString.isEmpty() ? ItemStack.EMPTY : ItemStack.CODEC.parse(
                 JsonOps.INSTANCE, new JsonParser().parse(tradeString)).result().orElse(ItemStack.EMPTY);
+        LegacyData.migrate(trade);
 
         Identifier identifier = Identifier.tryParse(input.getStringOr(DATA_ITEM, "minecraft:air"));
         item = BuiltInRegistries.ITEM.getValue(identifier);
