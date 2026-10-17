@@ -10,14 +10,17 @@ import net.dingletherat.villager.MoneyVillagers;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,9 +33,15 @@ import org.slf4j.LoggerFactory;
 
 public class MoneyTalks implements ModInitializer {
 	public static final String MOD_ID = "moneytalks";
+	public static final List<Item> NON_TRANSFERABLE = List.of(MoneyItems.COIN, MoneyBlocks.DOUBLOON.asItem());
+
+	// Note to self: run datagen when changing
+	public static final int ADVANCEMENT_DEEP_POCKETS_GOAL = 1000;
+	public static final int ADVANCEMENT_MONOPOLY_GOAL = 100;
+	public static final int ADVANCEMENT_RICHEST_PIRATE_GOAL = 192;
+
 	public static WalletState walletState;
 	public static ShopState shopState;
-	    public static final List<Item> nonTransferable = List.of(MoneyItems.COIN, MoneyBlocks.DOUBLOON.asItem());
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -106,7 +115,7 @@ public class MoneyTalks implements ModInitializer {
 		if (walletState != null) {
 			for (Map.Entry<UUID, WalletState.WalletEntry> entry : walletState.getWalletsOwnedBy(player.getName().getString()).entrySet()) {
 				if (!inventoryWalletIds.contains(entry.getKey().toString())) {
-					int stored = entry.getValue().dollars;
+					int stored = entry.getValue().coins;
 					int loss = (int) Math.ceil(stored * 0.15);
 					walletDollarsLost += loss;
 					walletState.applyDeduction(entry.getKey(), entry.getValue().owner, Math.max(0, stored - loss));
@@ -141,5 +150,13 @@ public class MoneyTalks implements ModInitializer {
 			player.drop(drop, false, Prediction.PREDICTED);
 			remaining -= amount;
 		}
+	}
+
+	public static void grantAdvancement(Player player, String advancement, String criterion) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+
+        AdvancementHolder advancementHolder = serverPlayer.level().getServer().getAdvancements()
+                .get(Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, advancement));
+        if (advancementHolder != null) serverPlayer.getAdvancements().award(advancementHolder, criterion);
 	}
 }

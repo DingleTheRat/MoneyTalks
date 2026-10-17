@@ -1,0 +1,25 @@
+{
+  "parent": "moneytalks:pocket_change",
+  "criteria": {
+    "bought_something": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.no_refunds.description"
+    },
+    "icon": {
+      "id": "minecraft:bundle"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.no_refunds.title"
+    }
+  },
+  "requirements": [
+    [
+      "bought_something"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -2,10 +2,10 @@
   "amount": 2,
   "random_sequence": "moneytalks:trade_set/investor/level_2",
   "trades": [
-    "moneytalks:oak_to_dollar",
-    "moneytalks:spruce_to_dollar",
-    "moneytalks:acacia_to_dollar",
-    "moneytalks:dollar_to_glass",
-    "moneytalks:dollar_to_experience_bottle"
+    "moneytalks:oak_to_coin",
+    "moneytalks:spruce_to_coin",
+    "moneytalks:acacia_to_coin",
+    "moneytalks:coin_to_glass",
+    "moneytalks:coin_to_experience_bottle"
   ]
 }

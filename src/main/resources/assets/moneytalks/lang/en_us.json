@@ -1,17 +1,44 @@
 {
   "item.moneytalks.wallet": "Wallet",
-  "item.moneytalks.dollar": "Coin",
+  "item.moneytalks.coin": "Coin",
+
   "block.moneytalks.double_trimmed_hopper": "Double Trimmed Hopper",
   "item.moneytalks.double_trimmed_hopper": "Double Trimmed Hopper",
   "block.moneytalks.trimmed_hopper": "Trimmed Hopper",
   "block.moneytalks.doubloon_compressor": "Doubloon Compressor",
   "block.moneytalks.doubloon": "Doubloon",
+
   "entity.minecraft.villager.investor": "Investor",
   "entity.minecraft.villager.moneytalks.investor": "Investor",
-  "itemgroup.moneytalks.money_group": "Money Group",
-  "item.minecraft.potion.effect.glowing_potion": "Potion of Glowing",
-  "item.minecraft.splash_potion.effect.glowing_potion": "Splash Potion of Glowing",
-  "item.minecraft.lingering_potion.effect.glowing_potion": "Lingering Potion of Glowing",
+
+  "itemgroup.moneytalks.money_group": "Money Talks",
+
+  "advancements.moneytalks.money_talks.title": "Money Talks",
+  "advancements.moneytalks.money_talks.description": "Get your hands on your first Coin",
+  "advancements.moneytalks.pocket_change.title": "Pocket Change",
+  "advancements.moneytalks.pocket_change.description": "Stash some Coins in a Wallet",
+
+  "advancements.moneytalks.no_refunds.title": "No Refunds!",
+  "advancements.moneytalks.no_refunds.description": "Buy something from a Merchant's Carpet. All sales are final!",
+  "advancements.moneytalks.deep_pockets.title": "Deep Pockets",
+  "advancements.moneytalks.deep_pockets.description": "Store 1,000 Coins in a Wallet",
+
+  "advancements.moneytalks.open_for_business.title": "Open for Business",
+  "advancements.moneytalks.open_for_business.description": "Set up your first Merchant's Carpet",
+  "advancements.moneytalks.direct_deposit.title": "Direct Deposit",
+  "advancements.moneytalks.direct_deposit.description": "Right-click your Merchant's Carpet with a Wallet to have earnings deposited automatically",
+  "advancements.moneytalks.pleasure_doing_business.title": "Pleasure Doing Business",
+  "advancements.moneytalks.pleasure_doing_business.description": "Make a sale from your Merchant's Carpet",
+  "advancements.moneytalks.monopoly.title": "Monopoly",
+  "advancements.moneytalks.monopoly.description": "Have people make 100 purchases from your Merchant's Carpet",
+
+  "advancements.moneytalks.under_pressure.title": "Under Pressure",
+  "advancements.moneytalks.under_pressure.description": "Fuel up a Doubloon Compressor",
+  "advancements.moneytalks.arr_matey.title": "Arr Matey!",
+  "advancements.moneytalks.arr_matey.description": "Press yer Coins into a shiny Doubloon",
+  "advancements.moneytalks.richest_pirate.title": "Richest Pirate on the Seven Seas",
+  "advancements.moneytalks.richest_pirate.description": "Carry 3 full stacks of Doubloons at once",
+
   "block.moneytalks.black_merchant_carpet": "Black Merchant's Carpet",
   "block.moneytalks.blue_merchant_carpet": "Blue Merchant's Carpet",
   "block.moneytalks.brown_merchant_carpet": "Brown Merchant's Carpet",

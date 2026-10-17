@@ -1,0 +1,25 @@
+{
+  "parent": "moneytalks:money_talks",
+  "criteria": {
+    "inserted_coin": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.pocket_change.description"
+    },
+    "icon": {
+      "id": "moneytalks:wallet"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.pocket_change.title"
+    }
+  },
+  "requirements": [
+    [
+      "inserted_coin"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

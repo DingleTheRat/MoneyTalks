@@ -1,7 +1,8 @@
 package net.dingletherat.block.entity.custom;
 
 import java.util.UUID;
-import org.jetbrains.annotations.Nullable;
+
+import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.MoneyBlocks;
 import net.dingletherat.block.custom.DoubloonCompressor;
 import net.dingletherat.block.entity.MoneyBlockEntities;
@@ -28,7 +29,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.NonNull;
 
 public class DoubloonCompressorEntity extends BlockEntity implements WorldlyContainer, MenuProvider {
     // Slots
@@ -75,9 +75,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         }
 
         @Override
-        public int getCount() {
-            return 4;
-        }
+        public int getCount() { return 4; }
     };
 
     public <T extends DoubloonCompressorEntity> DoubloonCompressorEntity(BlockEntityType<T> blockEntityType, BlockPos pos, BlockState state) {
@@ -113,6 +111,10 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
             world.setBlock(position, state.setValue(DoubloonCompressor.FUELED, true), 3);
             compressor.compressions = COMPRESSIONS_PER_FUEL;
             setChanged(world, position, state);
+
+            // Give the owner the advancement
+            if (compressor.owner != null)
+                MoneyTalks.grantAdvancement(world.getServer().getPlayerList().getPlayer(compressor.owner), "under_pressure", "fueled_compressor");
             return;
         }
 
@@ -120,7 +122,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         if (!wallet.is(MoneyItems.WALLET) || !state.getValue(DoubloonCompressor.FUELED)) return;
 
         // Get the amount of dollars in the wallet and get rid of it if we can't take anymore coins
-        int dollars = Wallet.getDollars(wallet);
+        int dollars = Wallet.getCoins(wallet);
         if (dollars < TAKE_COINS) compressor.setItem(WALLET_SLOT, ItemStack.EMPTY);
 
         // If we aren't done compressing, decrease the progress and return
@@ -133,7 +135,7 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
         // Finish compression, as long as it isn't the max stack size
         if (doubloons.getCount() != doubloons.getMaxStackSize()) {
             // Remove da money from da wallet
-            Wallet.setDollars(wallet, dollars - TAKE_COINS);
+            Wallet.setCoins(wallet, dollars - TAKE_COINS);
 
             // Increase or add in a doubloon into the output slot (doubloon slot)
             if (compressor.getItem(DOUBLOON_SLOT) == ItemStack.EMPTY) compressor.setItem(DOUBLOON_SLOT, new ItemStack(MoneyBlocks.DOUBLOON.asItem()));
@@ -175,8 +177,8 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        String ownerStr = input.getString("owner").orElse("");
-        owner = ownerStr.isEmpty() ? null : UUID.fromString(ownerStr);
+        String ownerString = input.getString("owner").orElse("");
+        owner = ownerString.isEmpty() ? null : UUID.fromString(ownerString);
 
         compression_progress = input.getIntOr("compressing_progress", COMPRESSION_TICKS);
         compressions = input.getIntOr("compressings", COMPRESSIONS_PER_FUEL);
@@ -191,16 +193,16 @@ public class DoubloonCompressorEntity extends BlockEntity implements WorldlyCont
     public int getContainerSize() { return 3; }
 
     @Override
-    public int @NonNull [] getSlotsForFace(Direction side) {
+    public int[] getSlotsForFace(Direction side) {
         if (side == Direction.UP) return new int[]{ 0 };
         if (side == Direction.DOWN) return new int[]{ 2 };
         return new int[]{ 1 };
     }
 
     @Override
-    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
-        if (slot == WALLET_SLOT) { return stack.is(MoneyItems.WALLET); }
-        if (slot == FUEL_SLOT) { return stack.is(Items.BLAZE_POWDER); }
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        if (slot == WALLET_SLOT) return stack.is(MoneyItems.WALLET);
+        if (slot == FUEL_SLOT) return stack.is(Items.BLAZE_POWDER);
         return false;
     }
 

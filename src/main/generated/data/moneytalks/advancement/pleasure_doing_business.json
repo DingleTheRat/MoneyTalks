@@ -1,0 +1,29 @@
+{
+  "parent": "moneytalks:direct_deposit",
+  "criteria": {
+    "something_bought": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.pleasure_doing_business.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      },
+      "id": "moneytalks:coin"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.pleasure_doing_business.title"
+    }
+  },
+  "requirements": [
+    [
+      "something_bought"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

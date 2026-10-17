@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "has_coin": {
+      "conditions": {
+        "items": [
+          {
+            "items": "moneytalks:coin"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "minecraft:gui/advancements/backgrounds/adventure",
+    "description": {
+      "translate": "advancements.moneytalks.money_talks.description"
+    },
+    "icon": {
+      "id": "moneytalks:coin"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.money_talks.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_coin"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

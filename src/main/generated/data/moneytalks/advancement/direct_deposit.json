@@ -1,0 +1,28 @@
+{
+  "parent": "moneytalks:open_for_business",
+  "criteria": {
+    "setup_auto_deposit": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.direct_deposit.description"
+    },
+    "icon": {
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      },
+      "id": "moneytalks:wallet"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.direct_deposit.title"
+    }
+  },
+  "requirements": [
+    [
+      "setup_auto_deposit"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

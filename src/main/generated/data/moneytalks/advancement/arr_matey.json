@@ -1,0 +1,33 @@
+{
+  "parent": "moneytalks:under_pressure",
+  "criteria": {
+    "has_doubloon": {
+      "conditions": {
+        "items": [
+          {
+            "items": "moneytalks:doubloon"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.arr_matey.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "moneytalks:doubloon"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.arr_matey.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_doubloon"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

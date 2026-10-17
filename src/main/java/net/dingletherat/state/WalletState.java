@@ -24,16 +24,16 @@ public class WalletState extends SavedData {
 
     public static class WalletEntry {
         public String owner;
-        public int dollars;
+        public int coins;
 
-        public WalletEntry(String owner, int dollars) {
+        public WalletEntry(String owner, int coins) {
             this.owner = owner;
-            this.dollars = dollars;
+            this.coins = coins;
         }
 
         public static final Codec<WalletEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("owner").forGetter(e -> e.owner),
-                Codec.INT.fieldOf("dollars").forGetter(e -> e.dollars)
+                Codec.INT.fieldOf("coins").forGetter(e -> e.coins)
         ).apply(instance, WalletEntry::new));
     }
 
@@ -59,25 +59,22 @@ public class WalletState extends SavedData {
 
     public WalletState() {}
 
-    // Called from inventoryTick — NBT is authoritative, just mirror it
-    public void update(UUID walletId, String owner, int dollars) {
-        wallets.put(walletId, new WalletEntry(owner, dollars));
+    public void update(UUID walletId, String owner, int coins) {
+        wallets.put(walletId, new WalletEntry(owner, coins));
         setDirty();
     }
 
-    // Called on death — marks wallet as needing NBT update next inventoryTick
-    public void applyDeduction(UUID walletId, String owner, int newDollars) {
-        wallets.put(walletId, new WalletEntry(owner, newDollars));
+    public void applyDeduction(UUID walletId, String owner, int newCoins) {
+        wallets.put(walletId, new WalletEntry(owner, newCoins));
         pendingDeductions.add(walletId);
         setDirty();
     }
 
-    // Returns the deducted amount if pending, then clears the flag
     public Integer consumePendingDeduction(UUID walletId) {
         if (!pendingDeductions.contains(walletId)) return null;
         pendingDeductions.remove(walletId);
         WalletEntry entry = wallets.get(walletId);
-        return entry != null ? entry.dollars : null;
+        return entry != null ? entry.coins : null;
     }
 
     public boolean hasPendingDeduction(UUID walletId) {

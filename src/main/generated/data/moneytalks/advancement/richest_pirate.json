@@ -1,0 +1,29 @@
+{
+  "parent": "moneytalks:arr_matey",
+  "criteria": {
+    "has_192_doubloons": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.richest_pirate.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      },
+      "id": "moneytalks:doubloon"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.richest_pirate.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_192_doubloons"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

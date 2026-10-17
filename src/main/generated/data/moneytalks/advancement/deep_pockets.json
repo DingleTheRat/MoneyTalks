@@ -1,0 +1,29 @@
+{
+  "parent": "moneytalks:no_refunds",
+  "criteria": {
+    "inserted_1000_coins": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.deep_pockets.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      },
+      "id": "moneytalks:wallet"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.deep_pockets.title"
+    }
+  },
+  "requirements": [
+    [
+      "inserted_1000_coins"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

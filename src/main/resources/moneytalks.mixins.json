@@ -5,7 +5,8 @@
   "mixins": [
     "ScreenHandlerMixin",
     "ChestBlockMixin",
-    "HopperBlockEntityMixin"
+    "HopperBlockEntityMixin",
+    "InventoryChangeTriggerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

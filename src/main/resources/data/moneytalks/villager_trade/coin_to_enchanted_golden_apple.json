@@ -1,6 +1,6 @@
 {
   "wants": {
-    "id": "moneytalks:dollar",
+    "id": "moneytalks:coin",
     "count": 40
   },
   "gives": {

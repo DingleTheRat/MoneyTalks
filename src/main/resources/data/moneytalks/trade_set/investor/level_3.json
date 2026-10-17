@@ -2,7 +2,7 @@
   "amount": 2,
   "random_sequence": "moneytalks:trade_set/investor/level_3",
   "trades": [
-    "moneytalks:diamond_to_dollar",
-    "moneytalks:dollar_to_diamond"
+    "moneytalks:diamond_to_coin",
+    "moneytalks:coin_to_diamond"
   ]
 }

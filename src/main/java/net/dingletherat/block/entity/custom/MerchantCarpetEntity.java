@@ -44,6 +44,7 @@ public class MerchantCarpetEntity extends BlockEntity {
     private Item item = null;
     private float rotation = 0;
     private UUID wallet = null;
+    private int purchases = 0; // Counter for Monopoly advancement
 
     public MerchantCarpetEntity(BlockPos pos, BlockState state) {
         super(MoneyBlockEntities.MERCHANT_CARPET_ENTITY, pos, state);
@@ -61,27 +62,30 @@ public class MerchantCarpetEntity extends BlockEntity {
                 JsonOps.INSTANCE, trade).result().map(Object::toString).orElse(""));
         output.putString("item", item != null ? BuiltInRegistries.ITEM.getKey(item).toString() : "minecraft:air");
         output.putString("wallet", wallet != null ? wallet.toString() : "");
+        output.putInt("purchases", purchases);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        price = input.getInt("price").orElse(0);
-        amount = input.getInt("amount").orElse(0);
-        String ownerString = input.getString("owner").orElse("");
+        price = input.getIntOr("price", 0);
+        amount = input.getIntOr("amount", 0);
+        String ownerString = input.getStringOr("owner", "");
         owner = ownerString.isEmpty() ? null : UUID.fromString(ownerString);
-        purchaseAmount = input.getInt("purchaseAmount").orElse(0);
-        collected = input.getInt("collected").orElse(0);
+        purchaseAmount = input.getIntOr("purchaseAmount", 0);
+        collected = input.getIntOr("collected", 0);
 
-        String tradeString = input.getString("trade").orElse("");
+        String tradeString = input.getStringOr("trade", "");
         trade = tradeString.isEmpty() ? ItemStack.EMPTY : ItemStack.CODEC.parse(
                 JsonOps.INSTANCE, new JsonParser().parse(tradeString)).result().orElse(ItemStack.EMPTY);
 
         Identifier identifier = Identifier.tryParse(input.getStringOr("item", "minecraft:air"));
         item = BuiltInRegistries.ITEM.getValue(identifier);
 
-        String walletString = input.getString("wallet").orElse("");
+        String walletString = input.getStringOr("wallet", "");
         wallet = walletString.isEmpty() ? null : UUID.fromString(walletString);
+
+        purchases = input.getIntOr("purchases", 0);
     }
 
     public void setOwner(UUID player) {
@@ -146,7 +150,7 @@ public class MerchantCarpetEntity extends BlockEntity {
         if (wallet != null) {
             WalletState.WalletEntry walletEntry = ownerWallets.get(wallet);
             if (walletEntry != null) {
-                int newAmount = walletEntry.dollars + amount;
+                int newAmount = walletEntry.coins + amount;
                 MoneyTalks.walletState.applyDeduction(wallet, walletEntry.owner, newAmount);
                 return;
             }
@@ -170,7 +174,7 @@ public class MerchantCarpetEntity extends BlockEntity {
 
         if (!ownerWallets.isEmpty()) {
             Map.Entry<UUID, WalletState.WalletEntry> first = ownerWallets.entrySet().iterator().next();
-            int newAmount = first.getValue().dollars + amount;
+            int newAmount = first.getValue().coins + amount;
             MoneyTalks.walletState.applyDeduction(first.getKey(), first.getValue().owner, newAmount);
             return;
         }
@@ -191,14 +195,17 @@ public class MerchantCarpetEntity extends BlockEntity {
                 update();
                 return InteractionResult.SUCCESS;
             }
-            if (item == null && !MoneyTalks.nonTransferable.contains(stack.getItem())) {
+            if (item == null && !MoneyTalks.NON_TRANSFERABLE.contains(stack.getItem())) {
                 trade = stack.copy();
                 item = trade.getItem();
                 amount = stack.getCount();
                 purchaseAmount = stack.getCount();
+
                 stack.shrink(stack.getCount());
                 player.playSound(SoundEvents.VAULT_INSERT_ITEM, 1.0f, 1.0f);
                 update();
+                MoneyTalks.grantAdvancement(player, "open_for_business", "setup_merchant_carpet");
+
                 return InteractionResult.SUCCESS;
             }
             if (item == stack.getItem() && ItemStack.isSameItemSameComponents(trade, stack)) {
@@ -220,6 +227,7 @@ public class MerchantCarpetEntity extends BlockEntity {
                 CustomData data = stack.get(DataComponents.CUSTOM_DATA);
                 String walletId = data != null ? data.copyTag().getString(Wallet.NBT_WALLET_ID).orElse("") : "";
                 wallet = UUID.fromString(walletId);
+                MoneyTalks.grantAdvancement(player, "direct_deposit", "setup_auto_deposit");
             }
         }
 
@@ -230,6 +238,7 @@ public class MerchantCarpetEntity extends BlockEntity {
 
         stack.shrink(price);
         payOwner(level, price);
+        purchases++;
 
         ItemStack purchase = trade.copy();
         purchase.setCount(purchaseAmount);
@@ -239,11 +248,17 @@ public class MerchantCarpetEntity extends BlockEntity {
         if (!level.isClientSide()) {
             String message = player.getName().getString() + " bought " + purchaseAmount + " " + trade.getItemName().getString() + " for " + price + " Dollar!";
             ServerPlayer ownerPlayer = level.getServer().getPlayerList().getPlayer(owner);
-            if (ownerPlayer != null)
+            if (ownerPlayer != null) {
                 ownerPlayer.sendSystemMessage(Component.literal(message).withStyle(ChatFormatting.GOLD), true);
+
+                MoneyTalks.grantAdvancement(ownerPlayer, "pleasure_doing_business", "something_bought");
+                int monopolyGoal = MoneyTalks.ADVANCEMENT_MONOPOLY_GOAL;
+                if (purchases >= monopolyGoal) MoneyTalks.grantAdvancement(ownerPlayer, "monopoly", "bought_" + monopolyGoal);
+            } 
         }
 
         player.playSound(SoundEvents.VAULT_OPEN_SHUTTER, 1.0f, 1.0f);
+        MoneyTalks.grantAdvancement(player, "no_refunds", "bought_something");
         update();
         return InteractionResult.SUCCESS;
     }
@@ -268,8 +283,7 @@ public class MerchantCarpetEntity extends BlockEntity {
                 Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), drop);
             }
             if (collected > 0)
-                Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
-                        new ItemStack(MoneyItems.COIN, collected));
+                Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), new ItemStack(MoneyItems.COIN, collected));
         }
     }
 }

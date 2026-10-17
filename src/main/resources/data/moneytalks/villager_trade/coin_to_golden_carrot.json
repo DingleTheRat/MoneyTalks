@@ -1,11 +1,11 @@
 {
   "wants": {
-    "id": "moneytalks:dollar",
-    "count": 5
+    "id": "moneytalks:coin",
+    "count": 1
   },
   "gives": {
-    "id": "minecraft:golden_apple",
-    "count": 1
+    "id": "minecraft:golden_carrot",
+    "count": 2
   },
   "max_uses": 10,
   "xp": 8,

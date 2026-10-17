@@ -1,0 +1,25 @@
+{
+  "parent": "moneytalks:pocket_change",
+  "criteria": {
+    "setup_merchant_carpet": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.open_for_business.description"
+    },
+    "icon": {
+      "id": "moneytalks:red_merchant_carpet"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.open_for_business.title"
+    }
+  },
+  "requirements": [
+    [
+      "setup_merchant_carpet"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

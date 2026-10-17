@@ -31,13 +31,13 @@ public class ScreenHandlerMixin {
         ItemStack cursorStack = handler.getCarried();
 
         // Block placing dollars from cursor into a container slot
-        if (MoneyTalks.nonTransferable.contains(cursorStack.getItem()) && !isPlayerInventorySlot(targetSlot)) {
+        if (MoneyTalks.NON_TRANSFERABLE.contains(cursorStack.getItem()) && !isPlayerInventorySlot(targetSlot)) {
             ci.cancel();
             return;
         }
 
         // Block shift-clicking dollars out of player inventory into container
-        if (containerInput == ContainerInput.QUICK_MOVE && MoneyTalks.nonTransferable.contains(stackInSlot.getItem()) && isPlayerInventorySlot(targetSlot)) {
+        if (containerInput == ContainerInput.QUICK_MOVE && MoneyTalks.NON_TRANSFERABLE.contains(stackInSlot.getItem()) && isPlayerInventorySlot(targetSlot)) {
             ci.cancel();
         }
     }

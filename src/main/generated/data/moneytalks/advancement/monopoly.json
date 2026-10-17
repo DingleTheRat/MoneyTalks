@@ -1,0 +1,26 @@
+{
+  "parent": "moneytalks:pleasure_doing_business",
+  "criteria": {
+    "bought_100": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.monopoly.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "minecraft:gold_block"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.monopoly.title"
+    }
+  },
+  "requirements": [
+    [
+      "bought_100"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,5 +1,6 @@
 package net.dingletherat;
 
+import net.dingletherat.datagen.MoneyAdvancementProvider;
 import net.dingletherat.datagen.MoneyBlockTagProvider;
 import net.dingletherat.datagen.MoneyItemTagProvider;
 import net.dingletherat.datagen.MoneyLootTableProvider;
@@ -18,5 +19,6 @@ public class MoneyTalksDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(MoneyBlockTagProvider::new);
 		pack.addProvider(MoneyRecipeProvider::new);
 		pack.addProvider(MoneyLootTableProvider::new);
+		pack.addProvider(MoneyAdvancementProvider::new);
 	}
 }

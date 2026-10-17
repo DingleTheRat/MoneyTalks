@@ -15,6 +15,6 @@ public class HopperBlockEntityMixin {
 
     @Inject(method = "addItem(Lnet/minecraft/world/Container;Lnet/minecraft/world/Container;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/core/Direction;)Lnet/minecraft/world/item/ItemStack;", at = @At("HEAD"), cancellable = true)
     private static void preventSpecificItemPickup(Container to, Container from, ItemStack stack, Direction direction, CallbackInfoReturnable<ItemStack> cir) {
-        if (MoneyTalks.nonTransferable.contains(stack.getItem())) cir.setReturnValue(stack);
+        if (MoneyTalks.NON_TRANSFERABLE.contains(stack.getItem())) cir.setReturnValue(stack);
     }
 }

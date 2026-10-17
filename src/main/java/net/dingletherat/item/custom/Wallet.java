@@ -28,7 +28,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class Wallet extends BundleItem {
-    private static final String NBT_DOLLARS = "Coins";
+    private static final String NBT_COINS = "Coins";
     private static final String NBT_OWNER = "Owner";
     public static final String NBT_WALLET_ID = "WalletId";
     private static final int ITEM_BAR_COLOR = (255 << 24) | (255 << 16) | (214 << 8) | 0;
@@ -37,17 +37,17 @@ public class Wallet extends BundleItem {
         super(properties);
     }
 
-    public static int getDollars(ItemStack wallet) {
+    public static int getCoins(ItemStack wallet) {
         CustomData data = wallet.get(DataComponents.CUSTOM_DATA);
         if (data == null) return 0;
-        return data.copyTag().getInt(NBT_DOLLARS).orElse(0);
+        return data.copyTag().getInt(NBT_COINS).orElse(0);
     }
 
-    public static void setDollars(ItemStack wallet, int count) {
+    public static void setCoins(ItemStack wallet, int count) {
         CompoundTag nbt = wallet.has(DataComponents.CUSTOM_DATA)
                 ? wallet.get(DataComponents.CUSTOM_DATA).copyTag()
                 : new CompoundTag();
-        nbt.putInt(NBT_DOLLARS, Math.max(0, count));
+        nbt.putInt(NBT_COINS, Math.max(0, count));
         wallet.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
     }
 
@@ -58,39 +58,40 @@ public class Wallet extends BundleItem {
         return owner.isEmpty() ? null : owner;
     }
 
-    private static boolean isDollar(ItemStack stack) {
+    private static boolean isCoin(ItemStack stack) {
         return !stack.isEmpty() && stack.is(MoneyItems.COIN);
     }
 
-    private static boolean insertDollars(ItemStack wallet, ItemStack incoming, Player player) {
-        if (!isDollar(incoming) || incoming.isEmpty()) return false;
+    private static boolean insertCoins(ItemStack wallet, ItemStack incoming, Player player) {
+        if (!isCoin(incoming) || incoming.isEmpty()) return false;
+
         CompoundTag nbt = wallet.has(DataComponents.CUSTOM_DATA)
                 ? wallet.get(DataComponents.CUSTOM_DATA).copyTag()
                 : new CompoundTag();
-        nbt.putInt(NBT_DOLLARS, Math.max(0, nbt.getInt(NBT_DOLLARS).orElse(0) + incoming.getCount()));
+        nbt.putInt(NBT_COINS, Math.max(0, nbt.getInt(NBT_COINS).orElse(0) + incoming.getCount()));
         nbt.putString(NBT_OWNER, player.getName().getString());
+
         wallet.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
         incoming.setCount(0);
+
         notifyScreenHandler(player);
         return true;
     }
 
-    private static ItemStack removeDollars(ItemStack wallet, Player player) {
-        int current = getDollars(wallet);
+    private static ItemStack removeCoins(ItemStack wallet, Player player) {
+        int current = getCoins(wallet);
         if (current <= 0) return ItemStack.EMPTY;
         ItemStack dollar = MoneyItems.COIN.getDefaultInstance();
         int take = Math.min(current, dollar.getMaxStackSize());
         dollar.setCount(take);
-        setDollars(wallet, current - take);
+        setCoins(wallet, current - take);
         notifyScreenHandler(player);
         return dollar;
     }
 
     private static void notifyScreenHandler(Player player) {
-        if (player.containerMenu != null)
-            player.containerMenu.slotsChanged(player.getInventory());
+        if (player.containerMenu != null) player.containerMenu.slotsChanged(player.getInventory());
     }
-
 
     @Override
     public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
@@ -107,39 +108,42 @@ public class Wallet extends BundleItem {
 
             UUID walletId = UUID.fromString(nbt.getString(NBT_WALLET_ID).orElse(""));
 
-            // Only override NBT if a deduction is pending (e.g. died while wallet was in container)
             if (MoneyTalks.walletState.hasPendingDeduction(walletId)) {
                 Integer deductedAmount = MoneyTalks.walletState.consumePendingDeduction(walletId);
-                if (deductedAmount != null) {
-                    nbt.putInt(NBT_DOLLARS, deductedAmount);
-                }
+                if (deductedAmount != null) nbt.putInt(NBT_COINS, deductedAmount);
             }
 
             nbt.putString(NBT_OWNER, player.getName().getString());
             stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
 
-            // NBT is authoritative — mirror it into WalletState
-            MoneyTalks.walletState.update(walletId, player.getName().getString(), nbt.getInt(NBT_DOLLARS).orElse(0));
+            // Since creative inventory clicks never reach the server, grant advancements here
+            int coins = nbt.getIntOr(NBT_COINS, 0);
+            WalletState.WalletEntry previous = MoneyTalks.walletState.get(walletId);
+            if (coins > (previous != null ? previous.coins : 0)) MoneyTalks.grantAdvancement(player, "pocket_change", "inserted_coin");
+
+            int deepPocketsGoal = MoneyTalks.ADVANCEMENT_DEEP_POCKETS_GOAL;
+            if (coins >= deepPocketsGoal) MoneyTalks.grantAdvancement(player, "deep_pockets", "inserted_" + deepPocketsGoal + "_coins");
+
+            MoneyTalks.walletState.update(walletId, player.getName().getString(), coins);
         }
     }
 
     @Override
     public boolean overrideStackedOnOther(ItemStack wallet, Slot slot, ClickAction clickType, Player player) {
-        if (clickType == ClickAction.SECONDARY && !slot.getItem().isEmpty()) {
-            if (!isDollar(slot.getItem())) {
+        if (clickType == ClickAction.PRIMARY && !slot.getItem().isEmpty()) {
+            if (!isCoin(slot.getItem())) {
                 playInsertFailSound(player);
                 return true;
             }
-            if (insertDollars(wallet, slot.getItem(), player)) {
+            if (insertCoins(wallet, slot.getItem(), player)) {
                 slot.set(ItemStack.EMPTY);
                 playInsertSound(player);
-            } else {
+            } else
                 playInsertFailSound(player);
-            }
             return true;
         }
-        if (clickType == ClickAction.PRIMARY && slot.getItem().isEmpty()) {
-            ItemStack removed = removeDollars(wallet, player);
+        if (clickType == ClickAction.SECONDARY && slot.getItem().isEmpty() && getCoins(wallet) != 0) {
+            ItemStack removed = removeCoins(wallet, player);
             if (!removed.isEmpty()) {
                 slot.set(removed);
                 playRemoveOneSound(player);
@@ -152,18 +156,18 @@ public class Wallet extends BundleItem {
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack wallet, ItemStack otherStack, Slot slot, ClickAction clickType, Player player, SlotAccess carriedItem) {
         if (clickType == ClickAction.PRIMARY && !otherStack.isEmpty()) {
-            if (!isDollar(otherStack)) {
+            if (!isCoin(otherStack)) {
                 playInsertFailSound(player);
                 return true;
             }
 
-            if (insertDollars(wallet, otherStack, player)) playInsertSound(player);
+            if (insertCoins(wallet, otherStack, player)) playInsertSound(player);
             else playInsertFailSound(player);
 
             return true;
         }
         if (clickType == ClickAction.SECONDARY && otherStack.isEmpty()) {
-            ItemStack removed = removeDollars(wallet, player);
+            ItemStack removed = removeCoins(wallet, player);
             if (!removed.isEmpty()) {
                 carriedItem.set(removed);
                 playRemoveOneSound(player);
@@ -175,20 +179,18 @@ public class Wallet extends BundleItem {
 
     @Override
     public void appendHoverText(ItemStack stack, BundleItem.TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
-        int dollars = getDollars(stack);
+        int coins = getCoins(stack);
         String owner = getOwner(stack);
 
-        // Prefer WalletState value if available — it reflects deductions applied on death
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
         String walletId = customData != null ? customData.copyTag().getString(NBT_WALLET_ID).orElse("") : "";
         if (!walletId.isEmpty() && MoneyTalks.walletState != null) {
             WalletState.WalletEntry entry = MoneyTalks.walletState.get(UUID.fromString(walletId));
-            if (entry != null) dollars = entry.dollars;
+            if (entry != null) coins = entry.coins;
         }
 
-        String phrase = owner != null ? ("Inside " + owner + "'s Wallet is " + dollars + " Dollars") : ("Inside this Wallet is " + dollars + " Dollars");
-        textConsumer.accept(Component.literal(phrase)
-                .withStyle(dollars > 0 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
+        String phrase = owner != null ? (owner + "'s Wallet has " + coins + " coins") : ("This Wallet has " + coins + " coins");
+        textConsumer.accept(Component.literal(phrase).withStyle(coins > 0 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
     }
 
     @Override
@@ -198,12 +200,12 @@ public class Wallet extends BundleItem {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return getDollars(stack) > 0;
+        return getCoins(stack) > 0;
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        int count = getDollars(stack);
+        int count = getCoins(stack);
         return Math.min(1 + (count * 12 / 1000), 13);
     }
 
@@ -214,8 +216,8 @@ public class Wallet extends BundleItem {
 
     @Override
     public void onDestroyed(ItemEntity entity) {
-        int dollars = getDollars(entity.getItem());
-        setDollars(entity.getItem(), 0);
+        int dollars = getCoins(entity.getItem());
+        setCoins(entity.getItem(), 0);
         while (dollars > 0) {
             ItemStack drop = MoneyItems.COIN.getDefaultInstance();
             int amount = Math.min(dollars, drop.getMaxStackSize());
@@ -231,9 +233,7 @@ public class Wallet extends BundleItem {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        if (stack.has(DataComponents.ENCHANTMENT_GLINT_OVERRIDE))
-            return stack.get(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
-        return false;
+        return stack.get(DataComponents.ENCHANTMENT_GLINT_OVERRIDE) == null ? false : true;
     }
 
     private static void playInsertSound(Entity entity) {

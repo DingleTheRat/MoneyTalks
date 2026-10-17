@@ -1,13 +1,13 @@
 {
   "wants": {
-    "id": "moneytalks:dollar",
-    "count": 64
-  },
-  "gives": {
     "id": "minecraft:netherite_ingot",
     "count": 1
   },
+  "gives": {
+    "id": "moneytalks:coin",
+    "count": 36
+  },
   "max_uses": 1,
-  "xp": 11,
+  "xp": 9,
   "reputation_discount": 0.0
 }

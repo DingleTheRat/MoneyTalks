@@ -1,0 +1,28 @@
+{
+  "parent": "moneytalks:pocket_change",
+  "criteria": {
+    "fueled_compressor": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.moneytalks.under_pressure.description"
+    },
+    "icon": {
+      "components": {
+        "minecraft:item_model": "moneytalks:doubloon_compressor_fueled"
+      },
+      "id": "moneytalks:doubloon_compressor"
+    },
+    "title": {
+      "translate": "advancements.moneytalks.under_pressure.title"
+    }
+  },
+  "requirements": [
+    [
+      "fueled_compressor"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

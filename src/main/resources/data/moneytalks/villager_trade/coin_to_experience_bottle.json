@@ -1,10 +1,10 @@
 {
   "wants": {
-    "id": "moneytalks:dollar",
-    "count": 6
+    "id": "moneytalks:coin",
+    "count": 1
   },
   "gives": {
-    "id": "minecraft:diamond",
+    "id": "minecraft:experience_bottle",
     "count": 4
   },
   "max_uses": 10,

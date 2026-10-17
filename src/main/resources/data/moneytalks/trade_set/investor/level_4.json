@@ -2,8 +2,8 @@
   "amount": 2,
   "random_sequence": "moneytalks:trade_set/investor/level_4",
   "trades": [
-    "moneytalks:dollar_to_golden_carrot",
-    "moneytalks:dollar_to_golden_apple",
-    "moneytalks:dollar_to_wind_charge"
+    "moneytalks:coin_to_golden_carrot",
+    "moneytalks:coin_to_golden_apple",
+    "moneytalks:coin_to_wind_charge"
   ]
 }

@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "moneytalks:emerald_to_dollar",
-    "moneytalks:dollar_to_wallet",
-    "moneytalks:dollar_to_emerald"
+    "moneytalks:emerald_to_coin",
+    "moneytalks:coin_to_wallet",
+    "moneytalks:coin_to_emerald"
   ]
 }

@@ -81,7 +81,7 @@ public class DoubloonCompressor extends BaseEntityBlock {
 
         if (player.getItemInHand(hand).is(MoneyItems.WALLET) && compressor.getItem(0).isEmpty()) {
             compressor.setItem(0, player.getItemInHand(hand).copy());
-            int dollars = Wallet.getDollars(player.getItemInHand(hand));
+            int dollars = Wallet.getCoins(player.getItemInHand(hand));
             compressor.setTransactionCoins(Math.round(dollars/10)*10);
             compressor.setWalletOwner(Wallet.getOwner(player.getItemInHand(hand)));
             player.getItemInHand(hand).setCount(0);

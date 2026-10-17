@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "moneytalks:item/dollar"
+    "model": "moneytalks:item/coin"
   }
 }
