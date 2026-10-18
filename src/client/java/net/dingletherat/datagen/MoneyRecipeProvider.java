@@ -82,16 +82,10 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                     .unlockedBy("has_leather", has(Items.LEATHER))
                     .save(output);
 
-                shaped(RecipeCategory.MISC, (Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER)
+                shaped(RecipeCategory.MISC, MoneyItems.TRIMMED_HOPPER)
                     .pattern("D D")
                     .pattern("DHD")
                     .pattern("D D")
-                    .define('D', Items.DIAMOND)
-                    .define('H', Blocks.HOPPER)
-                    .unlockedBy("has_diamond", has(Items.DIAMOND))
-                    .save(output);
-                shaped(RecipeCategory.MISC, (Block) MoneyBlocks.TRIMMED_HOPPER)
-                    .pattern("DHD")
                     .define('D', Items.DIAMOND)
                     .define('H', Blocks.HOPPER)
                     .unlockedBy("has_diamond", has(Items.DIAMOND))

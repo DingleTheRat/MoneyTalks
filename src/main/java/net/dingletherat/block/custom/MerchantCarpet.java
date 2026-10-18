@@ -2,7 +2,6 @@ package net.dingletherat.block.custom;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.dingletherat.block.entity.custom.MerchantCarpetEntity;
-import net.dingletherat.state.ShopState;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -77,7 +76,6 @@ public class MerchantCarpet extends BaseEntityBlock {
             if (blockEntity != null) {
                 blockEntity.setOwner(player.getUUID());
                 blockEntity.setChanged();
-                ShopState.get((level).getServer()).register(player.getUUID(), pos);
             }
         }
     }

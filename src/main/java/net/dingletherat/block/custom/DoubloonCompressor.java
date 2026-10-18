@@ -10,7 +10,6 @@ import net.dingletherat.item.LegacyData;
 import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
 import net.dingletherat.item.custom.Wallet;
-import net.dingletherat.state.ShopState;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -59,17 +58,16 @@ public class DoubloonCompressor extends BaseEntityBlock {
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(Level world, BlockPos position, BlockState state, LivingEntity placer, ItemStack itemStack) {
         if (!world.isClientSide() && placer instanceof Player player) {
-            DoubloonCompressorEntity be = (DoubloonCompressorEntity) world.getBlockEntity(pos);
-            if (be != null) {
-                be.setOwner(player.getUUID());
+            DoubloonCompressorEntity blockEntity = (DoubloonCompressorEntity) world.getBlockEntity(position);
+            if (blockEntity != null) {
+                blockEntity.setOwner(player.getUUID());
                 Component name = itemStack.getHoverName();
 
-                be.setName(name.getString());
+                blockEntity.setName(name.getString());
 
-                be.setChanged();
-                ShopState.get((world).getServer()).register(player.getUUID(), pos);
+                blockEntity.setChanged();
             }
         }
     }

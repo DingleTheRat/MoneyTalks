@@ -4,10 +4,10 @@ import java.util.function.Consumer;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,8 +26,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 
-public class DoubleTrimmedHopperItem extends BlockItem {
-    public DoubleTrimmedHopperItem(Block block, Properties properties) {
+public class TrimmedHopperItem extends BlockItem {
+    public TrimmedHopperItem(Block block, Properties properties) {
         super(block, properties);
     }
 
@@ -54,11 +54,10 @@ public class DoubleTrimmedHopperItem extends BlockItem {
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos position = context.getClickedPos();
-        BlockState clickedBlock = level.getBlockState(position);
         Player player = context.getPlayer();
 
         // Place it if in non-linking conditions
-        if (player == null || !(clickedBlock.getBlock() instanceof ChestBlock && player.isCrouching())) return super.useOn(context);
+        if (player == null || !(level.getBlockEntity(position) instanceof Container)) return super.useOn(context);
         if (level.isClientSide()) return InteractionResult.SUCCESS;
 
         ItemStack linked = context.getItemInHand().copyWithCount(1);

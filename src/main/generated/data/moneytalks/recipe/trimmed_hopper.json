@@ -5,7 +5,9 @@
     "H": "minecraft:hopper"
   },
   "pattern": [
-    "DHD"
+    "D D",
+    "DHD",
+    "D D"
   ],
   "result": {
     "id": "moneytalks:trimmed_hopper"

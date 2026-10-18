@@ -1,6 +1,5 @@
 // 26.3	-999999999-01-01T00:00:00	Money Talks/moneytalks Recipes
 bd306acfc44e0c464dcb8b9681c6d3e021546e5d data/moneytalks/advancement/recipes/misc/coin.json
-9bc21d0293e7841d310ffde84dacd683e74e1867 data/moneytalks/advancement/recipes/misc/double_trimmed_hopper.json
 3cb866d0c58c97703d6144e67469003d3c14f104 data/moneytalks/advancement/recipes/misc/doubloon_compressor.json
 39c49bf16c6e5b2448b7aa24c5f233ee3e78d5e7 data/moneytalks/advancement/recipes/misc/merchant_carpet_black_wool.json
 b4f070100528588899c2158918a7a4f64c2bd005 data/moneytalks/advancement/recipes/misc/merchant_carpet_blue_wool.json
@@ -37,7 +36,6 @@ a370a5655222d05863eab4fbeb9c367ee7e151ef data/moneytalks/advancement/recipes/mis
 a9e2dc06976e1da857f8171122367e0d7155d86c data/moneytalks/advancement/recipes/misc/trimmed_hopper.json
 20190e526593d9ba8e0dcbced16f42718360ce21 data/moneytalks/advancement/recipes/misc/wallet.json
 96717a49ec92b180d80121bbd365ae673194b178 data/moneytalks/recipe/coin.json
-0e41068a98373aaef57731480654180905b4e7f2 data/moneytalks/recipe/double_trimmed_hopper.json
 f594aaaa7c568bfc5656f2863ecbf03323486f2b data/moneytalks/recipe/doubloon_compressor.json
 d0d7e9ae552604ca8aaf245939662d26893ebec8 data/moneytalks/recipe/merchant_carpet_black_wool.json
 b2ff397d917455de49438838dbe0108b752aa438 data/moneytalks/recipe/merchant_carpet_blue_wool.json
@@ -71,5 +69,5 @@ a3841c21d7143c151d983790b413b07191795814 data/moneytalks/recipe/merchant_carpet_
 4eb4f701c6ac2717ce45dacbcd18f6654c6d0e8f data/moneytalks/recipe/merchant_carpet_red_wool.json
 c04ede489bdb558b42ad1ed762c295dff9c36313 data/moneytalks/recipe/merchant_carpet_white_wool.json
 2f8d9608a8de0db424c617ec2bed144d16a5daaa data/moneytalks/recipe/merchant_carpet_yellow_wool.json
-dda00816a4529dd194ddaaf792287e13b5801305 data/moneytalks/recipe/trimmed_hopper.json
+8227002d7479ba32ce528f6c4255796c64ad63aa data/moneytalks/recipe/trimmed_hopper.json
 b3cc498765d3bff6d6b8f26947936f0d904da102 data/moneytalks/recipe/wallet.json

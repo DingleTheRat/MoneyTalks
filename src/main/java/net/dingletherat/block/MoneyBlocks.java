@@ -6,7 +6,6 @@ import net.dingletherat.MoneyTalks;
 import net.dingletherat.block.custom.MerchantCarpet;
 import net.dingletherat.block.custom.Doubloon;
 import net.dingletherat.block.custom.DoubloonCompressor;
-import net.dingletherat.block.custom.DoubleTrimmedHopper;
 import net.dingletherat.block.custom.TrimmedHopper;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -40,8 +39,7 @@ public class MoneyBlocks {
     public static final BlockBehaviour WHITE_MERCHANT_CARPET = registerBlock("white_merchant_carpet", properties -> new MerchantCarpet(properties.mapColor(DyeColor.WHITE).sound(SoundType.WOOL).strength(0f, 50f).noCollision()));
     public static final BlockBehaviour YELLOW_MERCHANT_CARPET = registerBlock("yellow_merchant_carpet", properties -> new MerchantCarpet(properties.mapColor(DyeColor.YELLOW).sound(SoundType.WOOL).strength(0f, 50f).noCollision()));
 
-    public static final BlockBehaviour TRIMMED_HOPPER = registerBlock("trimmed_hopper", properties -> new TrimmedHopper(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-    public static final BlockBehaviour DOUBLE_TRIMMED_HOPPER = registerBlockWithoutBlockItem("double_trimmed_hopper", properties -> new DoubleTrimmedHopper(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final BlockBehaviour TRIMMED_HOPPER = registerBlockWithoutBlockItem("trimmed_hopper", properties -> new TrimmedHopper(properties.noOcclusion().strength(3.0f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 
     public static final BlockBehaviour DOUBLOON = registerBlock("doubloon", properties -> new Doubloon(properties.strength(0)));
     public static final BlockBehaviour DOUBLOON_COMPRESSOR = registerBlock("doubloon_compressor", properties -> new DoubloonCompressor(properties.noOcclusion().strength(3.0f, 6.0f).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE).lightLevel(state -> state.getValue(DoubloonCompressor.FUELED) ? 13 : 0)));
@@ -71,6 +69,8 @@ public class MoneyBlocks {
 
     public static void registerBlocks() {
         MoneyTalks.LOGGER.info("Registering Mod Blocks for " + MoneyTalks.MOD_ID);
+        // The double trimmed hopper was renamed to the trimmed hopper
+        BuiltInRegistries.BLOCK.addAlias(Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "double_trimmed_hopper"), Identifier.fromNamespaceAndPath(MoneyTalks.MOD_ID, "trimmed_hopper"));
 
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries -> {
             entries.accept(MoneyBlocks.BLACK_MERCHANT_CARPET.asItem());

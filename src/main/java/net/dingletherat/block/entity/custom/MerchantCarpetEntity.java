@@ -9,7 +9,6 @@ import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.LegacyData;
 import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
-import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.state.WalletState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -22,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,14 +29,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public class MerchantCarpetEntity extends BlockEntity {
+public class MerchantCarpetEntity extends BlockEntity implements Container {
     public static final String DATA_PRICE = "price";
     public static final String DATA_AMOUNT = "amount";
     public static final String DATA_PURCHASE_AMOUNT = "purchaseAmount";
@@ -280,17 +279,6 @@ public class MerchantCarpetEntity extends BlockEntity {
         return false;
     }
 
-    public InteractionResult hopperInsert(ItemStack stack, Level level) {
-        if (item == null || item == Items.AIR) return InteractionResult.FAIL;
-        if (stack.getItem() != item) return InteractionResult.FAIL;
-        if (!ItemStack.isSameItemSameComponents(trade, stack)) return InteractionResult.FAIL;
-
-        amount += stack.getCount();
-        stack.shrink(stack.getCount());
-        update();
-        return InteractionResult.SUCCESS;
-    }
-
     public void onBreak() {
         Level level = getLevel();
         if (level != null) {
@@ -302,5 +290,44 @@ public class MerchantCarpetEntity extends BlockEntity {
             if (collected > 0)
                 Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), new ItemStack(MoneyItems.COIN, collected));
         }
+    }
+
+    @Override
+    public int getContainerSize() { return 1; }
+
+    @Override
+    public boolean isEmpty() { return true; }
+
+    @Override
+    public ItemStack getItem(int slot) { return ItemStack.EMPTY; }
+
+    @Override
+    public ItemStack removeItem(int slot, int amount) { return ItemStack.EMPTY; }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slot) { return ItemStack.EMPTY; }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) {
+        if (!canPlaceItem(slot, stack)) return;
+        amount += stack.getCount();
+        stack.shrink(stack.getCount());
+        update();
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return Container.stillValidBlockEntity(this, player);
+    }
+
+    @Override
+    public void clearContent() {
+        if (amount == 0) update();
+        amount = 0;
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return slot == 0 && item != null && trade != null && item != Items.AIR && ItemStack.isSameItemSameComponents(trade, stack);
     }
 }

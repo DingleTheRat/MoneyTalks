@@ -8,8 +8,7 @@ A unique Economy mod for Minecraft, designed for keep-inventory servers. Money (
 - **Wallet** - An item that behaves kinda like the bundle, but can only store coins, allowing you to move coins around. Crafted with 5 leather in a U shape. It has no limit and decreases the amount of coins dropped upon death to 15%. More info below.
 - **Merchant's Carpet** - A thicker version of the carpet obtained by placing 4 wool in a 2x2 square in a crafting table. It can be re-dyed with any dye. It allows you to sell items to other players. More info below.
 - **Investor villager** - Quite an OP villager that sells goodies such as Netherite Ingots. He is how you get coins. Get him by placing a Merchant's Carpet as a work-station. More info below.
-- **Trimmed Hopper** - This elegant hopper, crafted with a hopper and two Diamonds on its sides, auto-deposits any item its placer has for sale into their shop. If it's not for sale, the hopper keeps it in its inventory.
-- **Double Trimmed Hopper** - An even more elegant hopper that can be linked to a chest to deposit all its contents in. It's crafted with a hopper in the middle and two columns of diamonds on its sides. More info below.
+- **Trimmed Hopper** - An elegant hopper that can be linked to a chest to deposit all its contents in. It's crafted with a hopper in the middle and two columns of diamonds on its sides. More info below.
 - (✨ New!) **Doubloon Compressor** - A functional block crafted with a netherite ingot, soulsand at the bottom row, and deepslate elsewhere. Once fueled with blaze powder, right-click on it with a wallet to turn all of its contents into doubloons (Rate: 10 coins/doubloon, 1 blaze powder lasts for 3 doubloons). Note: Only the placer can open its UI.
 - (✨ New!) **Doubloon** - A placable form of the coin obtained via the doubloon compressor, and can be crafted back into 10 coins. Like coins, it cannot be stored, and it is always dropped upon death. Once placed, it glows, giving away its location to others. Make sure to protect it!
 
@@ -38,9 +37,9 @@ There are two main ways to collect money from your carpet: right-clicking on it 
 </details>
 
 <details>
-<summary>Double Trimmed Hopper</summary>
+<summary>Trimmed Hopper</summary>
   
-## 💎 Double Trimmed Hopper
+## 💎 Trimmed Hopper
 You can craft this by placing two columns of diamonds on the left and right, and a hopper in the middle. This hopper can be linked to a chest by right-clicking a chest with it. If the link was successful, you should hear a chain sound, the hopper becoming enchanted, and a tooltip notifying which chest it's linked to. Now, upon placing it down, anything that goes into it will immediately go to the linked chest (as long as there is room and it's not destroyed).
 </details>
 
@@ -82,4 +81,4 @@ The Investor's prices are intentionally not the best deal around - players with 
 ## 🖼️ Gallery:
 ![Investors](https://cdn.modrinth.com/data/cached_images/67e075b48eae744ac8461da20e8b7df3508f2536_0.webp)
 ![Wallet & Coin](https://cdn.modrinth.com/data/cached_images/c3b5e175c1c1151d88b9aa1d471fc718eeb20d17_0.webp)
-![Double-Trimmed Hopper](https://cdn.modrinth.com/data/cached_images/de0d5a91d29cd5306dc0034a0f1cc38a78750a07_0.webp)
+![Trimmed Hopper](https://cdn.modrinth.com/data/cached_images/de0d5a91d29cd5306dc0034a0f1cc38a78750a07_0.webp)

@@ -40,8 +40,7 @@ public class MoneyGroups {
                         entries.accept(MoneyBlocks.WHITE_MERCHANT_CARPET.asItem());
                         entries.accept(MoneyBlocks.YELLOW_MERCHANT_CARPET.asItem());
 
-                        entries.accept(MoneyItems.DOUBLE_TRIMMED_HOPPER);
-                        entries.accept(MoneyBlocks.TRIMMED_HOPPER.asItem());
+                        entries.accept(MoneyItems.TRIMMED_HOPPER);
 
                         entries.accept(MoneyBlocks.DOUBLOON.asItem());
                         entries.accept(MoneyBlocks.DOUBLOON_COMPRESSOR.asItem());

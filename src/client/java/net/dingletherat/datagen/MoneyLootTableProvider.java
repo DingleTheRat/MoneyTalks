@@ -16,7 +16,6 @@ public class MoneyLootTableProvider extends FabricBlockLootSubProvider {
     @Override
     public void generate() {
         dropSelf((Block) MoneyBlocks.TRIMMED_HOPPER);
-        dropSelf((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER);
         dropSelf((Block) MoneyBlocks.RED_MERCHANT_CARPET);
         dropSelf((Block) MoneyBlocks.ORANGE_MERCHANT_CARPET);
         dropSelf((Block) MoneyBlocks.YELLOW_MERCHANT_CARPET);

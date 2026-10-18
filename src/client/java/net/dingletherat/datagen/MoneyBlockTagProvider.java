@@ -17,12 +17,10 @@ public class MoneyBlockTagProvider extends FabricTagsProvider.BlockTagsProvider 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         builder(BlockTags.NEEDS_IRON_TOOL)
-            .add(((Block) MoneyBlocks.TRIMMED_HOPPER).builtInRegistryHolder().key(),
-                 ((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER).builtInRegistryHolder().key());
+            .add(((Block) MoneyBlocks.TRIMMED_HOPPER).builtInRegistryHolder().key());
 
         builder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add(((Block) MoneyBlocks.TRIMMED_HOPPER).builtInRegistryHolder().key(),
-                 ((Block) MoneyBlocks.DOUBLE_TRIMMED_HOPPER).builtInRegistryHolder().key(),
                  ((Block) MoneyBlocks.DOUBLOON_COMPRESSOR).builtInRegistryHolder().key());
     }
 }

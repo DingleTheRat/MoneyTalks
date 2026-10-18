@@ -1,6 +1,7 @@
 package net.dingletherat;
 
 import net.dingletherat.block.MoneyBlocks;
+import net.dingletherat.block.custom.MerchantCarpet;
 import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyGroups;
@@ -15,6 +16,10 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.BarrelBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.CopperChestBlock;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Prediction;
@@ -42,7 +47,6 @@ public class MoneyTalks implements ModInitializer {
 	public static final int TEXTURE_WALLET_FULL_GOAL = ADVANCEMENT_DEEP_POCKETS_GOAL;
 
 	public static WalletState walletState;
-	public static ShopState shopState;
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -67,7 +71,6 @@ public class MoneyTalks implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			walletState = WalletState.get(server);
-			shopState = ShopState.get(server);
 		});
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {

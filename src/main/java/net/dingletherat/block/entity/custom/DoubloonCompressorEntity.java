@@ -9,7 +9,6 @@ import net.dingletherat.block.entity.MoneyBlockEntities;
 import net.dingletherat.item.LegacyData;
 import net.dingletherat.item.MoneyDataComponents;
 import net.dingletherat.item.MoneyItems;
-import net.dingletherat.item.custom.Wallet;
 import net.dingletherat.screen.custom.CompressorMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;

@@ -2,7 +2,7 @@ package net.dingletherat.item;
 
 import java.util.UUID;
 
-import net.dingletherat.item.custom.DoubleTrimmedHopperItem;
+import net.dingletherat.item.custom.TrimmedHopperItem;
 import net.dingletherat.item.custom.Wallet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -22,7 +22,7 @@ public class LegacyData {
         if (stack.isEmpty() || !stack.has(DataComponents.CUSTOM_DATA)) return;
 
         if (stack.getItem() instanceof Wallet) migrateWallet(stack);
-        else if (stack.getItem() instanceof DoubleTrimmedHopperItem) migrateHopper(stack);
+        else if (stack.getItem() instanceof TrimmedHopperItem) migrateHopper(stack);
     }
 
     private static void migrateWallet(ItemStack wallet) {
