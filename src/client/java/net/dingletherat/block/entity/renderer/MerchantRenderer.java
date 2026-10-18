@@ -1,6 +1,6 @@
 package net.dingletherat.block.entity.renderer;
 
-import net.dingletherat.block.entity.custom.MerchantCarpetEntity;
+import net.dingletherat.block.entity.MerchantCarpetEntity;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;

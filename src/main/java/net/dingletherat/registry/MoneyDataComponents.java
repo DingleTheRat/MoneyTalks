@@ -1,4 +1,4 @@
-package net.dingletherat.item;
+package net.dingletherat.registry;
 
 import java.util.UUID;
 import java.util.function.UnaryOperator;

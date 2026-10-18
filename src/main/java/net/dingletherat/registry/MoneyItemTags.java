@@ -1,6 +1,7 @@
-package net.dingletherat;
+package net.dingletherat.registry;
 
 import net.minecraft.world.item.Item;
+import net.dingletherat.MoneyTalks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.resources.Identifier;

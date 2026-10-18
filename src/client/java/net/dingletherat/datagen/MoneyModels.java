@@ -3,8 +3,8 @@ package net.dingletherat.datagen;
 import java.util.Optional;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.MoneyBlocks;
-import net.dingletherat.item.MoneyItems;
+import net.dingletherat.registry.MoneyBlocks;
+import net.dingletherat.registry.MoneyItems;
 import net.dingletherat.item.WalletCoinsProperty;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;

@@ -1,15 +1,15 @@
-package net.dingletherat.block.entity.custom;
+package net.dingletherat.block.entity;
 
 import java.util.UUID;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.MoneyBlocks;
-import net.dingletherat.block.custom.DoubloonCompressor;
-import net.dingletherat.block.entity.MoneyBlockEntities;
-import net.dingletherat.item.LegacyData;
-import net.dingletherat.item.MoneyDataComponents;
-import net.dingletherat.item.MoneyItems;
-import net.dingletherat.screen.custom.CompressorMenu;
+import net.dingletherat.registry.MoneyBlocks;
+import net.dingletherat.block.DoubloonCompressor;
+import net.dingletherat.registry.MoneyBlockEntities;
+import net.dingletherat.LegacyData;
+import net.dingletherat.registry.MoneyDataComponents;
+import net.dingletherat.registry.MoneyItems;
+import net.dingletherat.screen.CompressorMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;

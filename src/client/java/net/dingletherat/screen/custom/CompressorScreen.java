@@ -1,6 +1,7 @@
 package net.dingletherat.screen.custom;
 
-import net.dingletherat.block.entity.custom.DoubloonCompressorEntity;
+import net.dingletherat.screen.CompressorMenu;
+import net.dingletherat.block.entity.DoubloonCompressorEntity;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;

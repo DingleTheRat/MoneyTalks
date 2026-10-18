@@ -1,7 +1,6 @@
-package net.dingletherat.item;
+package net.dingletherat.registry;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.MoneyBlocks;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;

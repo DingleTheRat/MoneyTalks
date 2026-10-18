@@ -1,4 +1,4 @@
-package net.dingletherat.item.custom;
+package net.dingletherat.item;
 
 import java.util.function.Consumer;
 
@@ -17,8 +17,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Prediction;
-import net.dingletherat.item.LegacyData;
-import net.dingletherat.item.MoneyDataComponents;
+import net.dingletherat.LegacyData;
+import net.dingletherat.registry.MoneyDataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;

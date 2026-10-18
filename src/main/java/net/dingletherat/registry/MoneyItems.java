@@ -1,11 +1,10 @@
-package net.dingletherat.item;
+package net.dingletherat.registry;
 
 import java.util.function.Function;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.MoneyBlocks;
-import net.dingletherat.item.custom.TrimmedHopperItem;
-import net.dingletherat.item.custom.Wallet;
+import net.dingletherat.item.TrimmedHopperItem;
+import net.dingletherat.item.Wallet;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.BundleContents;

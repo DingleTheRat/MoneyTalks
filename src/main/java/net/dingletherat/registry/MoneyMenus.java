@@ -1,7 +1,7 @@
-package net.dingletherat.screen;
+package net.dingletherat.registry;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.screen.custom.CompressorMenu;
+import net.dingletherat.screen.CompressorMenu;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;

@@ -1,15 +1,15 @@
-package net.dingletherat.block.custom;
+package net.dingletherat.block;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.List;
 
-import net.dingletherat.block.entity.MoneyBlockEntities;
-import net.dingletherat.block.entity.custom.DoubloonCompressorEntity;
-import net.dingletherat.item.LegacyData;
-import net.dingletherat.item.MoneyDataComponents;
-import net.dingletherat.item.MoneyItems;
-import net.dingletherat.item.custom.Wallet;
+import net.dingletherat.registry.MoneyBlockEntities;
+import net.dingletherat.block.entity.DoubloonCompressorEntity;
+import net.dingletherat.LegacyData;
+import net.dingletherat.registry.MoneyDataComponents;
+import net.dingletherat.registry.MoneyItems;
+import net.dingletherat.item.Wallet;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;

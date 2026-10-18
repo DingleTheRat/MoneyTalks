@@ -1,9 +1,10 @@
-package net.dingletherat.item;
+package net.dingletherat;
 
 import java.util.UUID;
 
-import net.dingletherat.item.custom.TrimmedHopperItem;
-import net.dingletherat.item.custom.Wallet;
+import net.dingletherat.registry.MoneyDataComponents;
+import net.dingletherat.item.TrimmedHopperItem;
+import net.dingletherat.item.Wallet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;

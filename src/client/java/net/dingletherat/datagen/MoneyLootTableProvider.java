@@ -1,6 +1,6 @@
 package net.dingletherat.datagen;
 
-import net.dingletherat.block.MoneyBlocks;
+import net.dingletherat.registry.MoneyBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
 import net.minecraft.core.HolderLookup;

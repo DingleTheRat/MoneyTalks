@@ -1,11 +1,10 @@
-package net.dingletherat.block.entity;
+package net.dingletherat.registry;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.MoneyBlocks;
-import net.dingletherat.block.entity.custom.MerchantCarpetEntity;
-import net.dingletherat.block.entity.custom.TrimmedHopperEntity;
-import net.dingletherat.block.entity.custom.DoubloonCompressorEntity;
-import net.dingletherat.block.entity.custom.DoubloonEntity;
+import net.dingletherat.block.entity.MerchantCarpetEntity;
+import net.dingletherat.block.entity.TrimmedHopperEntity;
+import net.dingletherat.block.entity.DoubloonCompressorEntity;
+import net.dingletherat.block.entity.DoubloonEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;

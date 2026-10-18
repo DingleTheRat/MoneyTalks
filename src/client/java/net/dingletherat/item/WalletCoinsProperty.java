@@ -3,6 +3,7 @@ package net.dingletherat.item;
 import com.mojang.serialization.MapCodec;
 
 import net.dingletherat.MoneyTalks;
+import net.dingletherat.registry.MoneyDataComponents;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;

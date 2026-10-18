@@ -1,9 +1,9 @@
-package net.dingletherat.block.custom;
+package net.dingletherat.block;
 
 import org.joml.Vector3f;
 
 import com.mojang.math.Transformation;
-import net.dingletherat.block.entity.custom.DoubloonEntity;
+import net.dingletherat.block.entity.DoubloonEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Display.BlockDisplay;

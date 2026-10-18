@@ -1,9 +1,9 @@
-package net.dingletherat.block.entity.custom;
+package net.dingletherat.block.entity;
 
 import java.util.UUID;
 
-import net.dingletherat.block.custom.TrimmedHopper;
-import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.block.TrimmedHopper;
+import net.dingletherat.registry.MoneyBlockEntities;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.Hopper;

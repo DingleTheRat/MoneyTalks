@@ -1,9 +1,9 @@
 package net.dingletherat;
 
-import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.registry.MoneyBlockEntities;
 import net.dingletherat.block.entity.renderer.MerchantRenderer;
 import net.dingletherat.item.WalletCoinsProperty;
-import net.dingletherat.screen.MoneyMenus;
+import net.dingletherat.registry.MoneyMenus;
 import net.dingletherat.screen.custom.CompressorScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.gui.screens.MenuScreens;

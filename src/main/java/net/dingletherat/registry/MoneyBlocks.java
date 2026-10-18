@@ -1,12 +1,12 @@
-package net.dingletherat.block;
+package net.dingletherat.registry;
 
 import java.util.function.Function;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.custom.MerchantCarpet;
-import net.dingletherat.block.custom.Doubloon;
-import net.dingletherat.block.custom.DoubloonCompressor;
-import net.dingletherat.block.custom.TrimmedHopper;
+import net.dingletherat.block.MerchantCarpet;
+import net.dingletherat.block.Doubloon;
+import net.dingletherat.block.DoubloonCompressor;
+import net.dingletherat.block.TrimmedHopper;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.item.BlockItem;

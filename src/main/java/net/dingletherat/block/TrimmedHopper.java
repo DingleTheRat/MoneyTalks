@@ -1,4 +1,4 @@
-package net.dingletherat.block.custom;
+package net.dingletherat.block;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -7,10 +7,10 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.redstone.Orientation;
 
 
-import net.dingletherat.block.entity.MoneyBlockEntities;
-import net.dingletherat.block.entity.custom.TrimmedHopperEntity;
-import net.dingletherat.item.LegacyData;
-import net.dingletherat.item.MoneyDataComponents;
+import net.dingletherat.registry.MoneyBlockEntities;
+import net.dingletherat.block.entity.TrimmedHopperEntity;
+import net.dingletherat.LegacyData;
+import net.dingletherat.registry.MoneyDataComponents;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.BaseEntityBlock;

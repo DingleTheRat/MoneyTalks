@@ -1,6 +1,6 @@
-package net.dingletherat.block.entity.custom;
+package net.dingletherat.block.entity;
 
-import net.dingletherat.block.entity.MoneyBlockEntities;
+import net.dingletherat.registry.MoneyBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.Display.BlockDisplay;

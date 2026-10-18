@@ -1,15 +1,15 @@
 package net.dingletherat;
 
-import net.dingletherat.block.MoneyBlocks;
-import net.dingletherat.block.custom.MerchantCarpet;
-import net.dingletherat.block.entity.MoneyBlockEntities;
-import net.dingletherat.item.MoneyDataComponents;
-import net.dingletherat.item.MoneyGroups;
-import net.dingletherat.item.MoneyItems;
-import net.dingletherat.item.custom.Wallet;
-import net.dingletherat.screen.MoneyMenus;
+import net.dingletherat.registry.MoneyBlocks;
+import net.dingletherat.block.MerchantCarpet;
+import net.dingletherat.registry.MoneyBlockEntities;
+import net.dingletherat.registry.MoneyDataComponents;
+import net.dingletherat.registry.MoneyGroups;
+import net.dingletherat.registry.MoneyItems;
+import net.dingletherat.item.Wallet;
+import net.dingletherat.registry.MoneyMenus;
 import net.dingletherat.state.*;
-import net.dingletherat.villager.MoneyVillagers;
+import net.dingletherat.registry.MoneyVillagers;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;

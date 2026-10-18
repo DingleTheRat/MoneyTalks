@@ -1,9 +1,9 @@
-package net.dingletherat.item.custom;
+package net.dingletherat.item;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.item.LegacyData;
-import net.dingletherat.item.MoneyDataComponents;
-import net.dingletherat.item.MoneyItems;
+import net.dingletherat.LegacyData;
+import net.dingletherat.registry.MoneyDataComponents;
+import net.dingletherat.registry.MoneyItems;
 import net.dingletherat.state.WalletState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.ResolvableProfile;

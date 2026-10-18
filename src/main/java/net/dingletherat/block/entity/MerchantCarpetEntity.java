@@ -1,14 +1,14 @@
-package net.dingletherat.block.entity.custom;
+package net.dingletherat.block.entity;
 
 import java.util.Map;
 import java.util.UUID;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.entity.MoneyBlockEntities;
-import net.dingletherat.item.LegacyData;
-import net.dingletherat.item.MoneyDataComponents;
-import net.dingletherat.item.MoneyItems;
+import net.dingletherat.registry.MoneyBlockEntities;
+import net.dingletherat.LegacyData;
+import net.dingletherat.registry.MoneyDataComponents;
+import net.dingletherat.registry.MoneyItems;
 import net.dingletherat.state.WalletState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

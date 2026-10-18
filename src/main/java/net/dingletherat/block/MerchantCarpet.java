@@ -1,7 +1,7 @@
-package net.dingletherat.block.custom;
+package net.dingletherat.block;
 
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.dingletherat.block.entity.custom.MerchantCarpetEntity;
+import net.dingletherat.block.entity.MerchantCarpetEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.phys.shapes.CollisionContext;

@@ -1,9 +1,9 @@
 package net.dingletherat.datagen;
 
-import net.dingletherat.MoneyItemTags;
+import net.dingletherat.registry.MoneyItemTags;
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.MoneyBlocks;
-import net.dingletherat.item.MoneyItems;
+import net.dingletherat.registry.MoneyBlocks;
+import net.dingletherat.registry.MoneyItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.world.level.block.Block;

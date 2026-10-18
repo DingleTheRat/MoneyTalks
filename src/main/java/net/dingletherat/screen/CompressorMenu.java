@@ -1,7 +1,7 @@
-package net.dingletherat.screen.custom;
+package net.dingletherat.screen;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.screen.MoneyMenus;
+import net.dingletherat.registry.MoneyMenus;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;

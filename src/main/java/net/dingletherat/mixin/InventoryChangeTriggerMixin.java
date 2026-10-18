@@ -1,7 +1,7 @@
 package net.dingletherat.mixin;
 
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.MoneyBlocks;
+import net.dingletherat.registry.MoneyBlocks;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;

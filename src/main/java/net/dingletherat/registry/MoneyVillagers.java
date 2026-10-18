@@ -1,4 +1,4 @@
-package net.dingletherat.villager;
+package net.dingletherat.registry;
 
 import java.util.Map;
 
@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableSet;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.dingletherat.MoneyTalks;
-import net.dingletherat.block.MoneyBlocks;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PoiHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
