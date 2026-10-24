@@ -1,0 +1,116 @@
+package net.dingletherat.block;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import java.util.List;
+
+import net.dingletherat.registry.MoneyBlockEntities;
+import net.dingletherat.block.entity.DoubloonCompressorEntity;
+import net.dingletherat.LegacyData;
+import net.dingletherat.registry.MoneyDataComponents;
+import net.dingletherat.registry.MoneyItems;
+import net.dingletherat.item.Wallet;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+import net.minecraft.util.Prediction;
+
+public class DoubloonCompressor extends BaseEntityBlock {
+    public static final BooleanProperty FUELED = BooleanProperty.create("fueled");
+
+    public DoubloonCompressor(BlockBehaviour.Properties properties) {
+        super(properties);
+        registerDefaultState(stateDefinition.any().setValue(FUELED, false));
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new DoubloonCompressorEntity(pos, state);
+    }
+
+
+    @Override
+    public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FUELED);
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, MoneyBlockEntities.DOUBLOON_COMPRESSOR_ENTITY.get(), DoubloonCompressorEntity::tick);
+    }
+
+    @Override
+    public void setPlacedBy(Level world, BlockPos position, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        if (!world.isClientSide() && placer instanceof Player player) {
+            DoubloonCompressorEntity blockEntity = (DoubloonCompressorEntity) world.getBlockEntity(position);
+            if (blockEntity != null) {
+                blockEntity.setOwner(player.getUUID());
+                Component name = itemStack.getHoverName();
+
+                blockEntity.setName(name.getString());
+
+                blockEntity.setChanged();
+            }
+        }
+    }
+
+    @Override
+    protected InteractionResult useItemOn(final ItemStack itemStack, final BlockState state, final Level level, final BlockPos position, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        if (!(level.getBlockEntity(position) instanceof DoubloonCompressorEntity compressor)) {
+            return InteractionResult.PASS;
+        }
+
+        if (player.getItemInHand(hand).is(MoneyItems.WALLET.get()) && compressor.getItem(0).isEmpty()) {
+            LegacyData.migrate(player.getItemInHand(hand));
+            compressor.setItem(0, player.getItemInHand(hand).copy());
+            int coins = player.getItemInHand(hand).getOrDefault(MoneyDataComponents.COINS.get(), 0);
+            compressor.setTransactionCoins(Math.round(coins / 10) * 10);
+            compressor.setWalletOwner(Wallet.getOwnerName(player.getItemInHand(hand)));
+            player.getItemInHand(hand).setCount(0);
+            return InteractionResult.SUCCESS;
+        }
+
+        if (player.getItemInHand(hand).is(Items.PAPER)) {
+            ItemStack receipt = new ItemStack(Items.PAPER);
+            receipt.set(DataComponents.CUSTOM_NAME, Component.literal(compressor.getName() + " receipt")
+                    .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.AQUA)));
+            receipt.set(DataComponents.LORE, new ItemLore(List.of(
+                            Component.literal(compressor.getWalletOwner())
+                                    .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.BLUE)),
+                            Component.literal(compressor.getTransactionCoins() + " dollars")
+                                    .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.BLUE)),
+                            Component.literal("Day " + Long.toString(level.getGameTime() / 24000))
+                                    .withStyle(style -> style.withItalic(false).withColor(ChatFormatting.RED))
+            )));
+            player.getItemInHand(hand).shrink(1);
+
+            if (!player.getInventory().add(receipt)) player.drop(receipt, false, Prediction.PREDICTED);
+            return InteractionResult.SUCCESS;
+        }
+
+        if (compressor.getOwner() == player.getUUID()) {
+            player.openMenu(compressor);
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.FAIL;
+    }
+}

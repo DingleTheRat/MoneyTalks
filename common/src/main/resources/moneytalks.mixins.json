@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "net.dingletherat.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "minVersion": "0.8",
+  "mixins": [
+    "BlockDisplayAccessor",
+    "DisplayAccessor",
+    "HopperBlockEntityMixin",
+    "InventoryChangeTriggerMixin",
+    "ScreenHandlerMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

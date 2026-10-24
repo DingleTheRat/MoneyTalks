@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "moneytalks",
+  "version": "${version}",
+  "name": "Money Talks",
+  "description": "A client and server-side mod that adds money to the game. With enough coins, you can get some good stuff.",
+  "authors": [
+    "DingleTheRat"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "All rights reserved",
+  "icon": "assets/moneytalks/textures/item/wallet.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.dingletherat.fabric.MoneyTalksFabric"
+    ],
+    "client": [
+      "net.dingletherat.fabric.MoneyTalksFabricClient"
+    ],
+    "fabric-datagen": [
+      "net.dingletherat.MoneyTalksDataGenerator"
+    ]
+  },
+  "accessWidener": "moneytalks.accesswidener",
+  "mixins": [
+    "moneytalks.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.20.0",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "architectury": ">=22.0.3",
+    "fabric-api": "*"
+  }
+}
