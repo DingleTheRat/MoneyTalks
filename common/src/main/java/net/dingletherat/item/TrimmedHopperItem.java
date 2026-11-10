@@ -4,10 +4,8 @@ import java.util.function.Consumer;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -18,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Prediction;
 import net.dingletherat.LegacyData;
+import net.dingletherat.block.entity.MerchantCarpetEntity;
 import net.dingletherat.registry.MoneyDataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -46,8 +45,8 @@ public class TrimmedHopperItem extends BlockItem {
         if (stack.has(MoneyDataComponents.COORDINATES.get())) {
             BlockPos position = stack.get(MoneyDataComponents.COORDINATES.get());
             String positionText = position.getX() + ", " + position.getY() + ", " + position.getZ();
-            textConsumer.accept(Component.literal("Linked to a chest at " + positionText).withStyle(ChatFormatting.GOLD));
-        } else textConsumer.accept(Component.literal("Not linked to a chest").withStyle(ChatFormatting.GRAY));
+            textConsumer.accept(Component.literal("Linked to a container at " + positionText).withStyle(ChatFormatting.GOLD));
+        } else textConsumer.accept(Component.literal("Shift right click a container to link").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
@@ -57,7 +56,7 @@ public class TrimmedHopperItem extends BlockItem {
         Player player = context.getPlayer();
 
         // Place it if in non-linking conditions
-        if (player == null || !(level.getBlockEntity(position) instanceof Container)) return super.useOn(context);
+        if (player == null || !(level.getBlockEntity(position) instanceof MerchantCarpetEntity)) return super.useOn(context);
         if (level.isClientSide()) return InteractionResult.SUCCESS;
 
         ItemStack linked = context.getItemInHand().copyWithCount(1);

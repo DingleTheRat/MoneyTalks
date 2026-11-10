@@ -88,7 +88,7 @@ public class MoneyRecipeProvider extends FabricRecipeProvider {
                     .pattern("D D")
                     .define('D', Items.DIAMOND)
                     .define('H', Blocks.HOPPER)
-                    .unlockedBy("has_diamond", has(Items.DIAMOND))
+                    .unlockedBy("has_hopper", has(Items.HOPPER))
                     .save(output);
 
                 shapeless(RecipeCategory.MISC, new ItemStackTemplate(MoneyItems.COIN.get(), 10))
